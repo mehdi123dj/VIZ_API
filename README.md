@@ -34,6 +34,18 @@ git push -uf origin main
     │   │   ├── favicon.ico       
     │   │   ├── reset.css  
     └── README.md
+
+## Files dependencies
+```mermaid
+  graph TD;
+      Visualization.py-->CreateElements.py;
+      CreateElements.py-->ControlPanel.py;
+      CreateElements.py-->ColorMap.py;
+      CreateElements.py-->CytoView.py;
+      CytoView.py-->Stylesheet.py;
+      CytoView.py-->NodeLayout.py;
+```
+
 ## Collaborate with your team
 
 - [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
