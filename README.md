@@ -20,10 +20,20 @@ git branch -M main
 git push -uf origin main
 ```
 
-## Integrate with your tools
+## File Tree Structure
 
-- [ ] [Set up project integrations](https://gitlab.com/d7036/visualization/-/settings/integrations)
-
+    ├── Visualization                    
+    │   ├── ColorMap.py           # Part repsonsible to create adequate color mapping for nodes and edges legend
+    │   ├── ControlPanel.py       # Part design to control the creation of the legend and export navigation bar with cytoscape layout
+    │   ├── CreateElements.py     # Create the different pages (home and visualization) 
+    │   ├── CytoView.py           # Create and update the graph interactive part
+    │   ├── NodeLayout.py         # Define the position and size of nodes reagrding to their degree and initial given position
+    │   ├── Stylesheet.py         # Register all the possible stylesheet for nodes and edges regarding their state
+    │   ├── Visualization.py      # Define the server and theme use for all the pages
+    │   ├── assets
+    │   │   ├── favicon.ico       
+    │   │   ├── reset.css  
+    └── README.md
 ## Collaborate with your team
 
 - [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
