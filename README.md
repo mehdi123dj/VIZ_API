@@ -25,7 +25,8 @@
       CytoView.py-->Stylesheet.py;
       CytoView.py-->NodeLayout.py;
 ```
-
+### Color Map file
+Here you can change the colormap for nodes and edges. The default color when there is too much classes is grey with #999999
 
 ## Getting started
 
