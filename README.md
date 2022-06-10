@@ -14,7 +14,7 @@
     │   │   ├── favicon.ico       
     │   │   ├── reset.css  
     └── README.md
-## Possible input files
+## Input files format
 They are as follow :
 
 * File for edges should have the same header and registered as csv
