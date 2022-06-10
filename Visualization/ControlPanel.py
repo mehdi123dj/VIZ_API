@@ -9,7 +9,7 @@ import dash
 import copy
 import pandas as pd
 from dash import dcc, html
-from dash.dependencies import Input, Output, State, MATCH, ALL
+from dash.dependencies import Input, Output, State, MATCH
 
 
 class ControlPanel():
@@ -176,18 +176,18 @@ class ControlPanel():
             
             elif n % 2 == 0:
                 new_mask_edge=self.mask_edge
-                for i in self.hash_edge[json.loads(triggered[0]['prop_id'].split('.')[0])["label"]]["data"]:
+                for i in self.hash_edge[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
                     if self.mask_node[data_edge[i]['source']]==1 and self.mask_node[data_edge[i]['destination']]==1:
                         new_mask_edge[i]=1
-                self.hash_edge[json.loads(triggered[0]['prop_id'].split('.')[0])["label"]]["selected"]=1
+                self.hash_edge[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["selected"]=1
                 self.mask_edge=copy.deepcopy(new_mask_edge)
                 return {'height':'5vh','margin':"2%",'display':'flex','align-items': 'center'}
             
             else:
                 new_mask_edge=self.mask_edge
-                for i in self.hash_edge[json.loads(triggered[0]['prop_id'].split('.')[0])["label"]]["data"]:
+                for i in self.hash_edge[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
                     new_mask_edge[i]=0
-                self.hash_edge[json.loads(triggered[0]['prop_id'].split('.')[0])["label"]]["selected"]=0
+                self.hash_edge[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["selected"]=0
                 self.mask_edge=copy.deepcopy(new_mask_edge)
                 return {'height':'5vh','margin':"2%",'display':'flex','align-items': 'center',"opacity":"0.2"}
     
@@ -209,11 +209,11 @@ class ControlPanel():
                 n_mask_node=self.mask_node
                 n_mask_edge=self.mask_edge
                 D=pd.DataFrame(data_edge)
-                for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('.')[0])["label"]]["data"]:
+                for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
                     n_mask_node[i]=1
                 
 
-                for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('.')[0])["label"]]["data"]:
+                for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
 
                     for ind in D.index[D["destination"]==i]:
                         if 'type' in D:
@@ -232,7 +232,7 @@ class ControlPanel():
                         else:
                             if n_mask_node[D["destination"][ind]]==1:
                                 n_mask_edge[ind]=1
-                self.hash_node[json.loads(triggered[0]['prop_id'].split('.')[0])["label"]]["selected"]=1
+                self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["selected"]=1
 
                 self.mask_node=copy.deepcopy(n_mask_node)
                 self.mask_edge=copy.deepcopy(n_mask_edge)
@@ -242,7 +242,7 @@ class ControlPanel():
                 n_mask_node=self.mask_node
                 n_mask_edge=self.mask_edge
                 D=pd.DataFrame(data_edge)
-                for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('.')[0])["label"]]["data"]:
+                for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
                     n_mask_node[i]=0
                     for ind in D.index[D["destination"]==i]:
                         n_mask_edge[ind]=0
@@ -250,7 +250,7 @@ class ControlPanel():
                     for ind in D.index[D["source"]==i]:
                         n_mask_edge[ind]=0
 
-                self.hash_node[json.loads(triggered[0]['prop_id'].split('.')[0])["label"]]["selected"]=0
+                self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["selected"]=0
                 self.mask_node=copy.deepcopy(n_mask_node)
                 self.mask_edge=copy.deepcopy(n_mask_edge)
                 return {'height':'5vh','margin':"2%",'display':'flex','align-items': 'center',"opacity":"0.2"}

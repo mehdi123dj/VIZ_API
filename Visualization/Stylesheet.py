@@ -26,8 +26,8 @@ class Stylesheet():
                     "selector": 'edge',
                     'style': {
                         "curve-style": "bezier",
-                        "width":8,
-                        "opacity": 0.4,
+                        "width":13,
+                        "opacity": 0.8,
                         'z-index': 3
                     }
                 },

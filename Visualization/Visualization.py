@@ -4,14 +4,10 @@ Created on Thu Apr 14 09:55:01 2022
 
 @author: remit
 """
-import json
-
 import dash
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
-from dash import dcc, html
-import ControlPanel
-import dash_cytoscape as cyto
+from dash import html
+
 
 from CreateElements import CreateElements
 

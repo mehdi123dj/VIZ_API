@@ -5,7 +5,6 @@ Created on Thu Apr 28 09:33:19 2022
 @author: remit
 """
 import numpy as np
-import copy
 
 def normalisation(data_noeud):
     m=0
@@ -29,8 +28,8 @@ def degree(data_edges,L):
 def node_size(degree):
 
     size=[]
-    m = 10
-    M = 500
+    m = 150
+    M = 1000
     L=np.log(max(degree))
     for i in range(len(degree)):
         size.append(m+np.log(degree[i])/L*(M-m))

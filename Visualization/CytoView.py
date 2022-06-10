@@ -5,20 +5,17 @@ Created on Tue Apr 26 14:20:43 2022
 @author: remit
 """
 import dash
-from dash.dependencies import Input, Output, State,MATCH,ALL
+from dash.dependencies import Input, Output, State,ALL
 from dash import html
 import copy
-import time
 from Stylesheet import Stylesheet
 import dash_cytoscape as cyto
-import pandas as pd
 cyto.load_extra_layouts()
 import NodeLayout
 
 class CytoView():
     
-    
-    
+      
     def __init__(self):
         self.Stylesheet=Stylesheet()
         self.G=[]
