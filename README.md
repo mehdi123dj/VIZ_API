@@ -1,11 +1,11 @@
 # Visualization
-Page d'accueil avant le chargement des données
+* Page d'accueil avant le chargement des données
 ![Semantic description of image](/ScreenShot/Page_accueil.jpg )
 
-Page après le chargement des fichiers
+* Page après le chargement des fichiers
 ![Semantic description of image](/ScreenShot/Page_accueil_files_loaded.jpg )
 
-Page de visualisation
+* Page de visualisation
 ![Semantic description of image](/ScreenShot/Visualisation.jpg )
 
 
