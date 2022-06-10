@@ -26,7 +26,7 @@ Page de visualisation
 ## Input files format
 They are as follow :
 
-* __Edges file__ should contain in its name **Edges** or **Links**. File for edges should also have the same header and registered as csv
+* **Edges file** should contain in its name **Edges** or **Links**. File for edges should also have the same header and registered as csv
 ```
 source,destination
 0,1
@@ -38,7 +38,7 @@ source,destination
 ...
 ```
 
-* __Node file__ should contain in its name **Nodes**. File for nodes should also have the same header and registered as csv
+* **Node file** should contain in its name **Nodes**. File for nodes should also have the same header and registered as csv
 ```
 noeuds,positionX,positionY,type
 0,-43.38563,-41.991077,2
