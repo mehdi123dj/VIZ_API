@@ -1,8 +1,12 @@
 # Visualization
+Page d'accueil avant le chargement des données
+![Semantic description of image](/ScreenShot/Page_accueil.jpg )
 
-![Semantic description of image](/ScreenShot/Page_accueil.jpg "Page d'accueil")
-![Semantic description of image](/ScreenShot/Page_accueil_files_loaded.jpg "Page d'accueil")
-![Semantic description of image](/ScreenShot/Visualisation.jpg "Page d'accueil")
+Page après le chargement des fichiers
+![Semantic description of image](/ScreenShot/Page_accueil_files_loaded.jpg )
+
+Page de visualisation
+![Semantic description of image](/ScreenShot/Visualisation.jpg )
 
 
 ## File Tree Structure
@@ -22,7 +26,7 @@
 ## Input files format
 They are as follow :
 
-* File for edges should have the same header and registered as csv
+* __Edges file__ should contain in its name **Edges** or **Links**. File for edges should also have the same header and registered as csv
 ```
 source,destination
 0,1
@@ -34,7 +38,7 @@ source,destination
 ...
 ```
 
-* File for nodes should have the same header and registered as csv
+* __Node file__ should contain in its name **Nodes**. File for nodes should also have the same header and registered as csv
 ```
 noeuds,positionX,positionY,type
 0,-43.38563,-41.991077,2
