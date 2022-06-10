@@ -8,6 +8,7 @@
 * Page de visualisation
 ![Semantic description of image](/ScreenShot/Visualisation.jpg )
 
+Here we can see that the cytoscape view is delimited by the red rectangle excepted the two buttons *Reset view* and *Reset stylesheet* 
 
 ## File Tree Structure
 
