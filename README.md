@@ -8,8 +8,9 @@
 * Page de visualisation
 ![Semantic description of image](/ScreenShot/Visualisation.jpg )
 
-Here we can see that the cytoscape view is delimited by the red rectangle excepted the two buttons *Reset view* and *Reset stylesheet* 
+Here we can see that the CytoView is delimited by the red rectangle excepted the two buttons *Reset view* and *Reset stylesheet* 
 
+Also the ControlPanel is delimited by the blue rectangle.
 ## File Tree Structure
 
     ├── Visualization                    
@@ -62,7 +63,6 @@ noeuds,positionX,positionY,type
       CytoView.py-->Stylesheet.py;
       CytoView.py-->NodeLayout.py;
 ```
-CytoView only control the view of nodes without taking into account all the buttons in the left side or the reset stylesheet and view button.
 
 ### Color Map file
 Here you can change the colormap for nodes and edges. The default color when there is too much classes is grey with #999999
