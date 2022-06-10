@@ -1,5 +1,8 @@
 # Visualization
 
+
+
+
 ## File Tree Structure
 
     ├── Visualization                    
@@ -52,6 +55,8 @@ noeuds,positionX,positionY,type
       CytoView.py-->Stylesheet.py;
       CytoView.py-->NodeLayout.py;
 ```
+CytoView only control the view of nodes without taking into account all the buttons in the left side or the reset stylesheet and view button.
+
 ### Color Map file
 Here you can change the colormap for nodes and edges. The default color when there is too much classes is grey with #999999
 
