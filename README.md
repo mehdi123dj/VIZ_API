@@ -42,7 +42,7 @@ source,target,type,data
 
 * **Node file** should contain in its name **Nodes**. File for nodes should also have the same header and registered as csv
 ```
-node,positionX,positionY,type,data
+id,positionX,positionY,type,data
 0,-43.38563,-41.991077,2
 1,-20.32137,-53.12107,2
 2,-41.036217,-42.4627,2
