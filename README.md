@@ -28,7 +28,7 @@ Also the ControlPanel is delimited by the blue rectangle.
 ## Input files format
 They are as follow :
 
-* **Edges file** should contain in its name **Edges** or **Links**. File for edges should also have the same header and registered as csv
+* **Edges file** should contain in its name **Edges** or **Links**. File for edges should also have the same header and registered as csv. You are force to furnish values for the **source** and **target** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given.
 ```
 source,target,type,data
 0,1
@@ -40,7 +40,8 @@ source,target,type,data
 ...
 ```
 
-* **Node file** should contain in its name **Nodes**. File for nodes should also have the same header and registered as csv
+* **Node file** should contain in its name **Nodes**. File for nodes should also have the same header and registered as csv.
+You are force to furnish values for the **id**,**positionX**,**positionY** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given.
 ```
 id,positionX,positionY,type,data
 0,-43.38563,-41.991077,2
