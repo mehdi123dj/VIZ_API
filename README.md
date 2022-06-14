@@ -30,7 +30,7 @@ They are as follow :
 
 * **Edges file** should contain in its name **Edges** or **Links**. File for edges should also have the same header and registered as csv
 ```
-source,destination
+source,target,type,data
 0,1
 2,3
 4,5
@@ -42,7 +42,7 @@ source,destination
 
 * **Node file** should contain in its name **Nodes**. File for nodes should also have the same header and registered as csv
 ```
-noeuds,positionX,positionY,type
+node,positionX,positionY,type,data
 0,-43.38563,-41.991077,2
 1,-20.32137,-53.12107,2
 2,-41.036217,-42.4627,2
