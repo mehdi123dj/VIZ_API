@@ -22,7 +22,7 @@ def degree(data_edges,L):
     degree=[0 for i in range(L)]
     for elem in data_edges:
         degree[elem['source']]=degree[elem['source']]+1
-        degree[elem['destination']]=degree[elem['destination']]+1
+        degree[elem['target']]=degree[elem['target']]+1
     return degree
 
 def node_size(degree):

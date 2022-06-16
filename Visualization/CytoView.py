@@ -36,7 +36,8 @@ class CytoView():
                     'data':{
                     'perso':'e'+str(data_edges.index(elem)),
                     'source': 'n'+str(elem['source']), 
-                    'target': 'n'+str(elem['destination'])},
+                    'target': 'n'+str(elem['target']),
+                    'data': str(elem.get('data'))},
                     'classes': elem['type']
                     })
             else:
@@ -44,20 +45,22 @@ class CytoView():
                     'data':{
                     'perso':'e'+str(data_edges.index(elem)),
                     'source': 'n'+str(elem['source']), 
-                    'target': 'n'+str(elem['destination'])},
-
+                    'target': 'n'+str(elem['target']),
+                    'data': str(elem.get('data'))},
                     })
         
         degree=NodeLayout.degree(data_edges,len(data_nodes))
+        print(degree)
         data_n=NodeLayout.normalisation(data_nodes)
         size=NodeLayout.node_size(degree)
         for elem in data_n:
             if 'type'in elem:
-
+                # print(elem)
                 G.append({
-                    'data':{'id': 'n'+str(elem['noeuds']),
-                            'label':str((degree[elem['noeuds']],size[elem['noeuds']])),#str((elem['positionX'],elem['positionY'])),
-                            'size':size[elem['noeuds']],
+                    'data':{'id': 'n'+str(elem['id']),
+                            'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
+                            'size':size[elem['id']],
+                            'data': str(elem.get('data'))
                             },
                     'classes': elem['type'],
                     'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
@@ -65,12 +68,11 @@ class CytoView():
                     })
             else :
                 G.append({
-                    'data':{'id': 'n'+str(elem['noeuds']),
-                            'label':str((degree[elem['noeuds']],size[elem['noeuds']])),#str((elem['positionX'],elem['positionY'])),
-                            'size':size[elem['noeuds']],
-                            # 'type':elem['type'],
+                    'data':{'id': 'n'+str(elem['id']),
+                            'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
+                            'size':size[elem['id']],
+                            'data': str(elem.get('data'))
                             },
-                    
                     'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
                     'grabbable': False
                     })
@@ -195,12 +197,7 @@ class CytoView():
             
             return html.P(output)
         
-
-            
-
-         
-            
-                
+        
 
 
             

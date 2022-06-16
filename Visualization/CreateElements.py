@@ -10,6 +10,7 @@ from dash.dependencies import Input, Output, State
 from dash import dcc
 from dash import html
 import pandas as pd
+from FileConvert import csv_to_df, gml_to_df
 from ControlPanel import ControlPanel
 from CytoView import CytoView
 from ColorMap import ColorMap
@@ -78,54 +79,68 @@ class CreateElements():
 
         return [self.location,self.dashboard,self.home,self.visualization]
 
-    def parse_contents(self,contents, filename, date):
-        content_type, content_string = contents.split(',')
-
-        decoded = base64.b64decode(content_string)
-        try:
-            if 'csv' in filename:
-                # Assume that the user uploaded a CSV file
-                df = pd.read_csv(
-                    io.StringIO(decoded.decode('utf-8')))
-            elif 'xls' in filename:
-                # Assume that the user uploaded an excel file
-                df = pd.read_excel(io.BytesIO(decoded))
-                
+    def parse_contents(self,list_of_contents, list_of_names, list_of_dates):
+        M=[]
+        for (contents,filename,date) in zip(list_of_contents,list_of_names,list_of_dates):
+            content_type, content_string = contents.split(',')
+    
             
-        except Exception as e:
-            print(e)
-            return html.Div([
-                'There was an error processing this file.'
-            ])
+            decoded = base64.b64decode(content_string)
+            L=[]
+            u=False
+            try:
+                
+                if 'csv' in filename:
+                    # Assume that the user uploaded a CSV file
+                    L.append(csv_to_df(decoded.decode('utf-8')))
+                elif 'xls' in filename:
+                    # Assume that the user uploaded an excel file
+                    L.append(csv_to_df(io.BytesIO(decoded)))
+    
+                elif 'gml' in filename:
+                    # Assume that the user uploaded a graph modelling language based file
+                    L.append(gml_to_df(decoded.decode('utf-8')))
+                    u=True
+    
+                    
+            except Exception as e:
+                print(e)
+                return html.Div([
+                    'There was an error processing this file.'
+                ])
+            
+    
 
-        if 'Links' in filename or 'Edges' in filename:
-            if "type" in df:
-                df["type"]=df["type"].map(str)
-            store=dcc.Store(id='stored-data-edges', data=df.to_dict('records'))
+            def out(df,store):
+                return html.Div([
+                    html.H5(filename),
+                    html.H6(datetime.datetime.fromtimestamp(date)),
+    
+                    dash_table.DataTable(
+                        data=df.to_dict('records'),
+                        columns=[{'name': i, 'id': i} for i in df.columns],
+                        style_cell={'textAlign': 'center'},
+                        style_header={
+                            'backgroundColor': 'rgb(210, 210, 210)',
+                            'color': 'black',
+                            'fontWeight': 'bold'
+                        },
+                        page_size=10
+                    ),
+                    store
+                ],style={'width': '48%','display':'inline-block','margin':'1%'})
+            
+            
+    
+            if u==True:
+                M=[]
+                for elem in L[0]:
+                    M.append(out(elem[0],elem[1]))           
 
-        if 'Nodes' in filename :
-            if "type" in df:  
-                df["type"]=df["type"].map(str)
-            store=dcc.Store(id='stored-data-nodes', data=df.to_dict('records'))
-
-
-        return html.Div([
-            html.H5(filename),
-            html.H6(datetime.datetime.fromtimestamp(date)),
-
-            dash_table.DataTable(
-                data=df.to_dict('records'),
-                columns=[{'name': i, 'id': i} for i in df.columns],
-                style_cell={'textAlign': 'center'},
-                style_header={
-                    'backgroundColor': 'rgb(210, 210, 210)',
-                    'color': 'black',
-                    'fontWeight': 'bold'
-                },
-                page_size=10
-            ),
-            store
-        ],style={'width': '48%','display':'inline-block','margin':'1%'})
+            
+            else:
+                M.append(out(L[0][0],L[0][1]))
+        return M
 
 
     def generate_display_tab(self,tab):
@@ -157,9 +172,8 @@ class CreateElements():
                       State('upload-data', 'last_modified'))
         def update_output(list_of_contents, list_of_names, list_of_dates):
             if list_of_contents is not None:
-                children = [
-                    self.parse_contents(c, n, d) for c, n, d in  zip(list_of_contents, list_of_names, list_of_dates)
-                    ]
+                children = self.parse_contents(list_of_contents, list_of_names, list_of_dates)#(c, n, d) for c, n, d in  zip(list_of_contents, list_of_names, list_of_dates)
+                    
                 return children
             
         @app.callback(Output('visualization', 'children'),
@@ -168,7 +182,7 @@ class CreateElements():
                       State('stored-data-edges','data'),
                       )
         def make_graphs(table,data_nodes,data_edges):
-            if table !=None:
+            if table != None:
                 color=ColorMap()
                 color(data_edges,data_nodes)
                 CP(color.edge_legend,color.node_legend,data_edges,data_nodes)

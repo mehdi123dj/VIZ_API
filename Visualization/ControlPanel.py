@@ -32,7 +32,7 @@ class ControlPanel():
             self.hash_node[elem[1]]={"selected":1,"data":[]}
         if self.hash_node!={}:
             for elem in data_nodes:
-                self.hash_node[elem["type"]]["data"]=self.hash_node[elem["type"]]["data"]+[elem["noeuds"]]
+                self.hash_node[elem["type"]]["data"]=self.hash_node[elem["type"]]["data"]+[elem["id"]]
 
         
         self.hash_edge={}
@@ -177,7 +177,7 @@ class ControlPanel():
             elif n % 2 == 0:
                 new_mask_edge=self.mask_edge
                 for i in self.hash_edge[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
-                    if self.mask_node[data_edge[i]['source']]==1 and self.mask_node[data_edge[i]['destination']]==1:
+                    if self.mask_node[data_edge[i]['source']]==1 and self.mask_node[data_edge[i]['target']]==1:
                         new_mask_edge[i]=1
                 self.hash_edge[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["selected"]=1
                 self.mask_edge=copy.deepcopy(new_mask_edge)
@@ -215,7 +215,7 @@ class ControlPanel():
 
                 for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
 
-                    for ind in D.index[D["destination"]==i]:
+                    for ind in D.index[D["target"]==i]:
                         if 'type' in D:
                             if self.hash_edge[D['type'].iloc[ind]]["selected"]==1 and n_mask_node[D["source"][ind]]==1:
     
@@ -227,10 +227,10 @@ class ControlPanel():
 
                     for ind in D.index[D["source"]==i]:
                         if 'type' in D:
-                            if self.hash_edge[D['type'].iloc[ind]]["selected"]==1 and n_mask_node[D["destination"][ind]]==1:
+                            if self.hash_edge[D['type'].iloc[ind]]["selected"]==1 and n_mask_node[D["target"][ind]]==1:
                                 n_mask_edge[ind]=1
                         else:
-                            if n_mask_node[D["destination"][ind]]==1:
+                            if n_mask_node[D["target"][ind]]==1:
                                 n_mask_edge[ind]=1
                 self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["selected"]=1
 
@@ -244,7 +244,7 @@ class ControlPanel():
                 D=pd.DataFrame(data_edge)
                 for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
                     n_mask_node[i]=0
-                    for ind in D.index[D["destination"]==i]:
+                    for ind in D.index[D["target"]==i]:
                         n_mask_edge[ind]=0
 
                     for ind in D.index[D["source"]==i]:
