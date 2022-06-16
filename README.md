@@ -28,7 +28,7 @@ Also the ControlPanel is delimited by the blue rectangle.
 ## Input files format
 They are as follow :
 
-* CSV and XLS files 
+* **CSV and XLS files**
 
     * File for edges should have the same header as shown below and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
     ```
@@ -49,8 +49,7 @@ They are as follow :
     ...
     ```
 
-    * File for nodes should have the same header as shown below and registered as csv/xls.
-    You are force to furnish values for the **id**,**positionX**,**positionY** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
+    * File for nodes should have the same header as shown below and registered as csv/xls.You are force to furnish values for the **id**,**positionX**,**positionY** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
     ```
     id,positionX,positionY,type,data
     0,-91.13624117479557,-66.76717678700189,child,"Name : fabrice, age : 22"
@@ -64,6 +63,117 @@ They are as follow :
     8,-43.595013960941785,-11.608992182740579,adult,"Name : fabrice, age : 34"
     ...
     ```
+
+* **GML Files**
+    * File should have the same form as shown below and registered as gml. You are force to furnish values for the **source** and **target** for the edges and **id**,**positionX**,**positionY** for the nodes, you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given. A solution could be to add **'NaN'**
+    ```
+    graph [
+  multigraph 1
+  node [
+    id 0
+    label "0"
+    positionX -91.13624117479557
+    positionY -66.76717678700189
+    type "child"
+    data "Name : fabrice, age : 22"
+  ]
+  node [
+    id 1
+    label "1"
+    positionX -46.73841145000086
+    positionY 98.31243547492073
+    type "nan"
+    data "Name : fabrice, age : 55"
+  ]
+  node [
+    id 2
+    label "2"
+    positionX 35.17666039345673
+    positionY 10.373519892509364
+    type "child"
+    data "Name : matthieu, age : 22"
+  ]
+  node [
+    id 3
+    label "3"
+    positionX 8.934336460157127
+    positionY -90.02082919747694
+    type "child"
+    data "nan"
+  ]
+  node [
+    id 4
+    label "4"
+    positionX -8.449593591524106
+    positionY -46.77166171108491
+    type "child"
+    data "Name : madeleine, age : 65"
+  ]
+  node [
+    id 5
+    label "5"
+    positionX 70.49398332611486
+    positionY 80.29494707270953
+    type "nan"
+    data "nan"
+  ]
+  node [
+    id 6
+    label "6"
+    positionX 54.341204747486245
+    positionY 13.288421419471064
+    type "child"
+    data "Name : matthieu, age : 65"
+  ]
+
+  ...
+
+  edge [
+    source 0
+    target 2
+    key 0
+    type "professional"
+    data "Knowing since : 23 years"
+  ]
+  edge [
+    source 0
+    target 2
+    key 1
+    type "professional"
+    data "Knowing since : 23 years"
+  ]
+  edge [
+    source 0
+    target 11
+    key 0
+    type "nan"
+    data "Knowing since : 9 years"
+  ]
+  edge [
+    source 0
+    target 11
+    key 1
+    type "friend"
+    data "Knowing since : 9 years"
+  ]
+  edge [
+    source 0
+    target 6
+    key 0
+    type "family"
+    data "Knowing since : 9 years"
+  ]
+  edge [
+    source 0
+    target 10
+    key 0
+    type "family"
+    data "Knowing since : 9 years"
+  ]
+  ...
+  ]
+    ```
+
 ## Files dependencies
 ```mermaid
   graph TD;
