@@ -28,32 +28,42 @@ Also the ControlPanel is delimited by the blue rectangle.
 ## Input files format
 They are as follow :
 
-* **Edges file** should contain in its name **Edges** or **Links**. File for edges should also have the same header and registered as csv. You are force to furnish values for the **source** and **target** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given.Nevertheless you are force to give a value to **type** and **data** so if you have nothing to had just put a blanck space.
-```
-source,target,type,data
-0,1,,
-2,3,,
-4,5,,
-6,7,,
-8,9,,
-10,11,,
-...
-```
+* CSV and XLS files 
 
-* **Node file** should contain in its name **Nodes**. File for nodes should also have the same header and registered as csv.
-You are force to furnish values for the **id**,**positionX**,**positionY** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given. Nevertheless you are force to give a value to type and data so if you have nothing to had just put a blanck space.
-```
-id,positionX,positionY,type,data
-0,-43.38563,-41.991077,2,
-1,-20.32137,-53.12107,2,
-2,-41.036217,-42.4627,2,
-3,-6.8819265,-63.507526,2,
-4,21.066505,-51.567326,2,
-5,-43.997192,-29.982145,2,
-6,-1.9271212,-3.9017417,2,
-7,1.7222745,-20.133389,2,
-...
-```
+    * File for edges should have the same header as shown below and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
+    ```
+    source,target,type,data
+    16,15,friend,Knowing since : 68 years
+    5,2,friend,
+    11,17,professional,Knowing since : 2 years
+    18,8,friend,Knowing since : 97 years
+    13,5,,Knowing since : 2 years
+    8,18,friend,Knowing since : 35 years
+    0,2,professional,Knowing since : 23 years
+    9,6,family,Knowing since : 9 years
+    6,12,,Knowing since : 9 years
+    1,15,professional,Knowing since : 68 years
+    16,9,professional,Knowing since : 3 years
+    11,4,professional,Knowing since : 68 years
+    19,13,professional,
+    ...
+    ```
+
+    * File for nodes should have the same header as shown below and registered as csv/xls.
+    You are force to furnish values for the **id**,**positionX**,**positionY** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
+    ```
+    id,positionX,positionY,type,data
+    0,-91.13624117479557,-66.76717678700189,child,"Name : fabrice, age : 22"
+    1,-46.73841145000086,98.31243547492073,,
+    2,35.17666039345673,10.373519892509364,child,"Name : matthieu, age : 22"
+    3,8.934336460157127,-90.02082919747694,,"Name : fabrice, age : 48"
+    4,-8.449593591524106,-46.77166171108491,child,"Name : madeleine, age : 65"
+    5,70.49398332611486,80.29494707270953,adult,"Name : fabrice, age : 65"
+    6,54.341204747486245,13.288421419471064,child,
+    7,55.67321134000403,-40.89296087725318,child,"Name : madeleine, age : 48"
+    8,-43.595013960941785,-11.608992182740579,adult,"Name : fabrice, age : 34"
+    ...
+    ```
 ## Files dependencies
 ```mermaid
   graph TD;
@@ -61,6 +71,7 @@ id,positionX,positionY,type,data
       CreateElements.py-->ControlPanel.py;
       CreateElements.py-->ColorMap.py;
       CreateElements.py-->CytoView.py;
+      CreateElements.py-->FileConvert.py;
       CytoView.py-->Stylesheet.py;
       CytoView.py-->NodeLayout.py;
 ```
