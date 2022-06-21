@@ -187,7 +187,7 @@ They are as follow :
     * **id** is the identifier of the node
     * **positionX** is the position of the node along x axis
     * **positionY** is the position of the node along y axis
-    * **feature** is a numeric representation of the attribute of the node pre computed by the user (this will be used to train the model, if the option is choosed, and make some prediction on node classification)
+    * **feature** is a numeric vectorized representation of the attribute of the node pre computed by the user (this will be used to train the model, if the option is choosed, and make some prediction on node classification)
     
 ## Files dependencies
 ```mermaid
