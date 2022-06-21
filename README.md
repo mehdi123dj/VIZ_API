@@ -31,9 +31,9 @@ They are as follow :
 
 * **CSV and XLS files**
 
-    * File for edges should have the same header as shown below and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
+    * File for edges should have the same header as shown below and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
     ```
-    source,target,type,data
+    source,target,class,data
     16,15,friend,Knowing since : 68 years
     5,2,friend,
     11,17,professional,Knowing since : 2 years
@@ -50,9 +50,9 @@ They are as follow :
     ...
     ```
 
-    * File for nodes should have the same header as shown below and registered as csv/xls.You are force to furnish values for the **id**,**positionX**,**positionY** you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
+    * File for nodes should have the same header as shown below and registered as csv/xls.You are force to furnish values for the **id**,**positionX**,**positionY** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
     ```
-    id,positionX,positionY,type,data
+    id,positionX,positionY,class,data
     0,-91.13624117479557,-66.76717678700189,child,"Name : fabrice, age : 22"
     1,-46.73841145000086,98.31243547492073,,
     2,35.17666039345673,10.373519892509364,child,"Name : matthieu, age : 22"
@@ -66,7 +66,7 @@ They are as follow :
     ```
 
 * **GML Files**
-    * File should have the same form as shown below and registered as gml. You are force to furnish values for the **source** and **target** for the edges and **id**,**positionX**,**positionY** for the nodes, you can also provide values for **type** and **data** but it is not mandatory and sparse information could be given. A solution could be to add **'NaN'**
+  File should have the same form as shown below and registered as gml. You are force to furnish values for the **source** and **target** for the edges and **id**,**positionX**,**positionY** for the nodes, you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add **'NaN'**
     ```
     graph [
   multigraph 1
@@ -75,7 +75,7 @@ They are as follow :
     label "0"
     positionX -91.13624117479557
     positionY -66.76717678700189
-    type "child"
+    class "child"
     data "Name : fabrice, age : 22"
   ]
   node [
@@ -83,7 +83,7 @@ They are as follow :
     label "1"
     positionX -46.73841145000086
     positionY 98.31243547492073
-    type "nan"
+    class "nan"
     data "Name : fabrice, age : 55"
   ]
   node [
@@ -91,7 +91,7 @@ They are as follow :
     label "2"
     positionX 35.17666039345673
     positionY 10.373519892509364
-    type "child"
+    class "child"
     data "Name : matthieu, age : 22"
   ]
   node [
@@ -99,7 +99,7 @@ They are as follow :
     label "3"
     positionX 8.934336460157127
     positionY -90.02082919747694
-    type "child"
+    class "child"
     data "nan"
   ]
   node [
@@ -107,7 +107,7 @@ They are as follow :
     label "4"
     positionX -8.449593591524106
     positionY -46.77166171108491
-    type "child"
+    class "child"
     data "Name : madeleine, age : 65"
   ]
   node [
@@ -115,7 +115,7 @@ They are as follow :
     label "5"
     positionX 70.49398332611486
     positionY 80.29494707270953
-    type "nan"
+    class "nan"
     data "nan"
   ]
   node [
@@ -123,7 +123,7 @@ They are as follow :
     label "6"
     positionX 54.341204747486245
     positionY 13.288421419471064
-    type "child"
+    class "child"
     data "Name : matthieu, age : 65"
   ]
 
@@ -133,48 +133,62 @@ They are as follow :
     source 0
     target 2
     key 0
-    type "professional"
+    class "professional"
     data "Knowing since : 23 years"
   ]
   edge [
     source 0
     target 2
     key 1
-    type "professional"
+    class "professional"
     data "Knowing since : 23 years"
   ]
   edge [
     source 0
     target 11
     key 0
-    type "nan"
+    class "nan"
     data "Knowing since : 9 years"
   ]
   edge [
     source 0
     target 11
     key 1
-    type "friend"
+    class "friend"
     data "Knowing since : 9 years"
   ]
   edge [
     source 0
     target 6
     key 0
-    type "family"
+    class "family"
     data "Knowing since : 9 years"
   ]
   edge [
     source 0
     target 10
     key 0
-    type "family"
+    class "family"
     data "Knowing since : 9 years"
   ]
   ...
   ]
     ```
+## Usage of each keyword
+* **Data** is a string that is only used to display information about the nodes or edges when clicked on.
+* **Class** is a string and correspond to the class of each node/edge
 
+  * For an edge:
+    * **Key** are auto generated in gml files and not used in my program
+    * **Source** the beginning node of the link
+    * **Target** the end node of the link
+  
+  * For a node:
+    * **id** is the identifier of the node
+    * **positionX** is the position of the node along x axis
+    * **positionY** is the position of the node along y axis
+    * **feature** is a numeric representation of the attribute of the node pre computed by the user (this will be used to train the model, if the option is choosed, and make some prediction on node classification)
+    
 ## Files dependencies
 ```mermaid
   graph TD;
