@@ -200,16 +200,16 @@ They are as follow :
 ## Files dependencies
 ```mermaid
   graph TD;
-      Visualization.py-->CreateElements.py;
-      CreateElements.py-->ControlPanel.py;
-      CreateElements.py-->ColorMap.py;
-      CreateElements.py-->CytoView.py;
-      CreateElements.py-->FileConvert.py;
-      CreateElements.py-->MachineLearning.py;
-      MachineLearning.py-->my_dataset.py;
-      MachineLearning.py-->model.py;
-      CytoView.py-->Stylesheet.py;
-      CytoView.py-->NodeLayout.py;
+      Visualization.py---CreateElements.py;
+      CreateElements.py---ControlPanel.py;
+      CreateElements.py---ColorMap.py;
+      CreateElements.py---CytoView.py;
+      CreateElements.py---FileConvert.py;
+      CreateElements.py---MachineLearning.py;
+      MachineLearning.py---my_dataset.py;
+      MachineLearning.py---model.py;
+      CytoView.py---Stylesheet.py;
+      CytoView.py---NodeLayout.py;
 ```
 
 ### Color Map file
