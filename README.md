@@ -26,6 +26,9 @@ Also the ControlPanel is delimited by the blue rectangle.
     │   │   ├── favicon.ico       
     │   │   ├── reset.css  
     └── README.md
+
+# Instalation process
+I manually changed one file to be able to control wheel sensitivity the process is described there (https://github.com/plotly/dash-cytoscape/compare/wheel-sensitivity-feature)
 ## Input files format
 They are as follow :
 
