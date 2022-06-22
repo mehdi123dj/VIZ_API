@@ -14,14 +14,19 @@ Also the ControlPanel is delimited by the blue rectangle.
 ## File Tree Structure
 
     ├── Visualization                    
-    │   ├── ColorMap.py           # Part repsonsible to create adequate color mapping for nodes and edges legend
-    │   ├── ControlPanel.py       # Part design to control the creation of the legend and export navigation bar with cytoscape layout
-    │   ├── CreateElements.py     # Create the different pages (home and visualization) 
-    │   ├── CytoView.py           # Create and update the graph interactive part
-    │   ├── NodeLayout.py         # Define the position and size of nodes reagrding to their degree and initial given position
-    │   ├── Stylesheet.py         # Register all the possible stylesheet for nodes and edges regarding their state
-    │   ├── Visualization.py      # Define the server and theme use for all the pages
-    │   ├── FileConvert.py 
+    │   ├── ColorMap.py             # Part repsonsible to create adequate color mapping for nodes and edges legend
+    │   ├── ControlPanel.py         # Part design to control the creation of the legend and export navigation bar with cytoscape layout
+    │   ├── CreateElements.py       # Create the different pages (home and visualization) 
+    │   ├── CytoView.py             # Create and update the graph interactive part
+    │   ├── NodeLayout.py           # Define the position and size of nodes reagrding to their degree and initial given position
+    │   ├── Stylesheet.py           # Register all the possible stylesheet for nodes and edges regarding their state
+    │   ├── Visualization.py        # Define the server and theme use for all the pages
+    │   ├── FileConvert.py          # Convert the csv/xls or gml file into dataframe and dcc.store objects
+    │   ├── ML_scripts
+    │   │   ├── MachineLearning.py  # Create a class that is launching the creation of the dataset, train the model and give the results on test set for the graph to be shown properly
+    │   │   ├── my_dataset.py       # Creation of a pytorch geometric dataset from the data saved in dcc.Store objects
+    │   │   ├── train.py            # 
+    │   │   ├── model.py            #
     │   ├── assets
     │   │   ├── favicon.ico       
     │   │   ├── reset.css  
@@ -200,6 +205,9 @@ They are as follow :
       CreateElements.py-->ColorMap.py;
       CreateElements.py-->CytoView.py;
       CreateElements.py-->FileConvert.py;
+      CreateElements.py-->MachineLearning.py;
+      MachineLearning.py-->my_dataset.py;
+      MachineLearning.py-->model.py;
       CytoView.py-->Stylesheet.py;
       CytoView.py-->NodeLayout.py;
 ```
