@@ -22,28 +22,32 @@ class create_CSV():
         df_edges=pd.DataFrame()
         positionX=[]
         positionY=[]
-        e_type=['famille','ami','professionnel','ama','ked','dee','adzd','adaez','asd']
-        n_type=['enfant','adolescent','adulte']
+        e_class=['family','friend','professional']
+        n_class=['child','teenager','adult']
         
         
-        N_type=[]
+        N_class=[]
         N_data=self.randomize_node(self.nb_nodes)
         for i in range(self.nb_nodes):
             positionX.append(random.uniform(-100, 100))
             positionY.append(random.uniform(-100, 100))
-            N_type.append(random.choice(n_type))
+            N_class.append(random.choice(n_class))
+            
             
         U=list(range(self.nb_nodes))
+        N_feature=self.randomize_feature(N_class, self.nb_nodes)
+        
         df_nodes["id"]=U
         df_nodes['positionX']=positionX
         df_nodes['positionY']=positionY
-        df_nodes['type']=N_type
+        df_nodes['class']=N_class
         df_nodes['data']=N_data
+        df_nodes['feature']=N_feature
         
-        df_nodes.to_csv('../data/TestNodes5.csv',index=False)
+        df_nodes.to_csv('../data/TestNodes7.csv',index=False)
         
         source=[]
-        E_type=[]
+        E_class=[]
         destination=[]
         E_data=self.randomize_edge(self.nb_edges)
         for i in range(self.nb_edges):
@@ -54,23 +58,50 @@ class create_CSV():
             else :
                 source.append(h[0])
                 destination.append(h[1])
-                E_type.append(random.choice(e_type))
+                E_class.append(random.choice(e_class))
                 M.append(h)
+
 
         df_edges["source"]=source
         df_edges['target']=destination
-        df_edges['type']=E_type
+        df_edges['class']=E_class
         df_edges['data']=E_data
         
-        df_edges.to_csv('../data/TestLinks5.csv',index=False)
+        df_edges.to_csv('../data/TestLinks7.csv',index=False)
+        
+        # print(df_edges["source"])
         
         G=nx.MultiGraph()
+        
+       
+        df_nodes = df_nodes.applymap(lambda x: str(x) if type(x)==list else x)
+        # print(type(df_nodes["feature"][0]))
+        node_attr = df_nodes.set_index('id').to_dict('index')
+        G.add_nodes_from(df_nodes["id"])
+        nx.set_node_attributes(G, node_attr)
+        
+        # print(node_attr)
+        
+        
+        L=list(zip(df_edges["source"],df_edges["target"]))
+        R=[]
+        for i in range(len(L)):
+            u=(L[i][0],L[i][1],0)
+            while u in R:
+                u=(L[i][0],L[i][1],u[2]+1)
+            R.append(u)
 
-        for i in range(self.nb_nodes):
-            G.add_node(i,positionX=positionX[i],positionY=positionY[i],type=N_type[i],data=N_data[i])
-        for i in range(self.nb_edges):
-            G.add_edge(source[i],destination[i],type=E_type[i],data=E_data[i])
-        nx.write_gml(G,'../data/Test5.gml')
+        G.add_edges_from(R)
+        df_edges["ind"]=R
+        df_edges.set_index("ind",inplace=True)
+        edge_attr = df_edges.to_dict("index")
+
+        nx.set_edge_attributes(G, edge_attr)
+        
+        # print(G.edges(data=True))
+        
+        # print(G.nodes(data=True))
+        nx.write_gml(G,'../data/Test7.gml')
         
     def randomize_node(self,size):
         
@@ -80,7 +111,7 @@ class create_CSV():
         L=[]
         for i in range(size):
             
-            sentence="Je m'appelle : "+random.choice(nom)+" et j'ai "+str(random.choice(age))+" ans"
+            sentence="Name : "+random.choice(nom)+", age : "+str(random.choice(age))
             L.append(sentence)
         return L
         
@@ -90,6 +121,23 @@ class create_CSV():
         L=[]
         for i in range(size):
             
-            sentence="On se connait depuis : "+str(random.choice(temps))
+            sentence="Knowing since : "+str(random.choice(temps))+" years"
             L.append(sentence)
         return L
+    
+    def randomize_feature(self,N_class,size):
+        L=list(set(N_class))
+        M=dict()
+        n=len(L)
+        
+        for i in range(1,n+1):
+            M[L[i-1]]=[(100/n)*(i-1),(100/n)*(i)]
+        
+        feat=[]
+        for i in range(size):
+            feat.append([random.uniform(M[N_class[i]][0],M[N_class[i]][1]),random.uniform(M[N_class[i]][0],M[N_class[i]][1]),random.uniform(M[N_class[i]][0],M[N_class[i]][1])])
+            
+        return feat
+    
+
+

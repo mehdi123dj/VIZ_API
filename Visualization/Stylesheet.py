@@ -12,6 +12,7 @@ class Stylesheet():
         self.default_stylesheet=[]
         
     def stylesheet_default(self,exterior_stylesheet):
+        width_default_edges=13
         stylesheet=[
                 {
                     "selector": 'node',
@@ -26,7 +27,7 @@ class Stylesheet():
                     "selector": 'edge',
                     'style': {
                         "curve-style": "bezier",
-                        "width":13,
+                        "width":width_default_edges,
                         "opacity": 0.8,
                         'z-index': 3
                     }
@@ -47,7 +48,8 @@ class Stylesheet():
                 {
                     'selector': 'edge:selected',
                     "style": {
-                        'width':15,
+                        "curve-style": "bezier",
+                        'width':width_default_edges*3,
                         "opacity": 1,
                     }
                 }

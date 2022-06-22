@@ -31,14 +31,14 @@ class CytoView():
         
         G=[]
         for elem in data_edges:
-            if 'type' in elem:
+            if 'class' in elem:
                 G.append({
                     'data':{
                     'perso':'e'+str(data_edges.index(elem)),
                     'source': 'n'+str(elem['source']), 
                     'target': 'n'+str(elem['target']),
                     'data': str(elem.get('data'))},
-                    'classes': elem['type']
+                    'classes': elem['class']
                     })
             else:
                 G.append({
@@ -50,19 +50,18 @@ class CytoView():
                     })
         
         degree=NodeLayout.degree(data_edges,len(data_nodes))
-        print(degree)
         data_n=NodeLayout.normalisation(data_nodes)
         size=NodeLayout.node_size(degree)
         for elem in data_n:
-            if 'type'in elem:
-                # print(elem)
+            if 'class'in elem:
+
                 G.append({
                     'data':{'id': 'n'+str(elem['id']),
                             'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
                             'size':size[elem['id']],
                             'data': str(elem.get('data'))
                             },
-                    'classes': elem['type'],
+                    'classes': elem['class'],
                     'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
                     'grabbable': False
                     })
@@ -106,7 +105,7 @@ class CytoView():
                                 # 'fit':True},
                         elements=G,
                         stylesheet=self.Stylesheet.default_stylesheet,
-                        style={'width': '100%', 'height': '83vh','position': 'absolute','top':'0px',
+                        style={'width': '100%', 'height': '86.5vh','position': 'absolute','top':'0px',
                                 'left':'0px','z-index': '999'},
                         minZoom=0.01,
                         maxZoom=10,
@@ -121,7 +120,7 @@ class CytoView():
     
                         html.Button('Reset View', id='bt-reset-view',style={'position':'absolute','z-index':'10000','right':'1em','top':'1em'}),
                         html.Button('Reset Stylesheet', id='bt-reset-stylesheet',style={'position':'absolute','z-index':'10000','right':'1em','top':'3em'}),
-                        
+                        html.H6(id='output-learning',style={'position':'absolute','z-index':'10000','right':'1em','top':'5em'})
                     ],
                 id='cytoscape-elements',
                 style={'position': 'relative','z-index': '100'},
@@ -142,8 +141,8 @@ class CytoView():
         @app.callback(Output('cytoscape', 'elements'),
         Input('bt-reset-view', 'n_clicks'),
         Input('visualization', 'style'),
-        Input({"index": ALL,"type": "edge_legend","label":ALL}, "style"),
-        Input({"index": ALL,"type": "node_legend","label":ALL}, "style"))
+        Input({"index": ALL,"class": "edge_legend","label":ALL}, "style"),
+        Input({"index": ALL,"class": "node_legend","label":ALL}, "style"))
         def reset_layout_view(n_clicks,path,n_style,e_style):
             triggered = dash.callback_context.triggered[0]['prop_id'].split('.')
             if triggered==None:
@@ -172,8 +171,6 @@ class CytoView():
                 return self.Stylesheet.default_stylesheet
             
             self.Stylesheet.stylesheet_on_click(node,switch)
-            
-            
             
             return  self.Stylesheet.stylesheet
         

@@ -16,8 +16,8 @@ class ControlPanel():
     def __init__(self):
         self.styles={
             'tab': {
-                'height': '77vh',
-                'maxHeight': '77vh',
+                'height': '78.5vh',
+                'maxHeight': '78.5vh',
                 'overflow-y': 'scroll',
                 'background-color':'#c7c7c7',
                 'padding':'2%'
@@ -32,7 +32,7 @@ class ControlPanel():
             self.hash_node[elem[1]]={"selected":1,"data":[]}
         if self.hash_node!={}:
             for elem in data_nodes:
-                self.hash_node[elem["type"]]["data"]=self.hash_node[elem["type"]]["data"]+[elem["id"]]
+                self.hash_node[elem["class"]]["data"]=self.hash_node[elem["class"]]["data"]+[elem["id"]]
 
         
         self.hash_edge={}
@@ -41,21 +41,21 @@ class ControlPanel():
         if self.hash_edge!={}:
             c=0
             for elem in data_edges:
-                self.hash_edge[elem["type"]]["data"]=self.hash_edge[elem["type"]]["data"]+[c]
+                self.hash_edge[elem["class"]]["data"]=self.hash_edge[elem["class"]]["data"]+[c]
                 c+=1
 
         
         self.mask_edge=[1 for elem in data_edges]
         self.mask_node=[1 for elem in data_nodes]
         
-        self.E=[html.Div(id={'type':'edge_legend','index': edge_legend.index(elem),'label':elem[1]},
+        self.E=[html.Div(id={'class':'edge_legend','index': edge_legend.index(elem),'label':elem[1]},
             children=[
             html.Div([html.P(elem[1],style={'text-overflow': 'ellipsis'})],
                      style={'width':'59%','height':'2em','display':'inline-flex','align-items': 'center','justify-content': 'center'}),
             html.Div(style={'width':'40%','height':'2em','display':'inline-block','background-color':elem[0]})
             ]) for elem in edge_legend]
         
-        self.N=[html.Div(id={'type':'node_legend','index': node_legend.index(elem),'label':elem[1]},
+        self.N=[html.Div(id={'class':'node_legend','index': node_legend.index(elem),'label':elem[1]},
             children=[
             html.Div([html.P(elem[1],style={'text-overflow': 'ellipsis'})],
                      style={'width':'59%','height':'2em','display':'inline-flex','align-items': 'center','justify-content': 'center'}),
@@ -164,8 +164,8 @@ class ControlPanel():
         #TODO : If we click rapidly on multiple links callbacks will be fired before the 
         # one before had finished
         @app.callback(
-            Output({"index": MATCH,"type": "edge_legend","label":MATCH}, "style"),
-            Input({"index": MATCH,"type": "edge_legend","label":MATCH}, "n_clicks"),
+            Output({"index": MATCH,"class": "edge_legend","label":MATCH}, "style"),
+            Input({"index": MATCH,"class": "edge_legend","label":MATCH}, "n_clicks"),
             State('stored-data-edges','data'),
         )
         def edge_selection(n,data_edge):
@@ -196,8 +196,8 @@ class ControlPanel():
         # one before had finished
     
         @app.callback(
-            Output({"index": MATCH,"type": "node_legend","label":MATCH}, "style"),
-            Input({"index": MATCH,"type": "node_legend","label":MATCH}, "n_clicks"),
+            Output({"index": MATCH,"class": "node_legend","label":MATCH}, "style"),
+            Input({"index": MATCH,"class": "node_legend","label":MATCH}, "n_clicks"),
             State('stored-data-edges','data'),
         )
         def node_selction(n,data_edge):
@@ -216,8 +216,8 @@ class ControlPanel():
                 for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
 
                     for ind in D.index[D["target"]==i]:
-                        if 'type' in D:
-                            if self.hash_edge[D['type'].iloc[ind]]["selected"]==1 and n_mask_node[D["source"][ind]]==1:
+                        if 'class' in D:
+                            if self.hash_edge[D['class'].iloc[ind]]["selected"]==1 and n_mask_node[D["source"][ind]]==1:
     
                                 n_mask_edge[ind]=1
                         else:
@@ -226,8 +226,8 @@ class ControlPanel():
 
 
                     for ind in D.index[D["source"]==i]:
-                        if 'type' in D:
-                            if self.hash_edge[D['type'].iloc[ind]]["selected"]==1 and n_mask_node[D["target"][ind]]==1:
+                        if 'class' in D:
+                            if self.hash_edge[D['class'].iloc[ind]]["selected"]==1 and n_mask_node[D["target"][ind]]==1:
                                 n_mask_edge[ind]=1
                         else:
                             if n_mask_node[D["target"][ind]]==1:
