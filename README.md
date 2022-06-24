@@ -27,6 +27,9 @@ Also the ControlPanel is delimited by the blue rectangle.
     │   │   ├── my_dataset.py       # Creation of a pytorch geometric dataset from the data saved in dcc.Store objects
     │   │   ├── train.py            # 
     │   │   ├── model.py            #
+    │   ├── Config
+    │   │   ├── Config.txt          # Config with explicit ref to weblinks
+    │   │   ├── Config.yml
     │   ├── assets
     │   │   ├── favicon.ico       
     │   │   ├── reset.css  
