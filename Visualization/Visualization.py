@@ -7,6 +7,8 @@ Created on Thu Apr 14 09:55:01 2022
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
+import warnings
+import tracemalloc
 
 from CreateElements import CreateElements
 
@@ -26,7 +28,9 @@ app.layout = html.Div(CE())
 CE.get_callbacks(app)
 
 if __name__ == '__main__':
-    app.run_server(debug=False,use_reloader=False)
-    
+    warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
+
+    app.run_server(debug=True,use_reloader=False)
+
 
 

@@ -9,9 +9,11 @@ Created on Thu Jun 16 15:22:22 2022
 import copy
 import pandas as pd
 from ML_scripts.my_dataset import MyDataset
+from ML_scripts.Train import run
+import shutil
+import os
 
-
-data_dir = "./data"
+data_dir = "../data"
 
 class MachineLearning():
     
@@ -21,8 +23,7 @@ class MachineLearning():
         
     def __call__(self):
         self.dataset=MyDataset(self.data_nodes,self.data_edges,data_dir)
-        print(self.dataset[0])
-        print(self.dataset[0].test_mask)
-        print(self.dataset[0].val_mask)
-        print(self.dataset[0].train_mask)
+        learn = run(self.dataset)
+        learn()
+        shutil.rmtree(os.path.join('processed',data_dir))
         

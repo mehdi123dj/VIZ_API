@@ -7,6 +7,7 @@ from torch_geometric.data import Data,InMemoryDataset,download_url, extract_zip
 import pandas as pd
 import random
 import json
+
 import numpy as np
 
 class MyDataset(InMemoryDataset):
@@ -62,23 +63,23 @@ class MyDataset(InMemoryDataset):
 
         
         index = set(index)
-        train = set(random.sample(index,round(n*0.8)))
-        val = set(random.sample(index - train,round(n*0.1)))
+        train = set(random.sample(list(index),round(n*0.8)))
+        val = set(random.sample(list(index - train),round(n*0.1)))
         test = index - train - val
-        Parts=[train,val,test]
+        # Parts=[train,val,test]
         
         
         node_features = torch.tensor(df_features)
-        edge_index = torch.tensor(list(zip(df_edges["source"],df_edges["target"]))).long()
+        edge_index = torch.transpose(torch.tensor(list(zip(df_edges["source"],df_edges["target"]))).long(),1,0)
         train_mask = torch.tensor(df_nodes.index.isin(list(train)))
         val_mask = torch.tensor(df_nodes.index.isin(list(val)))
         test_mask = torch.tensor(df_nodes.index.isin(list(test)))
         y = torch.tensor(df_classes.map(mapping))
+
             
         data = Data(x = node_features,
                     edge_index = edge_index,
                     y = y,
-                    # mapping = torch.tensor(mapping)
                     )
         
 
@@ -113,10 +114,20 @@ class MyDataset(InMemoryDataset):
 
         with open(self.processed_paths[1], 'w') as f:
             json.dump(mapping, f)
-
-
+            
 
     # @property
     # def num_classes(self) -> int:
-    #     return 2
+    #     n=len(set(self.data.y))
+    #     # df_nodes = pd.DataFrame(self.data_nodes)
+    #     # n = len(list(df_nodes['class']).unique())
+    #     print("Number of classes: ",n)
+    #     return n
+    
+    # @property
+    # def num_features(self) -> int:
+    #     # df_nodes = pd.DataFrame(self.data_nodes)
+    #     n = len(self.data.x[0])
+    #     print("Number of feature: ",n)
+    #     return n
 

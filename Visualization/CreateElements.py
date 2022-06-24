@@ -14,7 +14,7 @@ from FileConvert import csv_to_df, gml_to_df
 from ControlPanel import ControlPanel
 from CytoView import CytoView
 from ColorMap import ColorMap
-from MachineLearning import MachineLearning
+from ML_scripts.MachineLearning import MachineLearning
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 import base64
@@ -227,9 +227,9 @@ class CreateElements():
                       Input('bt-learning','on'),
                       State('stored-data-nodes','data'),
                       State('stored-data-edges','data'),
-                      State('choose-node-class','value'),
+
                       )
-        def make_graphs(click,on,data_nodes,data_edges,node_class):
+        def make_graphs(click,on,data_nodes,data_edges):
 
             changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
             print(changed_id)
@@ -241,10 +241,10 @@ class CreateElements():
                 if triggered==None:
                     return dash.no_update
                 else :
-                    # print(data_nodes)
+                    print(data_nodes)
                     ML=MachineLearning(data_nodes,data_edges)
                     ML()
-                    color(data_edges,data_nodes,node_class)
+                    color(data_edges,data_nodes)
                     CP(color.edge_legend,color.node_legend,data_edges,data_nodes)
                     cyto(data_nodes,data_edges,CP)
                     div=html.Div([

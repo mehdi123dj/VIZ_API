@@ -61,49 +61,43 @@ class AML_model(torch.nn.Module):
         self.lin = Linear(out_channels,num_classes)
 
     def forward(self, x, edge_index):
-        # print(x)
+
         X = self.GNN_model(x,edge_index)
         softmax = Softmax(dim=1)
         preds = softmax(self.lin(X))
-
+        # preds = self.lin(X)
         return preds
 
 
-def train(model,train_loader,optimizer,device,):
+def train(model,data,optimizer,device):
+    loss=BCEWithLogitsLoss()
+    data = data.to(device)
+    model.train()
+    optimizer.zero_grad()
+    out  = model(data.x, data.edge_index)
+    loss = loss(out[data.train_mask],data.y[data.train_mask].float())
+    loss.backward()
+    optimizer.step()
 
-    loss_op = BCEWithLogitsLoss()
-    total_loss = 0
-    for data in train_loader : 
-        model.train()
-        optimizer.zero_grad()
-        data = data.to(device)
-        labeled_idx = torch.where(data.y !=2)
-        x_out  = model(data.x, data.edge_index)
+    return float(loss)
 
-        loss = loss_op(x_out[torch.where(data.y !=2)], one_hot(data.y[torch.where(data.y !=2)]).double())
-        total_loss += loss.item() * data.num_graphs
-        loss.backward()
-        optimizer.step()
+def test(model,data,device):
+    data = data.to(device)
+    model.eval()
+    pred = model(data.x, data.edge_index)#.argmax(dim=-1)
+    # print(torch.max(pred,dim=1)[1])
+    # print(pred)
+    pred = one_hot(torch.max(pred,dim=1)[1],num_classes=len(pred[0]))
+    # print(pred)
 
-    return total_loss / len(train_loader.dataset)
+    accs = []
+    for mask in [data.train_mask, data.val_mask, data.test_mask]:
+        # print(pred)
+        # print(data.y[mask])
+        accs.append(int((pred[mask] == data.y[mask]).sum()) / int(mask.sum()))
 
-def test(model,loader,device):
+    # roc_auc = roc_auc_score(y, pred)
+    # recall = recall_score(y,pred)
+    # precision = precision_score(y,pred)
 
-    ys, preds = [], []
-    for data in loader:
-        model.eval()
-        data = data.to(device)
-        labeled_idx = torch.where(data.y !=2)
-
-        x_out = model(data.x, data.edge_index)[labeled_idx]
-
-        preds.append(torch.tensor([x_out[i].argmax().item() for i in range(x_out.shape[0])]))
-        ys.append(data.y[labeled_idx])
-
-    y, pred = torch.cat(ys, dim=0).numpy(), torch.cat(preds, dim=0).numpy()
-
-    roc_auc = roc_auc_score(y, pred)
-    recall = recall_score(y,pred)
-    precision = precision_score(y,pred)
-
-    return roc_auc,recall,precision
+    return accs
