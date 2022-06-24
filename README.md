@@ -28,7 +28,7 @@ Also the ControlPanel is delimited by the blue rectangle.
     │   │   ├── train.py            # 
     │   │   ├── model.py            #
     │   ├── Config
-    │   │   ├── Config.txt          # Config with explicit ref to weblinks
+    │   │   ├── ConfigExplicit.txt          # Config with explicit ref to weblinks
     │   │   ├── Config.yml
     │   ├── assets
     │   │   ├── favicon.ico       
