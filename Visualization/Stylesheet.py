@@ -20,6 +20,7 @@ class Stylesheet():
                         "opacity": 0.9,
                         'width': 'data(size)',
                         'height': 'data(size)',
+                        'border-width' : 'data(border-width)',
                         'z-index': 5
                     }
                 },
@@ -28,7 +29,7 @@ class Stylesheet():
                     'style': {
                         "curve-style": "bezier",
                         "width":width_default_edges,
-                        "opacity": 0.8,
+                        "opacity": 0.5,
                         'z-index': 3
                     }
                 },
@@ -70,7 +71,6 @@ class Stylesheet():
                 'opacity': 0.6,
                 'width': 'data(size)',
                 'height': 'data(size)',
-        
             }
         }, {
             'selector': 'edge',

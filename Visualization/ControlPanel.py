@@ -30,7 +30,7 @@ class ControlPanel():
         self.hash_node={}
         for elem in node_legend:
             self.hash_node[elem[1]]={"selected":1,"data":[]}
-        if self.hash_node!={}:
+        if self.hash_node!={} :
             for elem in data_nodes:
                 self.hash_node[elem["class"]]["data"]=self.hash_node[elem["class"]]["data"]+[elem["id"]]
 
@@ -47,6 +47,8 @@ class ControlPanel():
         
         self.mask_edge=[1 for elem in data_edges]
         self.mask_node=[1 for elem in data_nodes]
+        self.map={data_nodes[i]['id']:i for i in range(len(data_nodes))}
+
         
         self.E=[html.Div(id={'class':'edge_legend','index': edge_legend.index(elem),'label':elem[1]},
             children=[
@@ -161,7 +163,7 @@ class ControlPanel():
         
         
         
-        #TODO : If we click rapidly on multiple links callbacks will be fired before the 
+        # TODO : If we click rapidly on multiple links callbacks will be fired before the 
         # one before had finished
         @app.callback(
             Output({"index": MATCH,"class": "edge_legend","label":MATCH}, "style"),
@@ -177,7 +179,7 @@ class ControlPanel():
             elif n % 2 == 0:
                 new_mask_edge=self.mask_edge
                 for i in self.hash_edge[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
-                    if self.mask_node[data_edge[i]['source']]==1 and self.mask_node[data_edge[i]['target']]==1:
+                    if self.mask_node[self.map[data_edge[i]['source']]]==1 and self.mask_node[self.map[data_edge[i]['target']]]==1:
                         new_mask_edge[i]=1
                 self.hash_edge[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["selected"]=1
                 self.mask_edge=copy.deepcopy(new_mask_edge)
@@ -192,7 +194,7 @@ class ControlPanel():
                 return {'height':'5vh','margin':"2%",'display':'flex','align-items': 'center',"opacity":"0.2"}
     
     
-        #TODO : If we click rapidly on multiple links callbacks will be fired before the 
+        # TODO : If we click rapidly on multiple links callbacks will be fired before the 
         # one before had finished
     
         @app.callback(
@@ -210,27 +212,27 @@ class ControlPanel():
                 n_mask_edge=self.mask_edge
                 D=pd.DataFrame(data_edge)
                 for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
-                    n_mask_node[i]=1
+                    n_mask_node[self.map[i]]=1
                 
 
                 for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
 
                     for ind in D.index[D["target"]==i]:
                         if 'class' in D:
-                            if self.hash_edge[D['class'].iloc[ind]]["selected"]==1 and n_mask_node[D["source"][ind]]==1:
+                            if self.hash_edge[D['class'].iloc[ind]]["selected"]==1 and n_mask_node[self.map[D["source"][ind]]]==1:
     
                                 n_mask_edge[ind]=1
                         else:
-                            if n_mask_node[D["source"][ind]]==1:
+                            if n_mask_node[self.map[D["source"][ind]]]==1:
                                 n_mask_edge[ind]=1
 
 
                     for ind in D.index[D["source"]==i]:
                         if 'class' in D:
-                            if self.hash_edge[D['class'].iloc[ind]]["selected"]==1 and n_mask_node[D["target"][ind]]==1:
+                            if self.hash_edge[D['class'].iloc[ind]]["selected"]==1 and n_mask_node[self.map[D["target"][ind]]]==1:
                                 n_mask_edge[ind]=1
                         else:
-                            if n_mask_node[D["target"][ind]]==1:
+                            if n_mask_node[self.map[D["target"][ind]]]==1:
                                 n_mask_edge[ind]=1
                 self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["selected"]=1
 
@@ -243,7 +245,9 @@ class ControlPanel():
                 n_mask_edge=self.mask_edge
                 D=pd.DataFrame(data_edge)
                 for i in self.hash_node[json.loads(triggered[0]['prop_id'].split('}',)[0]+'}')["label"]]["data"]:
-                    n_mask_node[i]=0
+                    # print(i)
+                    # print(self.map[i])
+                    n_mask_node[self.map[i]]=0
                     for ind in D.index[D["target"]==i]:
                         n_mask_edge[ind]=0
 

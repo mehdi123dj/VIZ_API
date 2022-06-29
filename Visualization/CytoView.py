@@ -54,11 +54,11 @@ class CytoView():
         size=NodeLayout.node_size(degree)
         for elem in data_n:
             if 'class'in elem:
-
                 G.append({
                     'data':{'id': 'n'+str(elem['id']),
                             'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
                             'size':size[elem['id']],
+                            'border-width':size[elem['id']]/100,
                             'data': str(elem.get('data'))
                             },
                     'classes': elem['class'],
@@ -70,6 +70,7 @@ class CytoView():
                     'data':{'id': 'n'+str(elem['id']),
                             'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
                             'size':size[elem['id']],
+                            'border-width':size[elem['id']]/10,
                             'data': str(elem.get('data'))
                             },
                     'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
@@ -87,6 +88,7 @@ class CytoView():
             if CP.mask_edge[i]:
                 G.append(self.G_default[i])
         for j in range(len(CP.mask_node)):
+        # for j in CP.mask_node:
             if CP.mask_node[j]:
                 G.append(self.G_default[i+j+1])
         self.G=copy.deepcopy(G)
@@ -96,47 +98,42 @@ class CytoView():
         G=copy.deepcopy(self.G)
         self.Stylesheet.stylesheet_default(stylesheet)
         return html.Div(
-            html.Div(
-                children=[
-                    html.Div(
-                        cyto.Cytoscape(
-                        id='cytoscape',
-                        layout={'name': 'preset',},
-                                # 'fit':True},
-                        elements=G,
-                        stylesheet=self.Stylesheet.default_stylesheet,
-                        style={'width': '100%', 'height': '86.5vh','position': 'absolute','top':'0px',
-                                'left':'0px','z-index': '999'},
-                        minZoom=0.01,
-                        maxZoom=10,
-                        wheelSensitivity=0.1,
-                        boxSelectionEnabled=True
-                        
-                        ),# responsive=True
-                        style={
-                               'z-index':'100',
-                               'top':'0px',
-                               'left':'0px'}),
+                html.Div(
+                    children=[
+                        html.Div(
+                            cyto.Cytoscape(
+                            id='cytoscape',
+                            layout={'name': 'preset',},
     
-                        html.Button('Reset View', id='bt-reset-view',style={'position':'absolute','z-index':'10000','right':'1em','top':'1em'}),
-                        html.Button('Reset Stylesheet', id='bt-reset-stylesheet',style={'position':'absolute','z-index':'10000','right':'1em','top':'3em'}),
-                        html.H6(id='output-learning',style={'position':'absolute','z-index':'10000','right':'1em','top':'5em'})
-                    ],
-                id='cytoscape-elements',
-                style={'position': 'relative','z-index': '100'},
-                ),
-            style={
-                'position': 'fixed',
-                'width': '80%',
-                'display':'inline-block',
-                'verticalAlign': 'top'
-            }
-                
-            
-                )
+                            elements=G,
+                            stylesheet=self.Stylesheet.default_stylesheet,
+                            style={'width': '100%', 'height': '86.5vh','position': 'absolute','top':'0px',
+                                    'left':'0px','z-index': '999'},
+                            minZoom=0.01,
+                            maxZoom=10,
+                            wheelSensitivity=0.1,
+                            boxSelectionEnabled=True
+                            ),# responsive=True
+                            style={
+                                   'z-index':'100',
+                                   'top':'0px',
+                                   'left':'0px'}),
+        
+                            html.Button('Reset View', id='bt-reset-view',style={'position':'absolute','z-index':'10000','right':'1em','top':'1em'}),
+                            html.Button('Reset Stylesheet', id='bt-reset-stylesheet',style={'position':'absolute','z-index':'10000','right':'1em','top':'3em'}),
+                            html.H6(id='output-learning',style={'position':'absolute','z-index':'10000','right':'1em','top':'5em'})
+                        ],
+                    id='cytoscape-elements',
+                    style={'position': 'relative','z-index': '100'},
+                    ),
+                style={
+                    'position': 'fixed',
+                    'width': '80%',
+                    'display':'inline-block',
+                    'verticalAlign': 'top'
+                })
         
     def get_callbacks(self,app):
-        
 
         @app.callback(Output('cytoscape', 'elements'),
         Input('bt-reset-view', 'n_clicks'),

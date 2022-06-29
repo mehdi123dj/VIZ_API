@@ -8,11 +8,10 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import html
 import warnings
-import tracemalloc
 
 from CreateElements import CreateElements
 
-
+    
 # APP LAYOUT
 
  

@@ -38,7 +38,7 @@ class MyDataset(InMemoryDataset):
     
     @property
     def processed_file_names(self) -> str:
-        return ['data.pt','mapping.json']
+        return ['data.pt','mapping_class.json','mapping_id_node.json']
 
     def process(self):
         # print(self.data_nodes)
@@ -47,11 +47,22 @@ class MyDataset(InMemoryDataset):
         
         df_edges = pd.DataFrame(self.data_edges)[['source','target']]
         
+
+        
+        mapping_id_node={}
+        cnt=0
+        for elem in df_nodes['id']:
+            mapping_id_node[int(elem)]=cnt
+            cnt+=1
+        
+        df_edges=df_edges.applymap(lambda x:mapping_id_node[x])
+
+        
         df_classes = df_nodes["class"]
-        mapping={}
+        mapping_class={}
         cnt=0
         for elem in df_classes.unique():
-            mapping[elem] = cnt
+            mapping_class[elem] = cnt
             cnt+=1
         
         
@@ -74,10 +85,10 @@ class MyDataset(InMemoryDataset):
         train_mask = torch.tensor(df_nodes.index.isin(list(train)))
         val_mask = torch.tensor(df_nodes.index.isin(list(val)))
         test_mask = torch.tensor(df_nodes.index.isin(list(test)))
-        y = torch.tensor(df_classes.map(mapping))
+        y = torch.tensor(df_classes.map(mapping_class))
 
-            
-        data = Data(x = node_features,
+
+        data = Data(x = node_features.float(),
                     edge_index = edge_index,
                     y = y,
                     )
@@ -86,10 +97,9 @@ class MyDataset(InMemoryDataset):
         train_mask,val_mask,test_mask=torch.tensor([False]*n),torch.tensor([False]*n),torch.tensor([False]*n)
         
         
-        for c in range(len(mapping)):
+        for c in range(len(mapping_class)):
             idx = (data.y == c).nonzero(as_tuple=False).view(-1)
-            idx = idx[torch.randperm(idx.size(0))[:round(len(df_nodes.groupby('class').groups[list(mapping.keys())[c]])*0.8)]]
-            print(idx)
+            idx = idx[torch.randperm(idx.size(0))[:round(len(df_nodes.groupby('class').groups[list(mapping_class.keys())[c]])*0.8)]]
             train_mask[idx] = True
     
         remaining = (~train_mask).nonzero(as_tuple=False).view(-1)
@@ -98,10 +108,8 @@ class MyDataset(InMemoryDataset):
     
         num_val=round(n*0.1)
 
-        # data.val_mask.fill_(False)
         val_mask[remaining[:num_val]] = True
     
-        # data.test_mask.fill_(False)
         test_mask[remaining[num_val:]] = True
     
         data.train_mask = train_mask
@@ -113,21 +121,10 @@ class MyDataset(InMemoryDataset):
         torch.save(self.collate([data]), self.processed_paths[0])
 
         with open(self.processed_paths[1], 'w') as f:
-            json.dump(mapping, f)
+            json.dump(mapping_class, f)
+            
+        with open(self.processed_paths[2], 'w') as f:
+            json.dump(mapping_id_node, f)
             
 
-    # @property
-    # def num_classes(self) -> int:
-    #     n=len(set(self.data.y))
-    #     # df_nodes = pd.DataFrame(self.data_nodes)
-    #     # n = len(list(df_nodes['class']).unique())
-    #     print("Number of classes: ",n)
-    #     return n
-    
-    # @property
-    # def num_features(self) -> int:
-    #     # df_nodes = pd.DataFrame(self.data_nodes)
-    #     n = len(self.data.x[0])
-    #     print("Number of feature: ",n)
-    #     return n
 

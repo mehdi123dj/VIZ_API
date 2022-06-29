@@ -6,6 +6,7 @@ from sklearn.metrics import roc_auc_score, recall_score, precision_score
 from torch.nn.functional import one_hot
 import torch 
 import warnings
+from sklearn.metrics import accuracy_score
 warnings.filterwarnings('always') 
 
 
@@ -61,7 +62,6 @@ class AML_model(torch.nn.Module):
         self.lin = Linear(out_channels,num_classes)
 
     def forward(self, x, edge_index):
-
         X = self.GNN_model(x,edge_index)
         softmax = Softmax(dim=1)
         preds = softmax(self.lin(X))
@@ -92,12 +92,15 @@ def test(model,data,device):
 
     accs = []
     for mask in [data.train_mask, data.val_mask, data.test_mask]:
-        # print(pred)
+        # print(mask)
+        # print(mask.sum())
+        # print(pred[mask])
         # print(data.y[mask])
-        accs.append(int((pred[mask] == data.y[mask]).sum()) / int(mask.sum()))
-
+        # print([all(elem) for elem in pred[mask] == data.y[mask]])
+        # accs.append(int(sum(([all(elem) for elem in pred[mask] == data.y[mask]]))) / int(mask.sum()))
+        accs.append(accuracy_score(data.y[mask], pred[mask]))
     # roc_auc = roc_auc_score(y, pred)
     # recall = recall_score(y,pred)
     # precision = precision_score(y,pred)
 
-    return accs
+    return accs, pred[data.test_mask]

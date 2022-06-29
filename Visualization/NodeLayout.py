@@ -19,20 +19,28 @@ def normalisation(data_noeud):
     return data_noeud
 
 def degree(data_edges,L):
-    degree=[0 for i in range(L)]
+    source=[]
+    target=[]
+    for elem in data_edges:
+        source.append(elem["source"])
+        target.append(elem["target"])
+    E=list(set(source).union(target))
+    degree={E[i]:0 for i in range(len(E))}
     for elem in data_edges:
         degree[elem['source']]=degree[elem['source']]+1
         degree[elem['target']]=degree[elem['target']]+1
     return degree
 
+
+
 def node_size(degree):
 
-    size=[]
+    size={key:0 for key in degree.keys()}
     m = 150
-    M = 1000
-    L=np.log(max(degree))
-    for i in range(len(degree)):
-        size.append(m+np.log(degree[i])/L*(M-m))
+    M = 550
+    L=np.log(max(degree.values()))
+    for key in degree:
+        size[key]=(m+np.log(degree[key])/L*(M-m))
     return size
     
     

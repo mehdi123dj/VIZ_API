@@ -38,13 +38,14 @@ def csv_to_df(decoded):
 def gml_to_df(data):
 
     L = nx.parse_gml(data)
-
+    M=[]
+    for elem in L.nodes(data=True):
+        g={'id': elem[0]}
+        g.update(elem[1])
+        M.append(g)
     df_edges = nx.to_pandas_edgelist(L)
-    df_nodes = pd.DataFrame(columns=keys_nodes)    
-    for item in L.nodes(data=True):
-        for elem in item[1].keys():
-            df_nodes.loc[item[0]]=pd.Series(dict({'id':int(item[0])},**item[1]))
-    df_nodes = df_nodes.sort_values(by=['id'])
+    df_nodes = pd.DataFrame.from_records(M)
+    df_nodes =df_nodes[df_nodes.columns.intersection(keys_nodes)]
 
     store_edges = register(df_edges)
     store_nodes = register(df_nodes)
@@ -67,23 +68,23 @@ def register(df):
             store=dcc.Store(id='stored-data-edges', data=df.to_dict('records'))
             return store
     
-        elif 'positionX' and 'positionY' in df :
-            df=df[df.columns[df.columns.isin(keys_nodes)]]
-            if "class" in df:  
+        elif 'id' in df :
+            if "class" in df.columns:  
                 df["class"] = df["class"].map(str)
-            if "data" in df:
+            if "data" in df.columns:
                 df["data"] = df["data"].map(str)
-            if "feature" in df:
+            if "feature" in df.columns:
                 df['feature'] = df['feature'].map(lambda x: list(map(float,x.strip("[]").replace("'","").split(","))))
-            df['positionX'] = df['positionX'].map(float)
-            df['positionY'] = df['positionY'].map(float)
+            if "positionX" and "positionY" in df:
+                df['positionX'] = df['positionX'].map(float)
+                df['positionY'] = df['positionY'].map(float)
             df['id'] = df['id'].map(int)
-            
-
+    
             store=dcc.Store(id='stored-data-nodes', data=df.to_dict('records'))
             return store
         
     except TypeError as e:
         print(e)
         return
+
     
