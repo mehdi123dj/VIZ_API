@@ -93,7 +93,7 @@ class run():
         parser.add_argument(
             "-ne",
             "--number-epochs",
-            default=100,
+            default=200,
             type=int,
         )
     
@@ -101,7 +101,7 @@ class run():
         parser.add_argument(
             "-t",
             "--type",
-            default='SAGE',
+            default='GAT',
             type=str,
         )
     

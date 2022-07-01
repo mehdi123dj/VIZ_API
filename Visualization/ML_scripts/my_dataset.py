@@ -27,15 +27,7 @@ class MyDataset(InMemoryDataset):
         self.data,self.slices = torch.load(self.processed_paths[0])
         
 
-            
-    # @property
-    # def raw_file_names(self) -> List[str]:
-    #     return [
-    #         'elliptic_txs_features.csv',
-    #         'elliptic_txs_edgelist.csv',
-    #         'elliptic_txs_classes.csv',
-    #     ]
-    
+
     @property
     def processed_file_names(self) -> str:
         return ['data.pt','mapping_class.json','mapping_id_node.json']

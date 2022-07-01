@@ -32,7 +32,6 @@ def degree(data_edges,L):
     return degree
 
 
-
 def node_size(degree):
 
     size={key:0 for key in degree.keys()}

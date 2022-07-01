@@ -18,7 +18,9 @@ class ColorMap():
         
         # Color Map for nodes
         n_color={1:['#339975'],
+        # 2:['#85b307', '#e96060'],
         2:['#99336d', '#339975'],
+        # 3:['#85b307', '#e96060', '#999999'],
         3:['#99336d', '#997533', '#339975'],
         4:['#99336d', '#995533', '#8f9933', '#339975'],
         5:['#99336d', '#993d33', '#997533', '#649933', '#339975'],
@@ -98,23 +100,30 @@ class ColorMap():
                     
             for j in range(len(n_predicted_class)):
                 if "wrong" in n_predicted_class[j] and n_predicted_class[j]!='nan':
-                    index = n_real_class.index(n_predicted_class[j].split("wrong_")[1])
+
+                    real_class, wrong_class = n_predicted_class[j].split("wrong_")[1].split('_sep_')
+                    # print(real_class)
+                    # print(wrong_class)
+
+                    index_real = n_real_class.index(real_class)
+                    index_wrong = n_real_class.index(wrong_class)
+                    # print(n_color[c][index_wrong])
                     stylesheet.append({
                         'selector': '.'+str(n_predicted_class[j]),
                         "style": {
-                            "border-color": "#FF0000",
-                            'border-width': 70,
-                            'background-color': n_color[c][index],
+                            'border-color': n_color[c][index_wrong],
+                            'border-width': 'data(borderWidth)',
+                            'background-color': n_color[c][index_real],
                         }
                     })
-                    legend.append([n_color[c][index],str(n_predicted_class[j])])
+                    legend.append([n_color[c][index_real],str(n_predicted_class[j])])
                 elif "true" in n_predicted_class[j] and n_predicted_class[j]!='nan':
                     index = n_real_class.index(n_predicted_class[j].split("true_")[1])
                     stylesheet.append({
                         'selector': '.'+str(n_predicted_class[j]),
                         "style": {
-                            "border-color": "#00FF00",
-                            'border-width': 70,
+                            'border-color': "#00FF00",
+                            'border-width': 'data(borderWidth)',
                             'background-color': n_color[c][index],
                         }
                     })
@@ -122,16 +131,15 @@ class ColorMap():
                 else:
                     legend.append(['#999999',str(n_predicted_class[j])])     
             
-                
+            
             self.node_legend=legend
             self.stylesheet=self.stylesheet+stylesheet
-        
         return self.edge_legend,self.node_legend,self.stylesheet
     
     def edge_stylesheet_legend(self,data_edges):
         
         # Color Map for edges
-        e_color={1:['#3c005d'],
+        e_color={1:['#000000'],
         2:['#9d9e6f', '#3c005d'],
         3:['#9d9e6f', '#b84e55', '#3c005d'],
         4:['#9d9e6f', '#af695e', '#8f3458', '#3c005d'],

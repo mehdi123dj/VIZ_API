@@ -20,7 +20,6 @@ class Stylesheet():
                         "opacity": 0.9,
                         'width': 'data(size)',
                         'height': 'data(size)',
-                        'border-width' : 'data(border-width)',
                         'z-index': 5
                     }
                 },
@@ -28,8 +27,8 @@ class Stylesheet():
                     "selector": 'edge',
                     'style': {
                         "curve-style": "bezier",
-                        "width":width_default_edges,
-                        "opacity": 0.5,
+                        "width": width_default_edges,
+                        "opacity": 0.25,
                         'z-index': 3
                     }
                 },
@@ -50,7 +49,7 @@ class Stylesheet():
                     'selector': 'edge:selected',
                     "style": {
                         "curve-style": "bezier",
-                        'width':width_default_edges*3,
+                        'width': width_default_edges*3,
                         "opacity": 1,
                     }
                 }

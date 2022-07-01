@@ -41,6 +41,7 @@ class CreateElements():
         # Container for nav bar 
         self.dashboard = dbc.NavbarSimple(
             children=[
+                html.Img(src = "assets/favicon.ico", height= "50px",style={'transform': 'translateX(-50%)', 'left': '50%', 'position': 'absolute'}),
                 dbc.NavLink("Home", href="/", active="exact"),
                 dbc.NavLink("Visualization", href="/visualization", active="exact")
                 ],
@@ -73,7 +74,46 @@ class CreateElements():
                     # Allow multiple files to be uploaded
                     multiple=True
                 ),
-                html.Div(id='output-datatable')
+                html.Div(
+                    children=[
+                        dcc.Store(id='stored-data-edges', data={}),
+                        dcc.Store(id='stored-data-nodes',data={}),
+                        html.Div(id='output-datatable'
+                            ),
+                        html.Div(
+                            children=[    
+                                html.Div(
+                                    children=[
+                                        html.H6("Calculate position :",style={'display':'inline-block','vertical-align':'middle'}),
+                                        daq.BooleanSwitch(id='bt-position',on=False,style={'display':'inline-block','position':'relative','margin-left':'2px','margin-right':'20px'}),
+                                        ],
+                                    id='position',
+                                    style={'display':'none'}),
+                                
+                                html.Div(
+                                    children=[
+                                        html.H6("Directed graph :",style={'display':'inline-block','vertical-align':'middle'}),
+                                        daq.BooleanSwitch(id='bt-oriented',on=False,style={'display':'inline-block','position':'relative','margin-left':'2px','margin-right':'20px'}),
+                                        ],
+                                    id='oriented',
+                                    style={'display':'none'}),
+                                
+                                html.Div(
+                                    children=[
+                                        html.H6("Learn Graph node classification :",style={'display':'inline-block','vertical-align':'middle','margin-left':'20px'}),
+                                        daq.BooleanSwitch(id='bt-learning',on=False,style={'display':'inline-block','position':'relative','margin-left':'2px'})
+                                        ],
+                                    id='learning',
+                                    style={'display':'none'})
+                                ],style={'textAlign': 'center','margin':'1em'}),
+                        
+                        html.Div(
+                            children = [
+                                html.Button('Launch Learning',id='bt-learning-launch',style={'position':'relative'})
+                                        ],
+                            style={'textAlign': 'center','margin':'1em'}),
+                        ],
+                    )
             ],
             id="home",style={'display':'none'})
         
@@ -111,9 +151,9 @@ class CreateElements():
                     'There was an error processing this file.'
                 ])
             
-            def out(store):
-                df=pd.DataFrame.from_dict(store.data)
-                return df,html.Div([
+            def out(data):
+                df=pd.DataFrame(data)
+                return html.Div([
                     html.H5(filename),
                     html.H6(datetime.datetime.fromtimestamp(date)),
                     dash_table.DataTable(
@@ -128,22 +168,27 @@ class CreateElements():
                         style_table={'overflowX': 'auto'},
                         page_size=10
                     ),
-                    store
                 ],style={'width': '48%','display':'inline-block','margin':'1%'})
             
             if u==True:
                 for elem in L[0]:
-                    df_temp,div=out(elem[0])
-                    if 'id' in df_temp: #check if it is the dataframe concerning the nodes
-                        df=df_temp
+                    div=out(elem[0])
+                    if 'id' in elem[0][0]: #check if it is the dataframe concerning the nodes
+                        computable="feature" in elem[0][0] and "class" in elem[0][0]
+                        data_nodes=elem[0]
+                    else:
+                        data_edges=elem[0]
                     M.append(div)           
 
             else:
-                df_temp,div=out(L[0])
-                if 'id' in df_temp: #check if it is the dataframe concerning the nodes
-                    df=df_temp
+                div=out(L[0])
+                if 'id' in L[0][0]: #check if it is the dataframe concerning the nodes
+                    computable="feature" in L[0][0] and "class" in L[0][0]
+                    data_nodes=L[0]
+                else:
+                    data_edges=L[0]
                 M.append(div)
-        return df,M
+        return computable,M,data_nodes,data_edges
 
     def generate_display_tab(self,tab):
         
@@ -167,60 +212,36 @@ class CreateElements():
 
 
         @app.callback(Output('output-datatable', 'children'),
+                      Output('position', 'style'),
+                      Output('learning', 'style'),
+                      Output('oriented', 'style'),
+                      Output('stored-data-nodes', 'data'),
+                      Output('stored-data-edges', 'data'),
                       Input('upload-data', 'contents'),
                       State('upload-data', 'filename'),
                       State('upload-data', 'last_modified'))
         def update_output(list_of_contents, list_of_names, list_of_dates):
             if list_of_contents is not None:
-                df,children = self.parse_contents(list_of_contents, list_of_names, list_of_dates)#(c, n, d) for c, n, d in  zip(list_of_contents, list_of_names, list_of_dates)
-                if "feature" in df and "class" in df:
-                    L = list(df['class'].unique())
-                    L = [elem for elem in L if elem!='nan']
-                    children.append(html.Div(
-                                        children=[                
-                                            html.H6("Calculate position :",style={'display':'inline-block','vertical-align':'middle'}),
-                                            daq.BooleanSwitch(id='bt-position', on=False,style={'display':'inline-block','position':'relative','margin-left':'2px','margin-right':'20px'}),
-                                            html.H6("Directed graph :",style={'display':'inline-block','vertical-align':'middle'}),
-                                            daq.BooleanSwitch(id='bt-oriented', on=False,style={'display':'inline-block','position':'relative','margin-left':'2px','margin-right':'20px'}),         
-                                            html.H6("Learn Graph node classification :",style={'display':'inline-block','vertical-align':'middle','margin-left':'20px'}),
-                                            daq.BooleanSwitch(id='bt-learning', on=False,style={'display':'inline-block','position':'relative','margin-left':'2px'})
-                                            ],style={'textAlign': 'center','margin':'1em'}))
-                    children.append(html.Div(
-                        children = [
-                                    html.Button('Launch Learning',id='bt-learning-launch',style={'display':'inline-block','position':'relative'})
-                                    ],
-                        style={'textAlign': 'center','margin':'1em','display':'none'},
-                        id='choice-learning-div'))
-                    return children
+                computable,children,data_nodes,data_edges = self.parse_contents(list_of_contents, list_of_names, list_of_dates)#(c, n, d) for c, n, d in  zip(list_of_contents, list_of_names, list_of_dates)
+                if computable:
+                    return [children,{'display':'inline-block'},{'display':'inline-block'},{'display':'inline-block'},data_nodes,data_edges]
                 else :
-                    children.append(html.Div(
-                                        children=[              
-                                            html.H6("Calculate position :",style={'display':'none','vertical-align':'middle'}),
-                                            daq.BooleanSwitch(id='bt-position', on=False,style={'display':'none','position':'relative','margin-left':'2px','margin-right':'20px'}),
-                                            html.H6("Directed graph :",style={'display':'inline-block','vertical-align':'middle'}),
-                                            daq.BooleanSwitch(id='bt-oriented', on=False,style={'display':'inline-block','position':'relative','margin-left':'2px','margin-right':'20px'}),
-                                            html.H6("Learn Graph node classification :",style={'display':'none','vertical-align':'middle','margin-left':'20px'}),
-                                            daq.BooleanSwitch(id='bt-learning', on=False,style={'display':'none','position':'relative','margin-left':'2px'})
-                                            ],style={'textAlign': 'center','margin':'1em'}))
-                    children.append(html.Div(
-                        children = [
-                                    html.Button('Launch Learning',id='bt-learning-launch',style={'display':'inline-block','position':'relative'})
-                                    ],
-                        style={'textAlign': 'center','margin':'1em','display':'none'},
-                        id='choice-learning-div'))
-                    return children
+                    return [children,{'display':'none'},{'display':'none'},{'display':'inline-block'},data_nodes,data_edges]
+            else:
+                return [dash.no_update,{'display':'none'},{'display':'none'},{'display':'none'},dash.no_update,dash.no_update]
                       
         
         @app.callback(
-            Output('choice-learning-div', 'style'),
+            Output('bt-learning-launch', 'style'),
             Input('bt-learning', 'on'),
         )
         def is_visible_radioItems(on):
+
             x = "{}".format(on)
             if  x == "True":
-                return {'textAlign': 'center','margin':'1em',}
+                return {'position':'relative'}
             else:
-                return {'textAlign': 'center','margin':'1em','display':'none'}
+                return {'display':'none','position':'relative'}
             
             
         @app.callback(Output('visualization', 'children'),
@@ -233,7 +254,6 @@ class CreateElements():
                       )
         def make_graphs(click,bt_learn,bt_pos,child,data_nodes,data_edges):
             changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-            # print(changed_id)
             color=ColorMap()
             triggered = dash.callback_context.triggered[0]['prop_id'].split('.')
 
@@ -272,7 +292,11 @@ class CreateElements():
             else :
                 x = "{}".format(bt_learn)
                 if x == "False":
-                    if 'positionX' and 'positionY' in data_nodes[0]:
+                    if data_nodes=={}:
+                        return html.Div([
+                            html.H6("Not any data uploaded")
+                            ])
+                    elif 'positionX' and 'positionY' in data_nodes[0]:
                         color(data_edges,data_nodes)
                         CP(color.edge_legend,color.node_legend,data_edges,data_nodes)
                         cyto(data_nodes,data_edges,CP)

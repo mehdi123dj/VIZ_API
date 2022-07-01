@@ -58,7 +58,7 @@ class CytoView():
                     'data':{'id': 'n'+str(elem['id']),
                             'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
                             'size':size[elem['id']],
-                            'border-width':size[elem['id']]/100,
+                            'borderWidth':size[elem['id']]/10,
                             'data': str(elem.get('data'))
                             },
                     'classes': elem['class'],
@@ -70,7 +70,7 @@ class CytoView():
                     'data':{'id': 'n'+str(elem['id']),
                             'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
                             'size':size[elem['id']],
-                            'border-width':size[elem['id']]/10,
+                            'borderWidth':size[elem['id']]/10,
                             'data': str(elem.get('data'))
                             },
                     'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},

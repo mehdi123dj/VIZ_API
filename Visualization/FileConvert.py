@@ -29,11 +29,12 @@ import copy
 keys_nodes=['id','positionX','positionY','class','data','feature']
 keys_edges=['source','target','class','data']
 
+
 def csv_to_df(decoded):
 
     df = pd.read_csv(io.StringIO(decoded))
-    store = register(df)
-    return store
+    data = register(df)
+    return data
     
 def gml_to_df(data):
 
@@ -47,10 +48,10 @@ def gml_to_df(data):
     df_nodes = pd.DataFrame.from_records(M)
     df_nodes =df_nodes[df_nodes.columns.intersection(keys_nodes)]
 
-    store_edges = register(df_edges)
-    store_nodes = register(df_nodes)
+    data_edges = register(df_edges)
+    data_nodes = register(df_nodes)
     
-    return [store_edges],[store_nodes]
+    return [data_edges],[data_nodes]
     
 
 # transform df to store dcc object to be registered in the server
@@ -65,8 +66,9 @@ def register(df):
                 df["data"] = df["data"].map(str)
             df["target"] = df["target"].map(int)
             df["source"] = df["source"].map(int)
-            store=dcc.Store(id='stored-data-edges', data=df.to_dict('records'))
-            return store
+            # store=dcc.Store(id='stored-data-edges', data=df.to_dict('records'))
+            data=df.to_dict('records')
+            return data
     
         elif 'id' in df :
             if "class" in df.columns:  
@@ -80,8 +82,9 @@ def register(df):
                 df['positionY'] = df['positionY'].map(float)
             df['id'] = df['id'].map(int)
     
-            store=dcc.Store(id='stored-data-nodes', data=df.to_dict('records'))
-            return store
+            # store=dcc.Store(id='stored-data-nodes', data=df.to_dict('records'))
+            data=df.to_dict('records')
+            return data
         
     except TypeError as e:
         print(e)

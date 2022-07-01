@@ -26,13 +26,29 @@ class ControlPanel():
 
 
     def __call__(self,edge_legend,node_legend,data_edges,data_nodes):
+        
+        self.node_legend_map={}
+        # Allows to put all the different nodes type of wrong into one wrong button for each class and create the corresponding map
+        for i in range(len(node_legend)):
+            if "wrong" in node_legend[i][1]:
+                real_class = node_legend[i][1].split("wrong_")[1].split('_sep_')[0]
+                self.node_legend_map[node_legend[i][1]]='wrong_'+real_class
+                node_legend[i][1]="wrong_"+real_class
+        
+        node_legend=[list(x) for x in set(tuple(x) for x in node_legend)]
+
 
         self.hash_node={}
         for elem in node_legend:
             self.hash_node[elem[1]]={"selected":1,"data":[]}
         if self.hash_node!={} :
             for elem in data_nodes:
-                self.hash_node[elem["class"]]["data"]=self.hash_node[elem["class"]]["data"]+[elem["id"]]
+                if "wrong" in elem["class"]:
+                    item=self.node_legend_map[elem["class"]]
+                else :
+                    item=elem["class"]
+                self.hash_node[item]["data"]=self.hash_node[item]["data"]+[elem["id"]]
+        
 
         
         self.hash_edge={}
@@ -52,16 +68,16 @@ class ControlPanel():
         
         self.E=[html.Div(id={'class':'edge_legend','index': edge_legend.index(elem),'label':elem[1]},
             children=[
-            html.Div([html.P(elem[1],style={'text-overflow': 'ellipsis'})],
-                     style={'width':'59%','height':'2em','display':'inline-flex','align-items': 'center','justify-content': 'center'}),
-            html.Div(style={'width':'40%','height':'2em','display':'inline-block','background-color':elem[0]})
+            html.Div([html.P(elem[1],style={'text-overflow': 'ellipsis','font-size':'1.6vmin','margin': 'auto'})],
+                     style={'width':'65%','height':'2em','display':'inline-flex','align-items': 'center','text-align':'center'}),
+            html.Div(style={'width':'34%','height':'2em','display':'inline-block','background-color':elem[0]})
             ]) for elem in edge_legend]
         
         self.N=[html.Div(id={'class':'node_legend','index': node_legend.index(elem),'label':elem[1]},
             children=[
-            html.Div([html.P(elem[1],style={'text-overflow': 'ellipsis'})],
-                     style={'width':'59%','height':'2em','display':'inline-flex','align-items': 'center','justify-content': 'center'}),
-            html.Div(style={'width':'40%','height':'2em','display':'inline-block','background-color':elem[0]})
+            html.Div([html.P(elem[1],style={'text-overflow': 'ellipsis','font-size':'1.6vmin','margin': 'auto'})],
+                     style={'width':'65%','height':'2em','display':'inline-flex','align-items': 'center','text-align':'center'}),
+            html.Div(style={'width':'34%','height':'2em','display':'inline-block','background-color':elem[0]})
             ]) for elem in node_legend]
 
     def create_CP(self):
@@ -79,7 +95,6 @@ class ControlPanel():
                                             )
                                         ]
                                     )
-                                    
                                 ],style={'background-color':'#F0F0F0','padding':'3%','margin':'4%'}
                             ),
                             
@@ -90,16 +105,12 @@ class ControlPanel():
                                             html.B(children='Edges legend'),
                                             html.Div(id='edges-legend',
                                                 children=self.E,
-
                                             )
                                         ]
                                     )
-                                    
                                 ],style={'background-color':'#F0F0F0','padding':'3%','margin':'4%'}
-                                    
                             ),
-                            
-                            
+
                             html.Div(
                                 children=[
                                     html.B(children='Clicked element'),
@@ -118,13 +129,14 @@ class ControlPanel():
                         html.Div(style=self.styles['tab'], children=[
                             html.Button("as jpg", id="btn-get-jpg"),
                             html.Button("as png", id="btn-get-png"),
-                            html.Button("as svg", id="btn-get-svg")]
+                            html.Button("as svg", id="btn-get-svg")
+                            ]
                             )
                         ])
                     ]),
                     
                     
-                ],style={'width': '20%','display':'inline-block', 'verticalAlign': 'top'})
+                ],style={'width': '25%','display':'inline-block', 'verticalAlign': 'top'})
     
     
     
@@ -135,8 +147,9 @@ class ControlPanel():
             [
                 Input("btn-get-jpg", "n_clicks"),
                 Input("btn-get-png", "n_clicks"),
-                Input("btn-get-svg", "n_clicks"),
+                Input("btn-get-svg", "n_clicks")
             ])
+        
         def get_image( get_jpg_clicks, get_png_clicks, get_svg_clicks):
         
             
