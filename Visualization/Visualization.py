@@ -17,7 +17,8 @@ from CreateElements import CreateElements
  
 app = dash.Dash(__name__,
                 meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
-                external_stylesheets=[dbc.themes.LUX]
+                external_stylesheets=[dbc.themes.LUX],
+                suppress_callback_exceptions = True
                 )
 
 app.title = 'Datarvest'

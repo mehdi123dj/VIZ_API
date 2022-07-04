@@ -41,7 +41,7 @@ class CreateElements():
         # Container for nav bar 
         self.dashboard = dbc.NavbarSimple(
             children=[
-                html.Img(src = "assets/favicon.ico", height= "50px",style={'transform': 'translateX(-50%)', 'left': '50%', 'position': 'absolute'}),
+                html.Img(src = "assets/favicon.ico", height= "60px",style={'transform': 'translateX(-50%)', 'left': '50%', 'position': 'absolute'}),
                 dbc.NavLink("Home", href="/", active="exact"),
                 dbc.NavLink("Visualization", href="/visualization", active="exact")
                 ],
@@ -193,10 +193,12 @@ class CreateElements():
     def generate_display_tab(self,tab):
         
         def display_tab(pathname):
+            print(pathname)
             if tab == 'home' and (pathname is None or pathname == '/'):
-                return {'display': 'block'}
+                return {}
             elif pathname == '/{}'.format(tab):
-                return {'display': 'block'}
+                print("here")
+                return {}
             else:
                 return {'display': 'none'}
         return display_tab
@@ -205,6 +207,7 @@ class CreateElements():
 
         cyto=CytoView()
         CP=ControlPanel() 
+        color=ColorMap()
         for tab in ['home', 'visualization']:
             app.callback(Output(tab, 'style'), [Input('url', 'pathname')])(
                 self.generate_display_tab(tab)
@@ -253,22 +256,27 @@ class CreateElements():
                       State('stored-data-edges','data'),
                       )
         def make_graphs(click,bt_learn,bt_pos,child,data_nodes,data_edges):
+            
             changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-            color=ColorMap()
+            
             triggered = dash.callback_context.triggered[0]['prop_id'].split('.')
+            print(triggered)
+            print(changed_id)
+
 
             if 'output-datatable' in changed_id:
                 if 'positionX' and 'positionY' in data_nodes[0]:
                     color(data_edges,data_nodes)
                     CP(color.edge_legend,color.node_legend,data_edges,data_nodes)
                     cyto(data_nodes,data_edges,CP)
+                    # return html.H6("blablalbalbalblablalblablba")
                     return html.Div([
                         CP.create_CP(),
                         cyto.create_cyto(color.stylesheet)
                         ])
                 else:
                     return dash.no_update
-            
+            # return dash.no_update
             elif 'bt-learning-launch' in changed_id:
                 if triggered==None:
                     return dash.no_update
