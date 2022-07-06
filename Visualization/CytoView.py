@@ -10,6 +10,7 @@ from dash import html
 import copy
 from Stylesheet import Stylesheet
 import dash_cytoscape as cyto
+import json
 cyto.load_extra_layouts()
 import NodeLayout
 
@@ -49,35 +50,37 @@ class CytoView():
                     'data': str(elem.get('data'))},
                     })
         
-        degree=NodeLayout.degree(data_edges,len(data_nodes))
-        data_n=NodeLayout.normalisation(data_nodes)
-        size=NodeLayout.node_size(degree)
-        for elem in data_n:
-            if 'class'in elem:
-                G.append({
-                    'data':{'id': 'n'+str(elem['id']),
-                            'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
-                            'size':size[elem['id']],
-                            'borderWidth':size[elem['id']]/10,
-                            'data': str(elem.get('data'))
-                            },
-                    'classes': elem['class'],
-                    'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
-                    'grabbable': False
-                    })
-            else :
-                G.append({
-                    'data':{'id': 'n'+str(elem['id']),
-                            'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
-                            'size':size[elem['id']],
-                            'borderWidth':size[elem['id']]/10,
-                            'data': str(elem.get('data'))
-                            },
-                    'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
-                    'grabbable': False
-                    })
+        if data_nodes!={}:
+            degree=NodeLayout.degree(data_edges,len(data_nodes))
+            data_n=NodeLayout.normalisation(data_nodes)
+            size=NodeLayout.node_size(degree)
+            for elem in data_n:
+                if 'class'in elem:
+                    G.append({
+                        'data':{'id': 'n'+str(elem['id']),
+                                'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
+                                'size':size[elem['id']],
+                                'borderWidth':size[elem['id']]/10,
+                                'data': str(elem.get('data'))
+                                },
+                        'classes': elem['class'],
+                        'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
+                        'grabbable': False
+                        })
+                else :
+                    G.append({
+                        'data':{'id': 'n'+str(elem['id']),
+                                'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
+                                'size':size[elem['id']],
+                                'borderWidth':size[elem['id']]/10,
+                                'data': str(elem.get('data'))
+                                },
+                        'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
+                        'grabbable': False
+                        })
         self.G_default=G
         self.G=G
+        self.create_cyto([])
         
     def modif(self):
         #Where G is ordered by default with edges first and nodes second
@@ -97,14 +100,14 @@ class CytoView():
     def create_cyto(self,stylesheet):
         G=copy.deepcopy(self.G)
         self.Stylesheet.stylesheet_default(stylesheet)
+        # print(G)
         return html.Div(
                 html.Div(
                     children=[
                         html.Div(
                             cyto.Cytoscape(
                             id='cytoscape',
-                            layout={'name': 'preset',},
-    
+                            layout={'name': 'preset'},
                             elements=G,
                             stylesheet=self.Stylesheet.default_stylesheet,
                             style={'width': '100%', 'height': '86.5vh','position': 'absolute','top':'0px',
@@ -115,9 +118,9 @@ class CytoView():
                             boxSelectionEnabled=True
                             ),# responsive=True
                             style={
-                                   'z-index':'100',
-                                   'top':'0px',
-                                   'left':'0px'}),
+                                    'z-index':'100',
+                                    'top':'0px',
+                                    'left':'0px'}),
         
                             html.Button('Reset View', id='bt-reset-view',style={'position':'absolute','z-index':'10000','right':'1em','top':'1em'}),
                             html.Button('Reset Stylesheet', id='bt-reset-stylesheet',style={'position':'absolute','z-index':'10000','right':'1em','top':'3em'}),
@@ -128,7 +131,7 @@ class CytoView():
                     ),
                 style={
                     'position': 'fixed',
-                    'width': '80%',
+                    'width': '75%',
                     'display':'inline-block',
                     'verticalAlign': 'top'
                 })
@@ -137,18 +140,22 @@ class CytoView():
 
         @app.callback(Output('cytoscape', 'elements'),
         Input('bt-reset-view', 'n_clicks'),
-        Input('visualization', 'style'),
+        Input('div-visualization', 'style'),
         Input({"index": ALL,"class": "edge_legend","label":ALL}, "style"),
         Input({"index": ALL,"class": "node_legend","label":ALL}, "style"))
         def reset_layout_view(n_clicks,path,n_style,e_style):
-            triggered = dash.callback_context.triggered[0]['prop_id'].split('.')
-            if triggered==None:
-                return dash.no_update
-            elif  triggered[0]=='visualization':
+            
+            changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+            # triggered = dash.callback_context.triggered[0]['value']
+            # print(triggered)
+            print(changed_id)
 
+            if changed_id=='div-visualization':
+                return self.G
+            elif "legend" in changed_id:
+                self.modif()
                 return self.G
             else:
-                self.modif()
                 return self.G
 
         
@@ -157,39 +164,47 @@ class CytoView():
                       Input('cytoscape', 'tapNode'),
                       Input('bt-reset-stylesheet', 'n_clicks'),
                       State('bt-oriented','on'))
-        def generate_stylesheet(node,n_clicks,switch):
+        def generate_stylesheet(node,n_clicks,switch):           
 
+            triggered = dash.callback_context.triggered[0]['value']
             changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
 
             if 'bt-reset-stylesheet' in changed_id:
-                return self.Stylesheet.default_stylesheet
+                    return self.Stylesheet.default_stylesheet
+            else :
+                
+                if triggered==None:
+                    return self.Stylesheet.default_stylesheet
+            
+                else:
 
-            if node==None:
-                return self.Stylesheet.default_stylesheet
-            
-            self.Stylesheet.stylesheet_on_click(node,switch)
-            
-            return  self.Stylesheet.stylesheet
+                    self.Stylesheet.stylesheet_on_click(node,switch)
+                    return self.Stylesheet.stylesheet
         
 
         @app.callback(Output('clicked-element', 'children'),
               Input('cytoscape', 'tapNode'),
               Input('cytoscape', 'tapEdge')
               )
-        def clicked_node_element_info(node,edge):
+        def clicked_element_info(node,edge):
+            triggered = dash.callback_context.triggered[0]['value']
 
-            if node==None and edge==None:
-                output=None
-            elif node==None :
-                output=str(edge["data"])
-            elif edge==None :
-                output=str(node["data"])
-            elif edge["timeStamp"]>node["timeStamp"]:
-                output=str(edge["data"])
-            else:
-                output=str(node["data"])
-            
-            return html.P(output)
+            changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+
+            if triggered == None:
+                return []
+            else :
+                if changed_id=='cytoscape.tapEdge' :
+                    output=edge["data"]
+                else :
+                    output=node["data"]
+                M=[]
+                for elem in output:
+                    M.append(html.P(elem+" : " +str(output[elem]),
+                                    style={'font-size':'1.6vmin'}))
+                return M
+
+
         
         
 

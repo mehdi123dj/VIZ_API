@@ -57,8 +57,9 @@ class ControlPanel():
         if self.hash_edge!={}:
             c=0
             for elem in data_edges:
-                self.hash_edge[elem["class"]]["data"]=self.hash_edge[elem["class"]]["data"]+[c]
-                c+=1
+                if "class" in elem:
+                    self.hash_edge[elem["class"]]["data"]=self.hash_edge[elem["class"]]["data"]+[c]
+                    c+=1
 
         
         self.mask_edge=[1 for elem in data_edges]
@@ -141,7 +142,7 @@ class ControlPanel():
     
     
     def get_callbacks(self,app):    
-        
+        print('control_panel')
         @app.callback(
             Output("cytoscape", "generateImage"),
             [

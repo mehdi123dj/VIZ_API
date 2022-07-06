@@ -146,7 +146,29 @@ class Stylesheet():
                     })
         else:
             for edge in node['edgesData']:
-                if edge['target'] or edge['source'] ==  node['data']['id']:
+                if edge['source'] == node['data']['id']:
+                    stylesheet.append({
+                        "selector": 'node[id = "{}"]'.format(edge['target']),
+                        "style": {
+                            'background-color': following_color,
+                            'opacity': 1,
+                            'width': 'data(size)',
+                            'height': 'data(size)',
+                        }
+                    })
+                    stylesheet.append({
+                        "selector": 'edge[perso= "{}"]'.format(edge['perso']),
+                        "style": {
+                            "mid-target-arrow-color": following_color,
+                            "mid-target-arrow-shape": "vee",
+                            "line-color": following_color,
+                            'width':15,
+                            'opacity': 0.9,
+                            'z-index': 5000
+                        }
+                    })
+            
+                if edge['target'] == node['data']['id']:
                     stylesheet.append({
                         "selector": 'node[id = "{}"]'.format(edge['source']),
                         "style": {
@@ -160,12 +182,15 @@ class Stylesheet():
                     stylesheet.append({
                         "selector": 'edge[perso= "{}"]'.format(edge['perso']),
                         "style": {
+                            "mid-target-arrow-color": following_color,
+                            "mid-target-arrow-shape": "vee",
                             "line-color": following_color,
                             'width':15,
                             'opacity': 0.9,
                             'z-index': 5000
                         }
                     })
+
             
         self.stylesheet=stylesheet
     

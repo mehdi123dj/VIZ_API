@@ -28,7 +28,7 @@ from dash import dash_table
 class CreateElements():
     r"""
     A class that is managing all the interaction between components and windows and return 
-    the all the components and callbacks to the main frame
+    all the components and callbacks to the main frame
     
     Args:
         There is no args all the incoming data are controlled by the dcc.Upload component 
@@ -37,6 +37,9 @@ class CreateElements():
     """
 
     def __init__(self):
+        
+        # Container for the url gestion
+        self.location=dcc.Location(id="url")
         
         # Container for nav bar 
         self.dashboard = dbc.NavbarSimple(
@@ -49,9 +52,6 @@ class CreateElements():
             color="dark",
             dark=True,
             )
-        
-        # Container for the url gestion
-        self.location=dcc.Location(id="url")
         
         # Container for all that would be displayed in the first page
         self.home=html.Div([dcc.Upload(
@@ -78,7 +78,8 @@ class CreateElements():
                     children=[
                         dcc.Store(id='stored-data-edges', data={}),
                         dcc.Store(id='stored-data-nodes',data={}),
-                        html.Div(id='output-datatable'
+                        html.Div(id='output-datatable',
+                                 children=[]
                             ),
                         html.Div(
                             children=[    
@@ -115,10 +116,10 @@ class CreateElements():
                         ],
                     )
             ],
-            id="home",style={'display':'none'})
+            id="div-home",style={'display':'none'})
         
         # Container for the graph visualization page
-        self.visualization=html.Div(id='visualization',style={'display':'none'})
+        self.visualization=html.Div(id='div-visualization',children=[],style={'display':'none'})
 
         
     def __call__(self):
@@ -193,27 +194,36 @@ class CreateElements():
     def generate_display_tab(self,tab):
         
         def display_tab(pathname):
-            print(pathname)
-            if tab == 'home' and (pathname is None or pathname == '/'):
+            # print(pathname is None or pathname == '/')
+            if tab == 'div-home' and (pathname is None or pathname == '/'):
+                print("home, tab :"+str(tab))
+                print(pathname)
                 return {}
-            elif pathname == '/{}'.format(tab):
-                print("here")
+            elif tab == 'div-visualization' and pathname == '/visualization':#{}'.format(tab):
+                print("visu, tab :"+str(tab))
+                print(pathname)
                 return {}
             else:
+                print("else")
                 return {'display': 'none'}
         return display_tab
 
     def get_callbacks(self,app):
 
         cyto=CytoView()
+        
         CP=ControlPanel() 
         color=ColorMap()
-        for tab in ['home', 'visualization']:
+        # cyto({},{},CP)
+        
+        
+        for tab in ['div-home', 'div-visualization']:
             app.callback(Output(tab, 'style'), [Input('url', 'pathname')])(
                 self.generate_display_tab(tab)
             )
 
-
+        
+        
         @app.callback(Output('output-datatable', 'children'),
                       Output('position', 'style'),
                       Output('learning', 'style'),
@@ -227,6 +237,7 @@ class CreateElements():
             if list_of_contents is not None:
                 computable,children,data_nodes,data_edges = self.parse_contents(list_of_contents, list_of_names, list_of_dates)#(c, n, d) for c, n, d in  zip(list_of_contents, list_of_names, list_of_dates)
                 if computable:
+                    print("here")
                     return [children,{'display':'inline-block'},{'display':'inline-block'},{'display':'inline-block'},data_nodes,data_edges]
                 else :
                     return [children,{'display':'none'},{'display':'none'},{'display':'inline-block'},data_nodes,data_edges]
@@ -238,8 +249,8 @@ class CreateElements():
             Output('bt-learning-launch', 'style'),
             Input('bt-learning', 'on'),
         )
-        def is_visible_radioItems(on):
-
+        def is_visible_launchLearningButton(on):
+            
             x = "{}".format(on)
             if  x == "True":
                 return {'position':'relative'}
@@ -247,36 +258,34 @@ class CreateElements():
                 return {'display':'none','position':'relative'}
             
             
-        @app.callback(Output('visualization', 'children'),
+        @app.callback(Output('div-visualization', 'children'),
+                      Input('output-datatable', 'children'),
                       Input('bt-learning-launch', 'n_clicks'),
                       Input('bt-learning','on'),
                       Input('bt-position','on'),
-                      Input('output-datatable', 'children'),
                       State('stored-data-nodes','data'),
                       State('stored-data-edges','data'),
                       )
-        def make_graphs(click,bt_learn,bt_pos,child,data_nodes,data_edges):
-            
+        def make_graphs(child,click,bt_learn,bt_pos,data_nodes,data_edges):
+
             changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
             
-            triggered = dash.callback_context.triggered[0]['prop_id'].split('.')
-            print(triggered)
-            print(changed_id)
-
+            triggered = dash.callback_context.triggered[0]['value']
+            # print(triggered)
+            # print(changed_id)
 
             if 'output-datatable' in changed_id:
                 if 'positionX' and 'positionY' in data_nodes[0]:
                     color(data_edges,data_nodes)
                     CP(color.edge_legend,color.node_legend,data_edges,data_nodes)
                     cyto(data_nodes,data_edges,CP)
-                    # return html.H6("blablalbalbalblablalblablba")
                     return html.Div([
                         CP.create_CP(),
                         cyto.create_cyto(color.stylesheet)
                         ])
                 else:
                     return dash.no_update
-            # return dash.no_update
+
             elif 'bt-learning-launch' in changed_id:
                 if triggered==None:
                     return dash.no_update
