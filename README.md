@@ -1,12 +1,18 @@
 # Visualization
-* Page d'accueil avant le chargement des données
+* Home page before loading of data
 ![Semantic description of image](/ScreenShot/Page_accueil.jpg )
 
-* Page après le chargement des fichiers
+* Home page after loading of data
 ![Semantic description of image](/ScreenShot/Page_accueil_files_loaded.jpg )
 
-* Page de visualisation
+* Home page after loading of data and activation of learn graph node classification option
+![Semantic description of image](/ScreenShot/Page_accueil_files_loaded_learn_node_classification_activated.jpg )
+
+* Visualization page after loading of data
 ![Semantic description of image](/ScreenShot/Visualisation.jpg )
+
+* Visualization page after loading of data with clicked node
+![Semantic description of image](/ScreenShot/Visualisation_clicked_node.jpg )
 
 Here we can see that the CytoView is delimited by the red rectangle excepted the two buttons *Reset view* and *Reset stylesheet* 
 
