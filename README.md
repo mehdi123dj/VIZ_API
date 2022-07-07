@@ -32,7 +32,9 @@ Also the ControlPanel is delimited by the blue rectangle.
     │   │   ├── Config.yml
     │   ├── assets
     │   │   ├── favicon.ico       
-    │   │   ├── reset.css  
+    │   │   ├── reset.css 
+    ├── Dockerfile                 
+    ├── Test_CSV.py                 # File able to create fake examples for testing
     └── README.md
 
 # Instalation process
@@ -40,39 +42,25 @@ I manually changed one file to be able to control wheel sensitivity the process 
 ## Input files format
 They are as follow :
 
-* **CSV and XLS files**
+* **CSV and XLS files** (example with cora file)
 
     * File for edges should have the same header as shown below and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
     ```
-    source,target,class,data
-    16,15,friend,Knowing since : 68 years
-    5,2,friend,
-    11,17,professional,Knowing since : 2 years
-    18,8,friend,Knowing since : 97 years
-    13,5,,Knowing since : 2 years
-    8,18,friend,Knowing since : 35 years
-    0,2,professional,Knowing since : 23 years
-    9,6,family,Knowing since : 9 years
-    6,12,,Knowing since : 9 years
-    1,15,professional,Knowing since : 68 years
-    16,9,professional,Knowing since : 3 years
-    11,4,professional,Knowing since : 68 years
-    19,13,professional,
+    target,source,class
+    35,1033,cites
+    35,103482,cites
+    35,103515,cites
+    35,1050679,cites
     ...
     ```
 
     * File for nodes should have the same header as shown below and registered as csv/xls.You are force to furnish values for the **id**,**positionX**,**positionY** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
     ```
-    id,positionX,positionY,class,data
-    0,-91.13624117479557,-66.76717678700189,child,"Name : fabrice, age : 22"
-    1,-46.73841145000086,98.31243547492073,,
-    2,35.17666039345673,10.373519892509364,child,"Name : matthieu, age : 22"
-    3,8.934336460157127,-90.02082919747694,,"Name : fabrice, age : 48"
-    4,-8.449593591524106,-46.77166171108491,child,"Name : madeleine, age : 65"
-    5,70.49398332611486,80.29494707270953,adult,"Name : fabrice, age : 65"
-    6,54.341204747486245,13.288421419471064,child,
-    7,55.67321134000403,-40.89296087725318,child,"Name : madeleine, age : 48"
-    8,-43.595013960941785,-11.608992182740579,adult,"Name : fabrice, age : 34"
+    feature,class,id,positionX,positionY
+    "[0,..., 1, 0, 0, 0, 0, 0, 0]",Neural_Networks,31336,-6.7792907,-3.7140813
+    "[0,..., 0, 0, 0, 0, 0, 0, 0]",Rule_Learning,1061127,-1.8820779,6.1064944
+    "[0,..., 0, 0, 0, 0, 0, 0, 0]",Reinforcement_Learning,1106406,2.2292302,2.7001865
+    "[0,..., 0, 0, 0, 0, 0, 0, 0]",Reinforcement_Learning,13195,1.684225,-0.4627512
     ...
     ```
 
@@ -211,6 +199,7 @@ They are as follow :
       CreateElements.py---MachineLearning.py;
       MachineLearning.py---my_dataset.py;
       MachineLearning.py---model.py;
+      MachineLearning.py---train.py;
       CytoView.py---Stylesheet.py;
       CytoView.py---NodeLayout.py;
 ```
