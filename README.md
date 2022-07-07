@@ -49,12 +49,12 @@ They are as follow :
     target,source,class
     35,1033,cites
     35,103482,cites
-    35,103515,cites
+    35,103515,
     35,1050679,cites
     ...
     ```
 
-    * File for nodes should have the same header as shown below and registered as csv/xls.You are force to furnish values for the **id**,**positionX**,**positionY** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
+    * File for nodes should have the same header as shown below and registered as csv/xls.You are force to furnish values for the **id** you can also provide values for **positionX**,**positionY**,**feature**, **class** and **data**. <A solution could be to add nothing, just let it empty (as shown below).>
     ```
     feature,class,id,positionX,positionY
     "[0,..., 1, 0, 0, 0, 0, 0, 0]",Neural_Networks,31336,-6.7792907,-3.7140813
@@ -179,8 +179,8 @@ They are as follow :
 
   * For an edge:
     * **Key** are auto generated in gml files and not used in my program
-    * **Source** the beginning node of the link
-    * **Target** the end node of the link
+    * **Source** the beginning node of the link (this is important if you have a directed graph and want to activate the directed graph button that will allow you to see which is incoming our outcoming when clicked on one)
+    * **Target** the end node of the link (this is important if you have a directed graph and want to activate the directed graph button that will allow you to see which is incoming our outcoming when clicked on one)
   
   * For a node:
     * **id** is the identifier of the node
