@@ -43,6 +43,22 @@ Also the ControlPanel is delimited by the blue rectangle.
     ├── Test_CSV.py                 # File able to create fake examples for testing
     └── README.md
 
+## Files dependencies
+```mermaid
+  graph TD;
+      Visualization.py---CreateElements.py;
+      CreateElements.py---ControlPanel.py;
+      CreateElements.py---ColorMap.py;
+      CreateElements.py---CytoView.py;
+      CreateElements.py---FileConvert.py;
+      CreateElements.py---MachineLearning.py;
+      MachineLearning.py---my_dataset.py;
+      MachineLearning.py---model.py;
+      MachineLearning.py---train.py;
+      CytoView.py---Stylesheet.py;
+      CytoView.py---NodeLayout.py;
+```
+
 # Instalation process
 I manually changed one file to be able to control wheel sensitivity the process is described there (https://github.com/plotly/dash-cytoscape/compare/wheel-sensitivity-feature)
 ## Input files format
@@ -194,21 +210,7 @@ They are as follow :
     * **positionY** is the position of the node along y axis
     * **feature** is a numeric vectorized representation of the attribute of the node pre computed by the user (this will be used to train the model, if the option is choosed, and make some prediction on node classification)
     
-## Files dependencies
-```mermaid
-  graph TD;
-      Visualization.py---CreateElements.py;
-      CreateElements.py---ControlPanel.py;
-      CreateElements.py---ColorMap.py;
-      CreateElements.py---CytoView.py;
-      CreateElements.py---FileConvert.py;
-      CreateElements.py---MachineLearning.py;
-      MachineLearning.py---my_dataset.py;
-      MachineLearning.py---model.py;
-      MachineLearning.py---train.py;
-      CytoView.py---Stylesheet.py;
-      CytoView.py---NodeLayout.py;
-```
+
 
 ### Color Map file
 Here you can change the colormap for nodes and edges. The default color when there is too much classes is grey with #999999
