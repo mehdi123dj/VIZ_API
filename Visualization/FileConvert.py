@@ -66,7 +66,6 @@ def register(df):
                 df["data"] = df["data"].map(str)
             df["target"] = df["target"].map(int)
             df["source"] = df["source"].map(int)
-            # store=dcc.Store(id='stored-data-edges', data=df.to_dict('records'))
             data=df.to_dict('records')
             return data
     
@@ -82,7 +81,6 @@ def register(df):
                 df['positionY'] = df['positionY'].map(float)
             df['id'] = df['id'].map(int)
     
-            # store=dcc.Store(id='stored-data-nodes', data=df.to_dict('records'))
             data=df.to_dict('records')
             return data
         

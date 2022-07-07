@@ -20,6 +20,7 @@ import dash_daq as daq
 import base64
 import datetime
 import io
+import dash_cytoscape as cyto
 import math
 import numpy as np
 from dash import dash_table
@@ -38,6 +39,10 @@ class CreateElements():
 
     def __init__(self):
         
+        self.cyto=CytoView()
+        
+        self.CP=ControlPanel() 
+        self.color=ColorMap()
         # Container for the url gestion
         self.location=dcc.Location(id="url")
         
@@ -117,6 +122,41 @@ class CreateElements():
                     )
             ],
             id="div-home",style={'display':'none'})
+        
+        self.graph=html.Div(
+                    html.Div(
+                        children=[
+                                html.Div(
+                                    cyto.Cytoscape(
+                                    id='cytoscape',
+                                    layout={'name': 'preset'},
+                                    elements=[],
+                                    stylesheet=[],
+                                    style={'width': '100%', 'height': '86.5vh','position': 'absolute','top':'0px',
+                                            'left':'0px','z-index': '999'},
+                                    minZoom=0.01,
+                                    maxZoom=10,
+                                    wheelSensitivity=0.1,
+                                    boxSelectionEnabled=True
+                                    ),# responsive=True
+                                    style={
+                                            'z-index':'100',
+                                            'top':'0px',
+                                            'left':'0px'}),
+            
+                                html.Button('Reset View', id='bt-reset-view',style={'position':'absolute','z-index':'10000','right':'1em','top':'1em'}),
+                                html.Button('Reset Stylesheet', id='bt-reset-stylesheet',style={'position':'absolute','z-index':'10000','right':'1em','top':'3em'}),
+                            
+                            ],
+                        id='cytoscape-elements',
+                        style={'position': 'relative','z-index': '100'},
+                        ),
+                style={
+                    'position': 'fixed',
+                    'width': '75%',
+                    'display':'inline-block',
+                    'verticalAlign': 'top',
+                })
         
         # Container for the graph visualization page
         self.visualization=html.Div(id='div-visualization',children=[],style={'display':'none'})
@@ -210,11 +250,9 @@ class CreateElements():
 
     def get_callbacks(self,app):
 
-        cyto=CytoView()
-        
-        CP=ControlPanel() 
-        color=ColorMap()
-        # cyto({},{},CP)
+        cyto=self.cyto
+        CP=self.CP
+        color=self.color
         
         
         for tab in ['div-home', 'div-visualization']:
@@ -222,8 +260,7 @@ class CreateElements():
                 self.generate_display_tab(tab)
             )
 
-        
-        
+
         @app.callback(Output('output-datatable', 'children'),
                       Output('position', 'style'),
                       Output('learning', 'style'),
@@ -269,19 +306,17 @@ class CreateElements():
         def make_graphs(child,click,bt_learn,bt_pos,data_nodes,data_edges):
 
             changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-            
             triggered = dash.callback_context.triggered[0]['value']
-            # print(triggered)
-            # print(changed_id)
 
             if 'output-datatable' in changed_id:
                 if 'positionX' and 'positionY' in data_nodes[0]:
                     color(data_edges,data_nodes)
                     CP(color.edge_legend,color.node_legend,data_edges,data_nodes)
-                    cyto(data_nodes,data_edges,CP)
-                    return html.Div([
+                    cyto(data_nodes,data_edges,CP,color.stylesheet)
+
+                    return html.Div(children=[
                         CP.create_CP(),
-                        cyto.create_cyto(color.stylesheet)
+                        self.graph
                         ])
                 else:
                     return dash.no_update
@@ -295,10 +330,11 @@ class CreateElements():
                     if 'positionX' and 'positionY' in data_nodes[0]:
                         color(data_edges,data_nodes,classif=True)
                         CP(color.edge_legend,color.node_legend,data_edges,data_nodes)
-                        cyto(data_nodes,data_edges,CP)
-                        div=html.Div([
+                        cyto(data_nodes,data_edges,CP,color.stylesheet)
+
+                        div=html.Div(children=[
                             CP.create_CP(),
-                            cyto.create_cyto(color.stylesheet)
+                            self.graph
                             ])
                         return div
                     else:
@@ -316,10 +352,10 @@ class CreateElements():
                     elif 'positionX' and 'positionY' in data_nodes[0]:
                         color(data_edges,data_nodes)
                         CP(color.edge_legend,color.node_legend,data_edges,data_nodes)
-                        cyto(data_nodes,data_edges,CP)
-                        return html.Div([
+                        cyto(data_nodes,data_edges,CP,color.stylesheet)
+                        return html.Div(children=[
                             CP.create_CP(),
-                            cyto.create_cyto(color.stylesheet)
+                            self.graph
                             ])
                     else :
                         return html.Div([

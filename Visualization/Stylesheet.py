@@ -32,19 +32,6 @@ class Stylesheet():
                         'z-index': 3
                     }
                 },
-                # {
-                #     'selector': 'node:selected',
-                #     "style": {
-                #         "border-width": 10,
-                #         "border-color": "black",
-                #         "border-opacity": 1,
-                #         "opacity": 1,
-                #         "label": "data(label)",
-                #         "color": "black",
-                #         "font-size": 50,
-                #         'z-index': 9999
-                #     }
-                # },
                 {
                     'selector': 'edge:selected',
                     "style": {

@@ -62,9 +62,7 @@ class MachineLearning():
             else:
                 df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'true_'+data_test_nodes[i]
                 
-        # print(df_nodes['class'])
-        # print(os.path.join(data_dir,'data.pt'))
-        # print(os.path.join(model_dir,os.listdir(model_dir)[0]))
+
         if self.position==True:
             
             X_embedded=self.get_embedding(os.path.join(data_dir,'data.pt'),os.path.join(model_dir,os.listdir(model_dir)[0]))

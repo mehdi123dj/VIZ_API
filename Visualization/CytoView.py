@@ -11,7 +11,7 @@ import copy
 from Stylesheet import Stylesheet
 import dash_cytoscape as cyto
 import json
-cyto.load_extra_layouts()
+# cyto.load_extra_layouts()
 import NodeLayout
 
 class CytoView():
@@ -24,7 +24,7 @@ class CytoView():
         self.nodeSave=None
         self.edgeSave=None
 
-    def __call__(self,data_nodes,data_edges,CP):
+    def __call__(self,data_nodes,data_edges,CP,stylesheet):
         
         self.data_nodes=data_nodes
         self.data_edges=data_edges
@@ -50,37 +50,36 @@ class CytoView():
                     'data': str(elem.get('data'))},
                     })
         
-        if data_nodes!={}:
-            degree=NodeLayout.degree(data_edges,len(data_nodes))
-            data_n=NodeLayout.normalisation(data_nodes)
-            size=NodeLayout.node_size(degree)
-            for elem in data_n:
-                if 'class'in elem:
-                    G.append({
-                        'data':{'id': 'n'+str(elem['id']),
-                                'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
-                                'size':size[elem['id']],
-                                'borderWidth':size[elem['id']]/10,
-                                'data': str(elem.get('data'))
-                                },
-                        'classes': elem['class'],
-                        'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
-                        'grabbable': False
-                        })
-                else :
-                    G.append({
-                        'data':{'id': 'n'+str(elem['id']),
-                                'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
-                                'size':size[elem['id']],
-                                'borderWidth':size[elem['id']]/10,
-                                'data': str(elem.get('data'))
-                                },
-                        'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
-                        'grabbable': False
-                        })
-        self.G_default=G
+        degree=NodeLayout.degree(data_edges,len(data_nodes))
+        data_n=NodeLayout.normalisation(data_nodes)
+        size=NodeLayout.node_size(degree)
+        for elem in data_n:
+            if 'class'in elem:
+                G.append({
+                    'data':{'id': 'n'+str(elem['id']),
+                            'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
+                            'size':size[elem['id']],
+                            'borderWidth':size[elem['id']]/10,
+                            'data': str(elem.get('data'))
+                            },
+                    'classes': elem['class'],
+                    'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
+                    'grabbable': False
+                    })
+            else :
+                G.append({
+                    'data':{'id': 'n'+str(elem['id']),
+                            'label':str((degree[elem['id']],size[elem['id']])),#str((elem['positionX'],elem['positionY'])),
+                            'size':size[elem['id']],
+                            'borderWidth':size[elem['id']]/10,
+                            'data': str(elem.get('data'))
+                            },
+                    'position':{'x': 20000*elem['positionX'], 'y': 20000*elem['positionY']},
+                    'grabbable': False
+                    })
+        self.G_default=copy.deepcopy(G)
         self.G=G
-        self.create_cyto([])
+        self.Stylesheet.stylesheet_default(stylesheet)
         
     def modif(self):
         #Where G is ordered by default with edges first and nodes second
@@ -91,50 +90,11 @@ class CytoView():
             if CP.mask_edge[i]:
                 G.append(self.G_default[i])
         for j in range(len(CP.mask_node)):
-        # for j in CP.mask_node:
             if CP.mask_node[j]:
                 G.append(self.G_default[i+j+1])
         self.G=copy.deepcopy(G)
         
         
-    def create_cyto(self,stylesheet):
-        G=copy.deepcopy(self.G)
-        self.Stylesheet.stylesheet_default(stylesheet)
-        # print(G)
-        return html.Div(
-                html.Div(
-                    children=[
-                        html.Div(
-                            cyto.Cytoscape(
-                            id='cytoscape',
-                            layout={'name': 'preset'},
-                            elements=G,
-                            stylesheet=self.Stylesheet.default_stylesheet,
-                            style={'width': '100%', 'height': '86.5vh','position': 'absolute','top':'0px',
-                                    'left':'0px','z-index': '999'},
-                            minZoom=0.01,
-                            maxZoom=10,
-                            wheelSensitivity=0.1,
-                            boxSelectionEnabled=True
-                            ),# responsive=True
-                            style={
-                                    'z-index':'100',
-                                    'top':'0px',
-                                    'left':'0px'}),
-        
-                            html.Button('Reset View', id='bt-reset-view',style={'position':'absolute','z-index':'10000','right':'1em','top':'1em'}),
-                            html.Button('Reset Stylesheet', id='bt-reset-stylesheet',style={'position':'absolute','z-index':'10000','right':'1em','top':'3em'}),
-                            html.H6(id='output-learning',style={'position':'absolute','z-index':'10000','right':'1em','top':'5em'})
-                        ],
-                    id='cytoscape-elements',
-                    style={'position': 'relative','z-index': '100'},
-                    ),
-                style={
-                    'position': 'fixed',
-                    'width': '75%',
-                    'display':'inline-block',
-                    'verticalAlign': 'top'
-                })
         
     def get_callbacks(self,app):
 
@@ -146,9 +106,6 @@ class CytoView():
         def reset_layout_view(n_clicks,path,n_style,e_style):
             
             changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-            # triggered = dash.callback_context.triggered[0]['value']
-            # print(triggered)
-            print(changed_id)
 
             if changed_id=='div-visualization':
                 return self.G
@@ -177,7 +134,6 @@ class CytoView():
                     return self.Stylesheet.default_stylesheet
             
                 else:
-
                     self.Stylesheet.stylesheet_on_click(node,switch)
                     return self.Stylesheet.stylesheet
         
@@ -204,11 +160,4 @@ class CytoView():
                                     style={'font-size':'1.6vmin'}))
                 return M
 
-
-        
-        
-
-
-            
-            
             
