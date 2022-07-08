@@ -24,7 +24,7 @@ import dash_cytoscape as cyto
 import math
 import numpy as np
 from dash import dash_table
-
+cyto.load_extra_layouts()
 
 class CreateElements():
     r"""
@@ -136,7 +136,7 @@ class CreateElements():
                                             'left':'0px','z-index': '999'},
                                     minZoom=0.01,
                                     maxZoom=10,
-                                    wheelSensitivity=0.1,
+                                    wheelSensitivity=0.05,
                                     boxSelectionEnabled=True
                                     ),# responsive=True
                                     style={

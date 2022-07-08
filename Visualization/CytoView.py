@@ -11,7 +11,7 @@ import copy
 from Stylesheet import Stylesheet
 import dash_cytoscape as cyto
 import json
-# cyto.load_extra_layouts()
+cyto.load_extra_layouts()
 import NodeLayout
 
 class CytoView():
@@ -25,7 +25,37 @@ class CytoView():
         self.edgeSave=None
 
     def __call__(self,data_nodes,data_edges,CP,stylesheet):
-        
+        r"""
+            Creation of the initial graph with all the nodeand their attributes (position, style, class and data)
+            
+            Args:
+                data_nodes (list): A list of the following format, for each node:
+                    {'id': int, 'positionX': float, 'positionY': float, 'class': str, 'data': str, 'feature': list of float}
+                
+                    id: The local id of a node | Compulsory
+                    
+                    positionX, positionY : The position gave as input or compiled thanks to features | this is optional but nothing 
+                        will appear if not provide.
+                    
+                    class: A string which gives the class of the given node | Optionnal
+                    
+                    feature: A list of float which give the embedding for a given node | Optionnal, not used for representation
+                    
+                    data: String giving some info about the node | Optionnal, used when clicking on a node to display info about it
+                    
+                data_edges (list): A list of the following format, for each edge:
+                    {'source': int, 'target': int, 'data': str, 'class': str}
+                    
+                CP (ControlPanel object): This object is used later on in the function to adapt changes when a category is checked/unchecked
+                    
+                stylesheet (list): A list of the style properties for the nodes and edges regarding their class, come from the color class
+                    {'selector': string, 'style': dictionnary}
+                    All information about selctor and style in dash cytoscape: https://dash.plotly.com/cytoscape/styling
+
+            Returns:
+                Do not have any return arguments but apply changes to the instance of the CytoView class
+
+            """
         self.data_nodes=data_nodes
         self.data_edges=data_edges
         self.CP=CP
@@ -104,6 +134,27 @@ class CytoView():
         Input({"index": ALL,"class": "edge_legend","label":ALL}, "style"),
         Input({"index": ALL,"class": "node_legend","label":ALL}, "style"))
         def reset_layout_view(n_clicks,path,n_style,e_style):
+            r"""
+                Modify the elements of the cytoscape regarding the choices make in the control panel, recenter
+                the view on graph with 'bt-reste-view' without modifying the elements, same for 'div-visualization' when
+                changing pages
+            
+
+                Args:
+                n_clicks (int): 
+                    DESCRIPTION.
+                path : TYPE
+                    DESCRIPTION.
+                n_style : TYPE
+                    DESCRIPTION.
+                e_style : TYPE
+                    DESCRIPTION.
+    
+                Returns:
+                    G (list of dictionnary of edges and nodes):
+                    
+
+            """
             
             changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
 

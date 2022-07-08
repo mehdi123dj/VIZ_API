@@ -10,7 +10,8 @@ import copy
 import pandas as pd
 from dash import dcc, html
 from dash.dependencies import Input, Output, State, MATCH
-
+# import dash_cytoscape as cyto# enable svg export
+# cyto.load_extra_layouts()
 
 class ControlPanel():
     def __init__(self):
@@ -142,38 +143,37 @@ class ControlPanel():
     
     
     def get_callbacks(self,app):    
-        print('control_panel')
+        
         @app.callback(
             Output("cytoscape", "generateImage"),
             [
                 Input("btn-get-jpg", "n_clicks"),
                 Input("btn-get-png", "n_clicks"),
-                Input("btn-get-svg", "n_clicks")
+                Input("btn-get-svg", "n_clicks"),
             ])
         
         def get_image( get_jpg_clicks, get_png_clicks, get_svg_clicks):
         
             
-    
+
             # 'store': Stores the image data in 'imageData' !only jpg/png are supported
             # 'download'`: Downloads the image as a file with all data handling
             # 'both'`: Stores image data and downloads image as file.
-            action = 'store'
+            action = 'download'
             ftype=None
             ctx = dash.callback_context
             if ctx.triggered:
                 input_id = ctx.triggered[0]["prop_id"].split(".")[0]
-    
+                print(input_id)
                 # File type to output of 'svg, 'png', 'jpg', or 'jpeg' (alias of 'jpg')
-                ftype = input_id
-                if input_id != "tabs":
-                    action = "download"
-                    ftype = input_id.split("-")[-1]
-        
-            return {
-                'type': ftype,
-                'action': action
-                }
+                # ftype = input_id
+                ftype = input_id.split("-")[-1]
+                print(ftype)
+                return {
+                    'type': ftype,
+                    'action': action
+                    }
+            return dash.no_update
         
         
         
