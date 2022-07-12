@@ -14,7 +14,6 @@ from ControlPanel import ControlPanel
 from CytoView import CytoView
 from ColorMap import ColorMap
 import dash_bootstrap_components as dbc
-import dash_daq as daq
 import base64
 import datetime
 import io

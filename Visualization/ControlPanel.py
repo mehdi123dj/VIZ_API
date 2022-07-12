@@ -11,7 +11,8 @@ import pandas as pd
 from dash import dcc, html
 from dash.dependencies import Input, Output, State, MATCH
 # import dash_cytoscape as cyto# enable svg export
-# cyto.load_extra_layouts()
+import dash_cytoscape as cyto
+cyto.load_extra_layouts()
 
 class ControlPanel():
     def __init__(self):

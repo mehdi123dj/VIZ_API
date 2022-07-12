@@ -136,7 +136,8 @@ class CreateElements():
                                             'left':'0px','z-index': '999'},
                                     minZoom=0.01,
                                     maxZoom=10,
-                                    wheelSensitivity=0.05,
+                                    ## To be activated need to modify the code inside dash cytosacpe but could block the code from running while in release mode
+                                    # wheelSensitivity=0.05,
                                     boxSelectionEnabled=True
                                     ),# responsive=True
                                     style={
