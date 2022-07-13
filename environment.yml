@@ -10,7 +10,7 @@ dependencies:
 - conda-forge::dash-bootstrap-components=1.1.0
 - conda-forge::werkzeug=2.1.2
 - conda-forge::dash_cytoscape=0.2.0
-- conda-forge::dash_daq=0.5.0
+- conda-forge::dash-daq=0.5.0
 - pytorch::torchvision
 - pytorch::torchaudio
 - pyg=2.0.4

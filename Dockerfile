@@ -48,5 +48,8 @@ WORKDIR /usr/src/app
 # Copy app folder to app folder in container
 ADD Visualization /usr/src/app/
 
+EXPOSE 8050
+
 # Launch the dash server
-CMD gunicorn -b 0.0.0.0:80 Visualization:server
+CMD ["python3","Visualization.py"]
+# CMD ["gunicorn","-b","8050:8050","Visualization:server"]

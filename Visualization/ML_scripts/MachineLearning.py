@@ -18,8 +18,8 @@ import os
 import torch
 import json
 
-data_dir = "../Visualization/data"
-model_dir = "../Visualization/model"
+data_dir = "data"
+model_dir = "model"
 
 class MachineLearning():
     

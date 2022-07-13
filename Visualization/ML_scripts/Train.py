@@ -20,7 +20,7 @@ warnings.filterwarnings('always')
 
 
 
-model_dir = "../Visualization/model"
+model_dir = "model"
 
 class run():
     def __init__(self,dataset):
