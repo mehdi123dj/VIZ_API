@@ -64,11 +64,15 @@ I manually changed one file to be able to control wheel sensitivity the process 
 
 # Docker
 With gpu
-docker build -t visualization-no-cuda -f dockerfileCuda .
-docker run -p 8050:8050 --rm visualization-cuda
+```
+  docker build -t visualization-no-cuda -f dockerfileCuda .
+  docker run -p 8050:8050 --rm visualization-cuda
+```
 Without gpu
-docker build -t visualization-no-cuda -f dockerfileNoCuda .
-docker run -p 8050:8050 --rm visualization-no-cuda
+```
+  docker build -t visualization-no-cuda -f dockerfileNoCuda .
+  docker run -p 8050:8050 --rm visualization-no-cuda
+```
 ## Input files format
 They are as follow :
 
