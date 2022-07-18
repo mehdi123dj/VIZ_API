@@ -61,6 +61,14 @@ Also the ControlPanel is delimited by the blue rectangle.
 
 # Instalation process
 I manually changed one file to be able to control wheel sensitivity the process is described there (https://github.com/plotly/dash-cytoscape/compare/wheel-sensitivity-feature)
+
+# Docker
+With gpu
+docker build -t visualization-no-cuda -f dockerfileCuda .
+docker run -p 8050:8050 --rm visualization-cuda
+Without gpu
+docker build -t visualization-no-cuda -f dockerfileNoCuda .
+docker run -p 8050:8050 --rm visualization-no-cuda
 ## Input files format
 They are as follow :
 
