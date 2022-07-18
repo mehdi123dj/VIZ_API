@@ -17,6 +17,29 @@
 Here we can see that the CytoView is delimited by the red rectangle excepted the two buttons *Reset view* and *Reset stylesheet* 
 
 Also the ControlPanel is delimited by the blue rectangle.
+
+# Instalation and running process
+Follow the step for docker and then connect to http://localhost:8050/ to use the SaaS app
+
+## Docker
+With gpu
+```
+  docker build -t visualization-no-cuda -f dockerfileCuda .
+  docker run -p 8050:8050 --rm visualization-cuda
+```
+Without gpu
+```
+  docker build -t visualization-no-cuda -f dockerfileNoCuda .
+  docker run -p 8050:8050 --rm visualization-no-cuda
+```
+
+## Possible change
+### In dockerfiles
+To switch from a local use of the app using only flask and dash we could use a gunicorn server by uncommenting the last line and commenting the previous one. Nevertheless the operation is not guaranteed ass long as gunicorn is using argparse to work and that agrparse is also use in our code to create our deep models. We so need to change in the code all the argparse fashion description to a simpler one without the ease of modification.
+### Change in app behaviour
+We could manually changed one file to be able to control wheel sensitivity the process is described there (https://github.com/plotly/dash-cytoscape/compare/wheel-sensitivity-feature)
+Then in CreateElements.py file uncomment wheelSensitivity
+
 ## File Tree Structure
 
     ├── Visualization                    
@@ -59,20 +82,7 @@ Also the ControlPanel is delimited by the blue rectangle.
       CytoView.py---NodeLayout.py;
 ```
 
-# Instalation process
-I manually changed one file to be able to control wheel sensitivity the process is described there (https://github.com/plotly/dash-cytoscape/compare/wheel-sensitivity-feature)
 
-# Docker
-With gpu
-```
-  docker build -t visualization-no-cuda -f dockerfileCuda .
-  docker run -p 8050:8050 --rm visualization-cuda
-```
-Without gpu
-```
-  docker build -t visualization-no-cuda -f dockerfileNoCuda .
-  docker run -p 8050:8050 --rm visualization-no-cuda
-```
 ## Input files format
 They are as follow :
 
