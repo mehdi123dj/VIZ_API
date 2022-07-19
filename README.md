@@ -221,16 +221,16 @@ They are as follow :
 * **Data** is a string that is only used to display information about the nodes or edges when clicked on.
 * **Class** is a string and correspond to the class of each node/edge
 
-  * For an edge:
-    * **Key** are auto generated in gml files and not used in my program
-    * **Source** the beginning node of the link (this is important if you have a directed graph and want to activate the directed graph button that will allow you to see which is incoming our outcoming when clicked on one)
-    * **Target** the end node of the link (this is important if you have a directed graph and want to activate the directed graph button that will allow you to see which is incoming our outcoming when clicked on one)
+* For an edge:
+  * **Key** are auto generated in gml files and not used in my program
+  * **Source** the beginning node of the link (this is important if you have a directed graph and want to activate the directed graph button that will allow you to see which is incoming our outcoming when clicked on one)
+  * **Target** the end node of the link (this is important if you have a directed graph and want to activate the directed graph button that will allow you to see which is incoming our outcoming when clicked on one)
   
-  * For a node:
-    * **id** is the identifier of the node
-    * **positionX** is the position of the node along x axis
-    * **positionY** is the position of the node along y axis
-    * **feature** is a numeric vectorized representation of the attribute of the node pre computed by the user (this will be used to train the model, if the option is choosed, and make some prediction on node classification)
+* For a node:
+  * **id** is the identifier of the node
+  * **positionX** is the position of the node along x axis
+  * **positionY** is the position of the node along y axis
+  * **feature** is a numeric vectorized representation of the attribute of the node pre computed by the user (this will be used to train the model, if the option is choosed, and make some prediction on node classification)
     
 
 
