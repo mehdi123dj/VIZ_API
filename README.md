@@ -35,7 +35,7 @@ Without gpu
 
 ## Possible change
 ### In dockerfiles
-To switch from a local use of the app using only flask and dash we could use a gunicorn server by uncommenting the last line and commenting the previous one. Nevertheless the operation is not guaranteed ass long as gunicorn is using argparse to work and that agrparse is also use in our code to create our deep models. We so need to change in the code all the argparse fashion description to a simpler one without the ease of modification.
+To switch from a local use of the app using only flask and dash we could use a gunicorn server by uncommenting the last line and commenting the previous one. 
 ### Change in app behaviour
 We could manually changed one file to be able to control wheel sensitivity the process is described there (https://github.com/plotly/dash-cytoscape/compare/wheel-sensitivity-feature)
 Then in CreateElements.py file uncomment wheelSensitivity
@@ -237,4 +237,6 @@ They are as follow :
 ### Color Map file
 Here you can change the colormap for nodes and edges. The default color when there is too much classes is grey with #999999
 
-
+# Some known issues
+* Because I use the dcc.store component and because this component store in browser memory the file that are saved it is impossible to store big files (>150 MB) furthemore it is quasi impossible to use the app on a mobile
+* Use of gunicorn on server side is not guaranteed as long as gunicorn is using argparse to work and that agrparse is also use in our code to create our models. We so need to change in the code all the argparse fashion description to a simpler one without the ease of modification.
