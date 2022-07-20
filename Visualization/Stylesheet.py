@@ -8,49 +8,46 @@ Created on Thu Apr 28 10:29:21 2022
 
 class Stylesheet():
     def __init__(self):
-        self.stylesheet=[]
-        self.default_stylesheet=[]
-        
-    def stylesheet_default(self,exterior_stylesheet):
-        width_default_edges=13
-        stylesheet=[
-                {
-                    "selector": 'node',
-                    'style': {
-                        "opacity": 0.9,
-                        'width': 'data(size)',
-                        'height': 'data(size)',
-                        'z-index': 5
-                    }
-                },
-                {
-                    "selector": 'edge',
-                    'style': {
-                        "curve-style": "bezier",
-                        "width": width_default_edges,
-                        "opacity": 0.25,
-                        'z-index': 3
-                    }
-                },
-                {
-                    'selector': 'edge:selected',
-                    "style": {
-                        "curve-style": "bezier",
-                        'width': width_default_edges*3,
-                        "opacity": 1,
-                    }
-                }
-        ]
-        
+        self.stylesheet = []
+        self.default_stylesheet = []
 
-        self.default_stylesheet=stylesheet+exterior_stylesheet
-    
-    
-    def stylesheet_on_click(self,node,switch):
-        follower_color='#0074D9'
-        following_color='#FF4136'
-        
-        
+    def stylesheet_default(self, exterior_stylesheet):
+        width_default_edges = 13
+        stylesheet = [
+            {
+                "selector": 'node',
+                'style': {
+                    "opacity": 0.9,
+                    'width': 'data(size)',
+                    'height': 'data(size)',
+                    'z-index': 5
+                }
+            },
+            {
+                "selector": 'edge',
+                'style': {
+                    "curve-style": "bezier",
+                    "width": width_default_edges,
+                    "opacity": 0.25,
+                    'z-index': 3
+                }
+            },
+            {
+                'selector': 'edge:selected',
+                "style": {
+                    "curve-style": "bezier",
+                    'width': width_default_edges*3,
+                    "opacity": 1,
+                }
+            }
+        ]
+
+        self.default_stylesheet = stylesheet+exterior_stylesheet
+
+    def stylesheet_on_click(self, node, switch):
+        follower_color = '#0074D9'
+        following_color = '#FF4136'
+
         stylesheet = [{
             "selector": 'node',
             'style': {
@@ -62,7 +59,7 @@ class Stylesheet():
             'selector': 'edge',
             'style': {
                 'opacity': 0.4,
-                "width":4,
+                "width": 4,
                 "curve-style": "bezier",
             }
         }, {
@@ -73,7 +70,7 @@ class Stylesheet():
                 "border-width": 2,
                 "border-opacity": 1,
                 "opacity": 1,
-        
+
                 # "label": "data(label)",
                 'width': 'data(size)',
                 'height': 'data(size)',
@@ -83,8 +80,7 @@ class Stylesheet():
                 'z-index': 9999
             }
         }]
-        
-            
+
         if switch:
             for edge in node['edgesData']:
                 if edge['source'] == node['data']['id']:
@@ -103,12 +99,12 @@ class Stylesheet():
                             "mid-target-arrow-color": following_color,
                             "mid-target-arrow-shape": "vee",
                             "line-color": following_color,
-                            'width':15,
+                            'width': 15,
                             'opacity': 0.9,
                             'z-index': 5000
                         }
                     })
-            
+
                 if edge['target'] == node['data']['id']:
                     stylesheet.append({
                         "selector": 'node[id = "{}"]'.format(edge['source']),
@@ -126,7 +122,7 @@ class Stylesheet():
                             "mid-target-arrow-color": follower_color,
                             "mid-target-arrow-shape": "vee",
                             "line-color": follower_color,
-                            'width':15,
+                            'width': 15,
                             'opacity': 0.9,
                             'z-index': 5000
                         }
@@ -149,12 +145,12 @@ class Stylesheet():
                             "mid-target-arrow-color": following_color,
                             "mid-target-arrow-shape": "vee",
                             "line-color": following_color,
-                            'width':15,
+                            'width': 15,
                             'opacity': 0.9,
                             'z-index': 5000
                         }
                     })
-            
+
                 if edge['target'] == node['data']['id']:
                     stylesheet.append({
                         "selector": 'node[id = "{}"]'.format(edge['source']),
@@ -172,12 +168,10 @@ class Stylesheet():
                             "mid-target-arrow-color": following_color,
                             "mid-target-arrow-shape": "vee",
                             "line-color": following_color,
-                            'width':15,
+                            'width': 15,
                             'opacity': 0.9,
                             'z-index': 5000
                         }
                     })
 
-            
-        self.stylesheet=stylesheet
-    
+        self.stylesheet = stylesheet
