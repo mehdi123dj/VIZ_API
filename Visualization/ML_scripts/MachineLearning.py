@@ -22,6 +22,13 @@ data_dir = "data"
 model_dir = "model"
 
 class MachineLearning():
+    r"""
+    A class that is managing the creation of the pytorch geometric dataset, the training of the model, 
+        its registration and return when called a dictionnary of the nodes and their classes
+    
+    Args:
+        
+    """
     
     def __init__(self,data_nodes,data_edges,position=False):
         self.data_nodes=data_nodes
@@ -29,7 +36,12 @@ class MachineLearning():
         self.position=position
         
     def __call__(self):
+        r"""
+            Function that return a dictionnary of the same format then data_nodes after training with new 
+            classes attributed compared to the initial data_nodes
 
+        """
+        # Creation of the directories in which will be saved the model and the dataset
         os.makedirs(data_dir,exist_ok=True)
         os.makedirs(model_dir,exist_ok=True)
 

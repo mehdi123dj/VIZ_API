@@ -40,10 +40,11 @@ class CreateElements():
 
     def __init__(self):
 
+        # Initialization of the app class that would be used afterward to interact
         self.cyto = CytoView()
-
         self.CP = ControlPanel()
         self.color = ColorMap()
+        
         # Container for the url gestion
         self.location = dcc.Location(id="url")
 
@@ -177,10 +178,41 @@ class CreateElements():
             id='div-visualization', children=[], style={'display': 'none'})
 
     def __call__(self):
+        r"""
+            Function that return the 4 global components to the dash layout
+                
+            Returns:
+                self.location(dcc.Location) : Container for the url gestion
+                
+                self.dashboard(dbc.NavbarSimple) : Container for the navigator bar in top of the app
+                
+                self.home(div) : Container for the home page
+                
+                self.visualization(div) : Container for the graph visualization page
+            
+        """
 
         return [self.location, self.dashboard, self.home, self.visualization]
 
     def parse_contents(self, list_of_contents, list_of_names, list_of_dates):
+        r"""
+            Function that parse the files that were uploaded, uses side functions that could be found in FileConvert.py
+        
+            Args:
+                list_of_contents (string): 
+                    Content of the uploaded files
+                list_of_names (string):
+                    Name of the uploaded files
+                list_of_dates (string):
+                    Information about the date at which the files were created
+                    
+            Returns:
+                M (list): List of div of dataTable elements with the name of the file and its date
+                
+
+        """
+        
+        
         M = []
         for (contents, filename, date) in zip(list_of_contents, list_of_names, list_of_dates):
             content_type, content_string = contents.split(',')
@@ -245,11 +277,16 @@ class CreateElements():
         return computable, M, data_nodes, data_edges
 
     def generate_display_tab(self, tab):
-
+        r"""
+            Function that manage which page should be outputed
+                
+            Returns:
+                tab (string): Name of the div id of the desired page to output
+            
+        """
         def display_tab(pathname):
             if tab == 'div-home' and (pathname is None or pathname == '/'):
                 return {}
-            # {}'.format(tab):
             elif tab == 'div-visualization' and pathname == '/visualization':
                 return {}
             else:
@@ -277,8 +314,26 @@ class CreateElements():
                       State('upload-data', 'filename'),
                       State('upload-data', 'last_modified'))
         def update_output(list_of_contents, list_of_names, list_of_dates):
+            r"""
+                Function that parse the files that were uploaded and update a lot of component children,
+                    in particular register the data that were imported in stored-data-nodes and stored-data-edges
+            
+                Args:
+                    list_of_contents (string): 
+                        Content of the uploaded files
+                    list_of_names (string):
+                        Name of the uploaded files
+                    list_of_dates (string):
+                        Information about the date at which the files were created
+                        
+                Returns:
+                    List updating the outputed components of the form :
+                        [output-datatable children,  position style,
+                          learning style, oriented style,
+                          stored-data-nodes data, stored-data-edges data]
+
+            """
             if list_of_contents is not None:
-                # (c, n, d) for c, n, d in  zip(list_of_contents, list_of_names, list_of_dates)
                 computable, children, data_nodes, data_edges = self.parse_contents(
                     list_of_contents, list_of_names, list_of_dates)
                 if computable:
@@ -293,7 +348,16 @@ class CreateElements():
             Input('bt-learning', 'on'),
         )
         def is_visible_launchLearningButton(on):
+            r"""
+                Function that make visible/unvisible the launch learning button
+            
+                Args:
+                    on (string): String of boolean object
+                        
+                Returns:
+                    Update the style component of the button for it to be visible or not
 
+            """
             x = "{}".format(on)
             if x == "True":
                 return {'position': 'relative'}
@@ -309,7 +373,50 @@ class CreateElements():
                       State('stored-data-edges', 'data'),
                       )
         def make_graphs(child, click, bt_learn, bt_pos, data_nodes, data_edges):
+            r"""
+                Function that gather all the information needed to construct the graph and the control panel 
+                it updates the corresponding class instances by using the functions designed in each of them
+            
+                Args:
+                    child (div): Triggered when a change occur in the output-datatable component of the home page
+                    id. when some data are uploaded
+                        
+                    click (int): Button to launch a training of the model
+                        
+                    bt_learn (string): String of a boolean value designed to allow the user to make the launch button appearing
+                    
+                    bt_pos (string): String of a boolean value designed to allow the user to recalculate nodes positions depending
+                        result of the model learned
+                        
+                    data_nodes (list): A list of the following format, for each node:
+                        {'id': int, 'positionX': float, 'positionY': float, 'class': str, 'data': str, 'feature': list of float}
+                    
+                        id: The local id of a node | Compulsory
+                        
+                        positionX, positionY : The position gave as input or compiled thanks to features | this is optional but nothing 
+                            will appear if not provide.
+                        
+                        class: A string which gives the class of the given node | Optionnal
+                        
+                        feature: A list of float which give the embedding for a given node | Optionnal, not used for representation
+                        
+                        data: String which gives some info about the node | Optionnal, used when clicking on a node to display info about it
+                    
+                    data_edges (list): A list of the following format, for each edge:
+                        {'source': int, 'target': int, 'data': str, 'class': str}
+                        
+                        source: The id of the source node | Compulsory
+                        
+                        target: The id of the taget node | Compulsory
+                        
+                        data: String which gives some info about the edge | Optionnal, used when clicking on an edge to display info about it
+                        
+                        class: A string which gives the class of the given edge | Optionnal
+                        
+                Returns:
+                    A div container in which all the visualization page is constructed
 
+            """
             changed_id = [p['prop_id']
                           for p in dash.callback_context.triggered][0]
             triggered = dash.callback_context.triggered[0]['value']

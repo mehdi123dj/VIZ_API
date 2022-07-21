@@ -7,11 +7,29 @@ Created on Thu Apr 28 10:29:21 2022
 
 
 class Stylesheet():
+    
+    r"""
+    A class that is managing the contents in the stylesheet dictionnary that will be used in the cytosacpe component
+        
+    """
+    
+    
     def __init__(self):
         self.stylesheet = []
         self.default_stylesheet = []
 
     def stylesheet_default(self, exterior_stylesheet):
+        r"""
+            Creation of the default stylesheet when none interaction have been made with the graph, clicked on a node or an edge
+            
+            Args:
+                exterior_stylesheet (dictionnary): Stylesheet that comes from the ColorMap class instance to well
+                attributes the colors to every node and edge
+
+            Returns:
+                Does not return anything but save the default stylesheet in self.default_stylesheet
+
+            """
         width_default_edges = 13
         stylesheet = [
             {
@@ -45,6 +63,20 @@ class Stylesheet():
         self.default_stylesheet = stylesheet+exterior_stylesheet
 
     def stylesheet_on_click(self, node, switch):
+        r"""
+            Creation of the stylesheet when clicked on a node to highlight the selected node and its neighborhood
+            
+            Args:
+                node (int): 
+                    Triggered if we press on a node in the cytoscape view
+            
+                switch (dictionnary):
+                    Switch button use to take into account or not the direction of the edges
+
+            Returns:
+                Does not return anything but save the stylesheet in self.stylesheet
+
+            """
         follower_color = '#0074D9'
         following_color = '#FF4136'
 

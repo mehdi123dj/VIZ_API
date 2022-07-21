@@ -16,13 +16,16 @@ cyto.load_extra_layouts()
 
 
 class CytoView():
+    r"""
+    A class that is managing all the interactions with the graph also save the stylesheet, the graph coordinate...
+        
+    """
 
     def __init__(self):
         self.Stylesheet = Stylesheet()
         self.G = []
         self.G_default = []
-        self.nodeSave = None
-        self.edgeSave = None
+
 
     def __call__(self, data_nodes, data_edges, CP, stylesheet):
         r"""

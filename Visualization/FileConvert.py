@@ -54,7 +54,7 @@ def gml_to_df(data):
     return [data_edges], [data_nodes]
 
 
-# transform df to store dcc object to be registered in the server
+# transform df to store dcc object to be registered on the browser memory
 def register(df):
     df = copy.deepcopy(df)
     try:

@@ -11,9 +11,10 @@ import warnings
 import flask
 from CreateElements import CreateElements
 
+# To use to declare the flask server (it is really useful for gunicorn use)
 server = flask.Flask(__name__)
 
-# APP LAYOUT
+
 
 
 app = dash.Dash(__name__,
@@ -25,8 +26,14 @@ app = dash.Dash(__name__,
                 )
 
 app.title = 'Datarvest'
+
+# Initialize Create Elements class
 CE = CreateElements()
+
+# APP LAYOUT
 app.layout = html.Div(CE())
+
+# Take all the callbacks of the class that are inside CreateElements
 CE.get_callbacks(app)
 
 if __name__ == '__main__':
