@@ -139,6 +139,8 @@ class ControlPanel():
             html.Div(style={'width': '34%', 'height': '2em',
                      'display': 'inline-block', 'background-color': elem[0]})
         ]) for elem in edge_legend]
+        # print(self.E)
+        # print(edge_legend)
 
         self.N = [html.Div(id={'class': 'node_legend', 'index': node_legend.index(elem), 'label': elem[1]},
                            children=[

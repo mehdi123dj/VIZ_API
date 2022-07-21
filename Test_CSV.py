@@ -44,7 +44,7 @@ class create_CSV():
         df_nodes['data']=N_data
         df_nodes['feature']=N_feature
         
-        df_nodes.to_csv('../data/TestNodes7.csv',index=False)
+        df_nodes.to_csv('../data/TestNodes8.csv',index=False)
         
         source=[]
         E_class=[]
@@ -67,7 +67,7 @@ class create_CSV():
         df_edges['class']=E_class
         df_edges['data']=E_data
         
-        df_edges.to_csv('../data/TestLinks7.csv',index=False)
+        df_edges.to_csv('../data/TestLinks8.csv',index=False)
         
         # print(df_edges["source"])
         
@@ -101,7 +101,7 @@ class create_CSV():
         # print(G.edges(data=True))
         
         # print(G.nodes(data=True))
-        nx.write_gml(G,'../data/Test7.gml')
+        nx.write_gml(G,'../data/Test8.gml')
         
     def randomize_node(self,size):
         

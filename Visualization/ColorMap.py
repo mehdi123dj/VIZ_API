@@ -195,7 +195,6 @@ class ColorMap():
             self.stylesheet = self.stylesheet+stylesheet
 
     def edge_stylesheet_legend(self, data_edges):
-
         # Color Map for edges
         e_color = {1: ['#000000'],
                    2: ['#9d9e6f', '#3c005d'],
@@ -209,11 +208,11 @@ class ColorMap():
 
         e_class = pd.DataFrame.from_dict(data_edges)
         class_in_edge = "class" in e_class
+        stylesheet = []
+        legend = []
         if class_in_edge == True:
             e_class = list(set(e_class['class']))
             e_class.sort()
-            stylesheet = []
-            legend = []
             m = max(e_color)
             N = len(e_class)
             if N > m:
@@ -231,6 +230,9 @@ class ColorMap():
                     legend.append([e_color[c][i], e_class[i]])
                 else:
                    legend.append(['#999999', e_class[i]])
+        
 
-            self.edge_legend = legend
-            self.stylesheet = self.stylesheet+stylesheet
+        self.edge_legend = legend
+        self.stylesheet = self.stylesheet+stylesheet
+        
+        

@@ -30,9 +30,11 @@ class MachineLearning():
         
     """
     
-    def __init__(self,data_nodes,data_edges,position=False):
+    def __init__(self,data_nodes,data_edges,position=False,learn_node=False,learn_edge=False):
         self.data_nodes=data_nodes
         self.data_edges=data_edges
+        self.learn_node=learn_node
+        self.learn_edge=learn_edge
         self.position=position
         
     def __call__(self):
@@ -55,35 +57,41 @@ class MachineLearning():
         
         mapping_class = {v:u for u,v in mapping_class.items()} 
         
-        # # Could be used to find back 
+        # Could be used to find back 
         mapping_id_node = {v:u for u,v in mapping_id_node.items()}
-
-        learn = run(self.dataset)
-        
-        data_test_nodes = learn()
-        data_test_nodes = [mapping_class[elem] for elem in data_test_nodes]
-
         
         df_nodes = pd.DataFrame(self.data_nodes)
-        data_test_true_nodes = df_nodes[self.dataset[0].test_mask.tolist()]
-        true_class = list(data_test_true_nodes['class'])
-        for i in range(len(data_test_true_nodes)):
-
-            if true_class[i]!=data_test_nodes[i]:
-                df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'wrong_'+true_class[i]+"_sep_"+data_test_nodes[i]
-            else:
-                df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'true_'+data_test_nodes[i]
+        df_edges = pd.DataFrame(self.data_nodes)
+        
+        if self.learn_node :
+            learn = run(self.dataset)
+            
+            data_test_nodes = learn()
+            data_test_nodes = [mapping_class[elem] for elem in data_test_nodes]
+            
+            data_test_true_nodes = df_nodes[self.dataset[0].test_mask.tolist()]
+            true_class = list(data_test_true_nodes['class'])
+            for i in range(len(data_test_true_nodes)):
+    
+                if true_class[i]!=data_test_nodes[i]:
+                    df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'wrong_'+true_class[i]+"_sep_"+data_test_nodes[i]
+                else:
+                    df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'true_'+data_test_nodes[i]
+                    
+            if self.position==True:
                 
-
-        if self.position==True:
+                X_embedded=self.get_embedding(os.path.join(data_dir,'data.pt'),os.path.join(model_dir,os.listdir(model_dir)[0]))
+                df_nodes.loc[:,'positionX']=X_embedded[0]
+                df_nodes.loc[:,'positionY']=X_embedded[1]
+                
+            shutil.rmtree(os.path.join(data_dir))
+            shutil.rmtree(model_dir)
+            return df_nodes.to_dict('records')
+        
+        else :
             
-            X_embedded=self.get_embedding(os.path.join(data_dir,'data.pt'),os.path.join(model_dir,os.listdir(model_dir)[0]))
-            df_nodes.loc[:,'positionX']=X_embedded[0]
-            df_nodes.loc[:,'positionY']=X_embedded[1]
+            return df_nodes.to_dict('records')
             
-        shutil.rmtree(os.path.join(data_dir))
-        shutil.rmtree(model_dir)
-        return df_nodes.to_dict('records')
     
     def get_embedding(self,data_path,model_name):
         Data=self.dataset[0]
