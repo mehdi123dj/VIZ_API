@@ -111,111 +111,111 @@ They are as follow :
 * **GML Files**
   File should have the same form as shown below and registered as gml. You are force to furnish values for the **source** and **target** for the edges and **id**,**positionX**,**positionY** for the nodes, you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add **'NaN'**
     ```
-    graph [
-  multigraph 1
-  node [
-    id 0
-    label "0"
-    positionX -91.13624117479557
-    positionY -66.76717678700189
-    class "child"
-    data "Name : fabrice, age : 22"
-  ]
-  node [
-    id 1
-    label "1"
-    positionX -46.73841145000086
-    positionY 98.31243547492073
-    class "nan"
-    data "Name : fabrice, age : 55"
-  ]
-  node [
-    id 2
-    label "2"
-    positionX 35.17666039345673
-    positionY 10.373519892509364
-    class "child"
-    data "Name : matthieu, age : 22"
-  ]
-  node [
-    id 3
-    label "3"
-    positionX 8.934336460157127
-    positionY -90.02082919747694
-    class "child"
-    data "nan"
-  ]
-  node [
-    id 4
-    label "4"
-    positionX -8.449593591524106
-    positionY -46.77166171108491
-    class "child"
-    data "Name : madeleine, age : 65"
-  ]
-  node [
-    id 5
-    label "5"
-    positionX 70.49398332611486
-    positionY 80.29494707270953
-    class "nan"
-    data "nan"
-  ]
-  node [
-    id 6
-    label "6"
-    positionX 54.341204747486245
-    positionY 13.288421419471064
-    class "child"
-    data "Name : matthieu, age : 65"
-  ]
+      graph [
+    multigraph 1
+    node [
+      id 0
+      label "0"
+      positionX -91.13624117479557
+      positionY -66.76717678700189
+      class "child"
+      data "Name : fabrice, age : 22"
+    ]
+    node [
+      id 1
+      label "1"
+      positionX -46.73841145000086
+      positionY 98.31243547492073
+      class "nan"
+      data "Name : fabrice, age : 55"
+    ]
+    node [
+      id 2
+      label "2"
+      positionX 35.17666039345673
+      positionY 10.373519892509364
+      class "child"
+      data "Name : matthieu, age : 22"
+    ]
+    node [
+      id 3
+      label "3"
+      positionX 8.934336460157127
+      positionY -90.02082919747694
+      class "child"
+      data "nan"
+    ]
+    node [
+      id 4
+      label "4"
+      positionX -8.449593591524106
+      positionY -46.77166171108491
+      class "child"
+      data "Name : madeleine, age : 65"
+    ]
+    node [
+      id 5
+      label "5"
+      positionX 70.49398332611486
+      positionY 80.29494707270953
+      class "nan"
+      data "nan"
+    ]
+    node [
+      id 6
+      label "6"
+      positionX 54.341204747486245
+      positionY 13.288421419471064
+      class "child"
+      data "Name : matthieu, age : 65"
+    ]
 
-  ...
+    ...
 
-  edge [
-    source 0
-    target 2
-    key 0
-    class "professional"
-    data "Knowing since : 23 years"
-  ]
-  edge [
-    source 0
-    target 2
-    key 1
-    class "professional"
-    data "Knowing since : 23 years"
-  ]
-  edge [
-    source 0
-    target 11
-    key 0
-    class "nan"
-    data "Knowing since : 9 years"
-  ]
-  edge [
-    source 0
-    target 11
-    key 1
-    class "friend"
-    data "Knowing since : 9 years"
-  ]
-  edge [
-    source 0
-    target 6
-    key 0
-    class "family"
-    data "Knowing since : 9 years"
-  ]
-  edge [
-    source 0
-    target 10
-    key 0
-    class "family"
-    data "Knowing since : 9 years"
-  ]
-  ...
-  ]
+    edge [
+      source 0
+      target 2
+      key 0
+      class "professional"
+      data "Knowing since : 23 years"
+    ]
+    edge [
+      source 0
+      target 2
+      key 1
+      class "professional"
+      data "Knowing since : 23 years"
+    ]
+    edge [
+      source 0
+      target 11
+      key 0
+      class "nan"
+      data "Knowing since : 9 years"
+    ]
+    edge [
+      source 0
+      target 11
+      key 1
+      class "friend"
+      data "Knowing since : 9 years"
+    ]
+    edge [
+      source 0
+      target 6
+      key 0
+      class "family"
+      data "Knowing since : 9 years"
+    ]
+    edge [
+      source 0
+      target 10
+      key 0
+      class "family"
+      data "Knowing since : 9 years"
+    ]
+    ...
+    ]
     ```
 ## Usage of each keyword
 * **Data** is a string that is only used to display information about the nodes or edges when clicked on.
