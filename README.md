@@ -88,24 +88,28 @@ They are as follow :
 
 * **CSV and XLS files** (example with cora file)
 
-    * File for edges should have the same header as shown below and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
+    * File for edges should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
     ```
-    target,source,class
-    35,1033,cites
-    35,103482,cites
-    35,103515,
-    35,1050679,cites
-    ...
+    source,target,class,data
+    34,4,professional,Knowing since : 3 years
+    1,21,friend,Knowing since : 97 years
+    20,12,friend,Knowing since : 9 years
+    3,0,friend,Knowing since : 51 years
+    6,38,family,Knowing since : 3 years
+    45,4,professional,Knowing since : 7 years
+    0,8,family,Knowing since : 3 years
     ```
 
-    * File for nodes should have the same header as shown below and registered as csv/xls.You are force to furnish values for the **id** you can also provide values for **positionX**,**positionY**,**feature**, **class** and **data**. <A solution could be to add nothing, just let it empty (as shown below).>
+    * File for nodes should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls.You are force to furnish values for the **id** you can also provide values for **positionX**,**positionY**,**feature**, **class** and **data**. <A solution could be to add nothing, just let it empty (as shown below).>
     ```
-    feature,class,id,positionX,positionY
-    "[0,..., 1, 0, 0, 0, 0, 0, 0]",Neural_Networks,31336,-6.7792907,-3.7140813
-    "[0,..., 0, 0, 0, 0, 0, 0, 0]",Rule_Learning,1061127,-1.8820779,6.1064944
-    "[0,..., 0, 0, 0, 0, 0, 0, 0]",Reinforcement_Learning,1106406,2.2292302,2.7001865
-    "[0,..., 0, 0, 0, 0, 0, 0, 0]",Reinforcement_Learning,13195,1.684225,-0.4627512
-    ...
+    id,positionX,positionY,class,data,feature
+    0,59.17180618694536,22.11030522902449,teenager,"Name : ludivine, age : 65","[69.33928670214559, 75.45925097633007, 70.99528587804748]"
+    1,-96.05151980887148,-70.4455325019663,teenager,"Name : fabrice, age : 78","[96.69387532958712, 69.9360406529872, 74.12491979334999]"
+    2,33.53531243249327,5.4884938927682185,adult,"Name : fabrice, age : 34","[11.618561313551945, 14.80660556644035, 30.668334158786944]"
+    3,-28.93342830907102,5.372990605701716,adult,"Name : matthieu, age : 34","[25.44111693575362, 2.1404425396293245, 19.5873407260785]"
+    4,-14.80054648587111,-55.81053799438567,teenager,"Name : matthieu, age : 55","[82.0134713406511, 75.87393548272328, 91.15490976049222]"
+    5,87.89876740468642,29.610566777499315,adult,"Name : henri, age : 65","[21.614522662913647, 15.749883206784437, 30.730064306816665]"
+    6,-54.64595487735493,-17.741161229561484,child,"Name : pascale, age : 20","[46.63956809476848, 48.89752997060593, 49.8082400003897]"
     ```
 
 * **GML Files**
@@ -145,31 +149,6 @@ They are as follow :
       class "child"
       data "nan"
     ]
-    node [
-      id 4
-      label "4"
-      positionX -8.449593591524106
-      positionY -46.77166171108491
-      class "child"
-      data "Name : madeleine, age : 65"
-    ]
-    node [
-      id 5
-      label "5"
-      positionX 70.49398332611486
-      positionY 80.29494707270953
-      class "nan"
-      data "nan"
-    ]
-    node [
-      id 6
-      label "6"
-      positionX 54.341204747486245
-      positionY 13.288421419471064
-      class "child"
-      data "Name : matthieu, age : 65"
-    ]
-
     ...
 
     edge [
@@ -198,20 +177,6 @@ They are as follow :
       target 11
       key 1
       class "friend"
-      data "Knowing since : 9 years"
-    ]
-    edge [
-      source 0
-      target 6
-      key 0
-      class "family"
-      data "Knowing since : 9 years"
-    ]
-    edge [
-      source 0
-      target 10
-      key 0
-      class "family"
       data "Knowing since : 9 years"
     ]
     ...
