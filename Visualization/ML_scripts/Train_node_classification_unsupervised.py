@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 20 15:49:34 2022
+Created on Fri Jul 22 14:44:39 2022
 
 @author: remit
 """
 
-
 # from torch_geometric.loader.dataloader import DataLoader
 
-from ML_scripts.model import AML_model, train, test
+from ML_scripts.model_node_classification_unsupervised import Encoder, corruption, test, train, DeepGraphInfomax,summary
 import torch 
 import warnings
 import copy 
@@ -22,7 +21,7 @@ warnings.filterwarnings('always')
 
 model_dir = "model"
 
-class run():
+class run_node_classif_unsupervised():
     def __init__(self,dataset):
         self.dataset=dataset
         
@@ -44,7 +43,7 @@ class run():
         parser.add_argument(
             "-hc",
             "--hidden-channels",
-            default=32,
+            default=512,
             type=int,
         )
     
@@ -93,7 +92,7 @@ class run():
         parser.add_argument(
             "-ne",
             "--number-epochs",
-            default=200,
+            default=20,
             type=int,
         )
     
@@ -101,7 +100,7 @@ class run():
         parser.add_argument(
             "-t",
             "--type",
-            default='GAT',
+            default='DeepInfoMax',
             type=str,
         )
     
@@ -121,56 +120,55 @@ class run():
             type=str,
         )
     
+
+    
         args = parser.parse_args()
         
         data = self.dataset[0]
-
-        data.y = one_hot(data.y)
+        # print(data.y)
+        # data.y = one_hot(data.y)
         in_channels = len(data.x[0])
 
-        num_classes = len(data.y[0])
+        num_classes = max(data.y)+1
         print("Number of feature: ",in_channels)
         print("Number of classes: ",num_classes)
-        model = AML_model(
-                            in_channels = in_channels, 
-                            hidden_channels = args.hidden_channels,
-                            num_layers = args.number_layers, 
-                            out_channels = args.out_channels,
-                            dropout = args.dropout,
-                            act = args.activation, 
-                            negative_slope = args.negative_slope, 
-                            jk = args.jumping_knowledge, 
-                            heads = args.number_heads,
-                            num_classes = num_classes,
-                            _type = args.type
-                        )
-    
-    
-        device = torch.device('cpu')
+        
+        
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        model = DeepGraphInfomax(
+                                    hidden_channels=args.hidden_channels,
+                                    encoder=Encoder(in_channels, args.hidden_channels),
+                                    summary=summary, 
+                                    corruption=corruption
+                                    ).to(device)
+        
         optimizer = torch.optim.Adam(model.parameters(), lr = args.learning_rate)
     
-        best_val_acc = 0
+    
+        best_test_acc=0
         test_list = []
         print('Start training model of type : ', args.type)
         for epoch in range(1, args.number_epochs+1):
+            
             loss = train(model,data,optimizer,device)
-            acc,test_class = test(model,data,device)
-            val_acc,test_acc = acc[1:]
+
+            test_acc,test_class = test(model,data,device)
+            
              # = test(model,data,device)
-            if val_acc > best_val_acc:
-                best_model = copy.deepcopy(model)
-                best_val_acc = val_acc
+            if test_acc > best_test_acc:
+            #     best_model = copy.deepcopy(model)
+            #     best_val_acc = val_acc
                 best_test_acc = test_acc
                 test_list = [list(elem).index(1) for elem in test_class]
-                print("[New best Model]")
+            #     print("[New best Model]")
             print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}')
-            print(f'Val accuracy: {val_acc:.4f}')
+            # print(f'Val accuracy: {val_acc:.4f}')
             print(f'Test accuracy: {test_acc:.4f}')
             print(' ')
     
         SAVEPATH = os.path.join(model_dir,args.model_name)
         print('Done training')
-        torch.save(best_model, SAVEPATH)
+        torch.save(copy.deepcopy(model), SAVEPATH)
         print(f'Final Test: {best_test_acc:.4f}')
         return test_list
     

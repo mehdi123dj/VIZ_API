@@ -226,12 +226,22 @@ class CreateElements():
 
                         html.Div(
                             children=[
-                                html.H6("Learn Graph node classification :", style={
+                                html.H6("Learn Graph node classification supervised :", style={
                                         'display': 'inline-block', 'vertical-align': 'middle', 'margin-left': '20px'}),
-                                daq.BooleanSwitch(id='bt-learning-node', on=False, style={
+                                daq.BooleanSwitch(id='bt-learning-node-deep', on=False, style={
                                                   'display': 'inline-block', 'position': 'relative', 'margin-left': '2px'})
                             ],
-                            id='learning-node',
+                            id='learning-node-deep',
+                            style={'display': 'none'}),
+                        
+                        html.Div(
+                            children=[
+                                html.H6("Learn Graph node classification unsupervised:", style={
+                                        'display': 'inline-block', 'vertical-align': 'middle', 'margin-left': '20px'}),
+                                daq.BooleanSwitch(id='bt-learning-node-unsupervised', on=False, style={
+                                                  'display': 'inline-block', 'position': 'relative', 'margin-left': '2px'})
+                            ],
+                            id='learning-node-unsupervised',
                             style={'display': 'none'}),
 
 
@@ -447,7 +457,8 @@ class CreateElements():
 
         @app.callback(Output('output-datatable', 'children'),
                       Output('position', 'style'),
-                      Output('learning-node', 'style'),
+                      Output('learning-node-deep', 'style'),
+                      Output('learning-node-unsupervised', 'style'),
                       Output('learning-edge', 'style'),
                       Output('oriented', 'style'),
                       Output('stored-data-nodes', 'data'),
@@ -479,21 +490,26 @@ class CreateElements():
                 computable, children, data_nodes, data_edges = self.parse_contents(
                     list_of_contents, list_of_names, list_of_dates)
                 if computable:
-                    return [children, {'display': 'inline-block'}, {'display': 'inline-block'}, {'display': 'inline-block'}, {'display': 'inline-block'}, data_nodes, data_edges]
+                    return [children, {'display': 'inline-block'}, {'display': 'inline-block'},{'display': 'inline-block'}, {'display': 'inline-block'}, {'display': 'inline-block'}, data_nodes, data_edges]
                 else:
-                    return [children, {'display': 'none'}, {'display': 'none'}, {'display': 'none'}, {'display': 'inline-block'}, data_nodes, data_edges]
+                    return [children, {'display': 'none'}, {'display': 'none'}, {'display': 'none'},{'display': 'none'}, {'display': 'inline-block'}, data_nodes, data_edges]
             else:
-                return [dash.no_update, {'display': 'none'}, {'display': 'none'}, {'display': 'none'}, {'display': 'none'}, dash.no_update, dash.no_update]
+                return [dash.no_update, {'display': 'none'}, {'display': 'none'}, {'display': 'none'},{'display': 'none'}, {'display': 'none'}, dash.no_update, dash.no_update]
 
         @app.callback(
             Output('div-dropdown-edge', 'children'),
             Output('div-dropdown-edge', 'style'),
             Output('bt-learning-launch', 'style'),
-            Input('bt-learning-node', 'on'),
+            Output('bt-learning-node-deep', 'on'),
+            Output('bt-learning-node-unsupervised', 'on'),
+            Output('bt-learning-edge', 'on'),
+            
+            Input('bt-learning-node-deep', 'on'),
+            Input('bt-learning-node-unsupervised', 'on'),
             Input('bt-learning-edge', 'on'),
             State('stored-data-edges', 'data'),
         )
-        def is_visible_launchLearningButton(on_node, on_edge, data_edges):
+        def is_visible_launchLearningButton(on_node_deep, on_node_unsupervised, on_edge, data_edges):
             r"""
                 Function that make visible/unvisible the launch learning button
 
@@ -508,32 +524,59 @@ class CreateElements():
                     Update the style component of the button for it to be visible or not
 
             """
-            node = "{}".format(on_node)
+            changed_id = [p['prop_id']
+                          for p in dash.callback_context.triggered][0]              
+            node_deep = "{}".format(on_node_deep)
+            node_unsupervised = "{}".format(on_node_unsupervised)
             edge = "{}".format(on_edge)
-            if edge == "True":
+            if ('bt-learning-edge' in changed_id) and edge == "True":
                 df_edges = pd.DataFrame(data_edges)
 
                 return [[html.H6("Possible edge class to learn on :"),
                         dcc.Dropdown(list(set(df_edges["class"])), id='dropdown-edge')],
                         {'position': 'relative', 'display': 'inline-block'},
-                        {'margin-left': '20px', 'position': 'relative', 'display': 'inline-block', 'vertical-align': 'middle'}]
+                        {'margin-left': '20px', 'position': 'relative', 'display': 'inline-block', 'vertical-align': 'middle'},
+                        False,
+                        False,
+                        dash.no_update]
 
+            elif ('bt-learning-node-deep' in changed_id) and node_deep == "True":
+                return [[],
+                        {'display': 'none', 'position': 'relative'},
+                        {'position': 'relative'},
+                        dash.no_update,
+                        False,
+                        False,
+                        ]               
+            elif ('bt-learning-node-unsupervised' in changed_id) and node_unsupervised == "True":
+                return [[],
+                        {'display': 'none', 'position': 'relative'},
+                        {'position': 'relative'},
+                        False,
+                        dash.no_update,
+                        False,
+                        ]      
+            
             else:
-                if node == "True":
-                    return [], {'display': 'none', 'position': 'relative'}, {'position': 'relative'}
-                else:
-                    return [], {'display': 'none', 'position': 'relative'}, {'display': 'none', 'position': 'relative'}
+                return [[],
+                        {'display': 'none', 'position': 'relative'},
+                        {'display': 'none', 'position': 'relative'},
+                        False,
+                        False,
+                        False,
+                        ]    
 
         @app.callback(Output('div-visualization', 'children'),
                       Input('output-datatable', 'children'),
                       Input('bt-learning-launch', 'n_clicks'),
-                      Input('bt-learning-node', 'on'),
+                      Input('bt-learning-node-deep', 'on'),
+                      Input('bt-learning-node-unsupervised', 'on'),
                       Input('bt-learning-edge', 'on'),
                       Input('bt-position', 'on'),
                       State('stored-data-nodes', 'data'),
                       State('stored-data-edges', 'data'),
                       )
-        def make_graphs(child, click, bt_learn_node, bt_learn_edge, bt_pos, data_nodes, data_edges):
+        def make_graphs(child, click, bt_learn_node_deep, bt_learn_node_unsupervised,bt_learn_edge, bt_pos, data_nodes, data_edges):
             r"""
                 Function that gather all the information needed to construct the graph and the control panel 
                 it updates the corresponding class instances by using the functions designed in each of them
@@ -603,10 +646,15 @@ class CreateElements():
                 if triggered == None:
                     return dash.no_update
                 else:
-
+                    print("here")
+                    # print(('positionX' and 'positionY' in data_nodes[0]) or bt_pos)
                     if ('positionX' and 'positionY' in data_nodes[0]) or bt_pos:
+                        
+                        print(bt_learn_edge)
+                        print(bt_learn_node_unsupervised)
+                        print(bt_learn_node_deep)
                         ML = MachineLearning(
-                            data_nodes, data_edges, bt_pos, bt_learn_node, bt_learn_edge)
+                            data_nodes, data_edges, bt_pos, bt_learn_node_deep, bt_learn_edge, bt_learn_node_unsupervised)
                         data_nodes = ML()
                         color(data_edges, data_nodes, classif=True)
                         CP(color.edge_legend, color.node_legend,
@@ -625,8 +673,8 @@ class CreateElements():
                         ])
 
             else:
-                x = "{}".format(bt_learn_node)
-                if x == "False":
+                # x = "{}".format(bt_learn_node_deep)
+                if bt_learn_node_deep and bt_learn_node_unsupervised:
                     if data_nodes == {}:
                         return html.Div([
                             html.H6("Not any data uploaded")

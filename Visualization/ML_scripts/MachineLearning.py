@@ -9,8 +9,8 @@ Created on Thu Jun 16 15:22:22 2022
 import copy
 import pandas as pd
 from ML_scripts.my_dataset import MyDataset
-from ML_scripts.Train import run
-from ML_scripts.model import AML_model 
+from ML_scripts.Train_node_classification_deep import run_node_classif_deep
+from ML_scripts.Train_node_classification_unsupervised import run_node_classif_unsupervised
 from sklearn.manifold import TSNE
 import numpy as np
 import shutil
@@ -30,11 +30,12 @@ class MachineLearning():
         
     """
     
-    def __init__(self,data_nodes,data_edges,position=False,learn_node=False,learn_edge=False):
+    def __init__(self,data_nodes,data_edges,position=False,learn_node_classif_deep=False,learn_edge=False,learn_node_classif_unsupervised=False):
         self.data_nodes=data_nodes
         self.data_edges=data_edges
-        self.learn_node=learn_node
+        self.learn_node_classif_deep=learn_node_classif_deep
         self.learn_edge=learn_edge
+        self.learn_node_classif_unsupervised=learn_node_classif_unsupervised
         self.position=position
         
     def __call__(self):
@@ -63,8 +64,34 @@ class MachineLearning():
         df_nodes = pd.DataFrame(self.data_nodes)
         df_edges = pd.DataFrame(self.data_nodes)
         
-        if self.learn_node :
-            learn = run(self.dataset)
+        if self.learn_node_classif_deep :
+            learn = run_node_classif_deep(self.dataset)
+            
+            data_test_nodes = learn()
+            data_test_nodes = [mapping_class[elem] for elem in data_test_nodes]
+            
+            data_test_true_nodes = df_nodes[self.dataset[0].test_mask.tolist()]
+            true_class = list(data_test_true_nodes['class'])
+            for i in range(len(data_test_true_nodes)):
+    
+                if true_class[i]!=data_test_nodes[i]:
+                    df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'wrong_'+true_class[i]+"_sep_"+data_test_nodes[i]
+                else:
+                    df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'true_'+data_test_nodes[i]
+                    
+            if self.position==True:
+                
+                X_embedded=self.get_embedding(os.path.join(data_dir,'data.pt'),os.path.join(model_dir,os.listdir(model_dir)[0]))
+                df_nodes.loc[:,'positionX']=X_embedded[0]
+                df_nodes.loc[:,'positionY']=X_embedded[1]
+                
+            shutil.rmtree(os.path.join(data_dir))
+            shutil.rmtree(model_dir)
+            return df_nodes.to_dict('records')
+        
+        
+        elif self.learn_node_classif_unsupervised :
+            learn = run_node_classif_unsupervised(self.dataset)
             
             data_test_nodes = learn()
             data_test_nodes = [mapping_class[elem] for elem in data_test_nodes]
@@ -94,10 +121,11 @@ class MachineLearning():
             
     
     def get_embedding(self,data_path,model_name):
-        Data=self.dataset[0]
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        Data=self.dataset[0].to(device)
         model = torch.load(model_name)
-        Embeddings = model.GNN_model(Data.x,Data.edge_index)
-        Embeddings = Embeddings.detach().numpy()
+        Embeddings = model.forward(Data.x,Data.edge_index) # Pb with the forward of deepInfo because return several objects! 
+        Embeddings = Embeddings.detach().cpu().numpy()
         X_embedded = TSNE(n_components=2, learning_rate='auto',
                         init='random').fit_transform(Embeddings)
         X_embedded=X_embedded.transpose()

@@ -98,7 +98,7 @@ def test(model,data,device):
         # print(data.y[mask])
         # print([all(elem) for elem in pred[mask] == data.y[mask]])
         # accs.append(int(sum(([all(elem) for elem in pred[mask] == data.y[mask]]))) / int(mask.sum()))
-        accs.append(accuracy_score(data.y[mask], pred[mask]))
+        accs.append(accuracy_score(data.y[mask].cpu(), pred[mask].cpu()))
     # roc_auc = roc_auc_score(y, pred)
     # recall = recall_score(y,pred)
     # precision = precision_score(y,pred)
