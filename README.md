@@ -24,7 +24,7 @@ Download the repository and store it in a directory then navigate to the corresp
 ## Docker
 With gpu
 ```
-  docker build -t visualization-no-cuda -f dockerfileCuda .
+  docker build -t visualization-cuda -f dockerfileCuda .
   docker run -p 8050:8050 --rm visualization-cuda
 ```
 Without gpu
