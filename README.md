@@ -19,7 +19,7 @@ Here we can see that the CytoView is delimited by the red rectangle excepted the
 Also the ControlPanel is delimited by the blue rectangle.
 
 # Instalation and running process
-Follow the step for docker and then connect to http://localhost:8050/ to use the SaaS app
+Download the repository and store it in a directory then navigate to the corresponding directory and launch the following command :
 
 ## Docker
 With gpu
@@ -32,7 +32,7 @@ Without gpu
   docker build -t visualization-no-cuda -f dockerfileNoCuda .
   docker run -p 8050:8050 --rm visualization-no-cuda
 ```
-
+Once the steps for dockers have been correctly pursued connect to http://localhost:8050/ to use the SaaS app
 ## Possible change
 ### In dockerfiles
 To switch from a local use of the app using only flask and dash we could use a gunicorn server by uncommenting the last line and commenting the previous one. 
