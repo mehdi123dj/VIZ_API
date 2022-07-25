@@ -1,28 +1,27 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 20 15:49:34 2022
+Created on Mon Jul 25 12:04:28 2022
 
 @author: remit
 """
 
 
-# from torch_geometric.loader.dataloader import DataLoader
+from ML_scripts.model_edge_prediction_supervised import test, train, Net
+import os.path as osp
 
-from ML_scripts.model_node_classification_deep import AML_model, train, test
-import torch 
+import torch
 import warnings
 import copy 
 import os 
 import argparse
-from torch.nn.functional import one_hot
+import torch_geometric.transforms as T
+
+
 
 warnings.filterwarnings('always') 
-
-
-
 model_dir = "model"
 
-class run_node_classif_deep():
+class run_edge_prediction_supervised():
     def __init__(self,dataset):
         self.dataset=dataset
         
@@ -44,14 +43,14 @@ class run_node_classif_deep():
         parser.add_argument(
             "-hc",
             "--hidden-channels",
-            default=32,
+            default=128,
             type=int,
         )
     
         parser.add_argument(
             "-oc",
             "--out-channels",
-            default=16,
+            default=64,
             type=int,
         )
     
@@ -93,7 +92,7 @@ class run_node_classif_deep():
         parser.add_argument(
             "-ne",
             "--number-epochs",
-            default=200,
+            default=300,
             type=int,
         )
     
@@ -101,7 +100,7 @@ class run_node_classif_deep():
         parser.add_argument(
             "-t",
             "--type",
-            default='GAT',
+            default='edge_pred',
             type=str,
         )
     
@@ -121,57 +120,53 @@ class run_node_classif_deep():
             type=str,
         )
     
+
+    
         args = parser.parse_args()
         
         data = self.dataset[0]
-
-        data.y = one_hot(data.y)
         in_channels = len(data.x[0])
 
-        num_classes = len(data.y[0])
+        num_classes = max(data.y)+1
         print("Number of feature: ",in_channels)
-        print("Number of classes: ",num_classes)
+        # print("Number of classes: ",num_classes)
+        neg_sampling_ratio=5
+        
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        model = AML_model(
-                            in_channels = in_channels, 
-                            hidden_channels = args.hidden_channels,
-                            num_layers = args.number_layers, 
-                            out_channels = args.out_channels,
-                            dropout = args.dropout,
-                            act = args.activation, 
-                            negative_slope = args.negative_slope, 
-                            jk = args.jumping_knowledge, 
-                            heads = args.number_heads,
-                            num_classes = num_classes,
-                            _type = args.type
-                        ).to(device)
+    
+        transform = T.Compose([
+            T.NormalizeFeatures(),
+            T.ToDevice(device),
+            T.RandomLinkSplit(num_val=0.05, num_test=0.1, is_undirected=True,
+                              add_negative_train_samples=True,
+                              neg_sampling_ratio=neg_sampling_ratio),
+        ])
+        
+        D = transform(data) # RandomLinkSplit for train,val,test for edges
+        print(D[0])
+        print(D[1])
+        print(D[2])
+        model = Net(in_channels, args.hidden_channels, args.out_channels).to(device)
+        optimizer = torch.optim.Adam(params=model.parameters(), lr = args.learning_rate)
     
     
-
-        optimizer = torch.optim.Adam(model.parameters(), lr = args.learning_rate)
     
-        best_val_acc = 0
-        test_list = []
+        best_val_auc = final_test_auc = 0
         print('Start training model of type : ', args.type)
         for epoch in range(1, args.number_epochs+1):
-            loss = train(model,data,optimizer,device)
-            acc,test_class = test(model,data,device)
-            val_acc,test_acc = acc[1:]
-             # = test(model,data,device)
-            if val_acc > best_val_acc:
+            loss = train(model,D[0],optimizer,neg_sampling_ratio)
+            val_auc = test(D[1],model)
+            test_auc = test(D[2],model)
+            if val_auc > best_val_auc:
                 best_model = copy.deepcopy(model)
-                best_val_acc = val_acc
-                best_test_acc = test_acc
-                test_list = [list(elem).index(1) for elem in test_class]
-                print("[New best Model]")
-            print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}')
-            print(f'Val accuracy: {val_acc:.4f}')
-            print(f'Test accuracy: {test_acc:.4f}')
-            print(' ')
-    
+                # best_val = val_auc
+                final_test_auc = test_auc
+            print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, Val: {val_auc:.4f}, '
+                  f'Test: {test_auc:.4f}')
+        
+        print(f'Final Test: {final_test_auc:.4f}')
         SAVEPATH = os.path.join(model_dir,args.model_name)
         print('Done training')
         torch.save(best_model, SAVEPATH)
-        print(f'Final Test: {best_test_acc:.4f}')
-        return test_list.detach().cpu()
-    
+        z = model.encode(D[2].x, D[2].edge_index)
+        return model.decode_all(z).detach().cpu()

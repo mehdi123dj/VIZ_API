@@ -11,6 +11,7 @@ import pandas as pd
 from ML_scripts.my_dataset import MyDataset
 from ML_scripts.Train_node_classification_deep import run_node_classif_deep
 from ML_scripts.Train_node_classification_unsupervised import run_node_classif_unsupervised
+from ML_scripts.Train_edge_prediction_supervised import run_edge_prediction_supervised
 from sklearn.manifold import TSNE
 import numpy as np
 import shutil
@@ -62,7 +63,7 @@ class MachineLearning():
         mapping_id_node = {v:u for u,v in mapping_id_node.items()}
         
         df_nodes = pd.DataFrame(self.data_nodes)
-        df_edges = pd.DataFrame(self.data_nodes)
+        df_edges = pd.DataFrame(self.data_edges)
         
         if self.learn_node_classif_deep :
             learn = run_node_classif_deep(self.dataset)
@@ -87,7 +88,7 @@ class MachineLearning():
                 
             shutil.rmtree(os.path.join(data_dir))
             shutil.rmtree(model_dir)
-            return df_nodes.to_dict('records')
+            return df_nodes.to_dict('records'),self.data_edges
         
         
         elif self.learn_node_classif_unsupervised :
@@ -113,11 +114,38 @@ class MachineLearning():
                 
             shutil.rmtree(os.path.join(data_dir))
             shutil.rmtree(model_dir)
-            return df_nodes.to_dict('records')
+            return df_nodes.to_dict('records'),self.data_edges
         
         else :
+            learn = run_edge_prediction_supervised(self.dataset)
             
-            return df_nodes.to_dict('records')
+            data_test_edges = learn()
+            source=[]
+            target=[]
+
+            
+            for i in range(len(data_test_edges[0])):
+                source.append(mapping_id_node[data_test_edges[0][i]])
+                target.append(mapping_id_node[data_test_edges[1][i]])
+            source=pd.Series(source)
+            target=pd.Series(target)
+            
+            df_edges['source']=pd.concat([df_edges['source'], source], ignore_index=True)
+            df_edges['target']=pd.concat([df_edges['target'], target], ignore_index=True)
+            df_edges['class']=pd.concat([df_edges['class'], pd.Series(['predicted' for elem in data_test_edges[0]])], ignore_index=True)
+            # data_test_predicted_edges = [mapping_class[elem] for elem in data_test_nodes]
+            print(len(data_test_edges[0]))
+            print(data_test_edges)
+            
+            if self.position==True:
+                
+                X_embedded=self.get_embedding(os.path.join(data_dir,'data.pt'),os.path.join(model_dir,os.listdir(model_dir)[0]))
+                df_nodes.loc[:,'positionX']=X_embedded[0]
+                df_nodes.loc[:,'positionY']=X_embedded[1]
+            
+            shutil.rmtree(os.path.join(data_dir))
+            shutil.rmtree(model_dir)
+            return df_nodes.to_dict('records'),df_edges.to_dict('records')
             
     
     def get_embedding(self,data_path,model_name):
@@ -127,6 +155,8 @@ class MachineLearning():
         model = torch.load(model_name)
         if 'DeepInfoMax' in model_name:
             Embeddings = model.forward(Data.x,Data.edge_index)[0] # Pb with the forward of deepInfo because return several objects! 
+        elif 'edge_pred' in model_name:
+            Embeddings = model.encode(Data.x,Data.edge_index)
         else:
             Embeddings = model.forward(Data.x,Data.edge_index)
         Embeddings = Embeddings.detach().cpu().numpy()

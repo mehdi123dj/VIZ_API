@@ -258,15 +258,9 @@ class CreateElements():
 
                 html.Div(
                     children=[
-                        html.Div(
-                            children=[
-
-                            ],
-                            id='div-dropdown-edge',
-                            style={'position': 'relative'}),
 
                         html.Button(
-                            'Launch Learning', id='bt-learning-launch', style={'position': 'relative'})
+                            'Launch Learning', id='bt-learning-launch', style={'display': 'none','position': 'relative'})
                     ],
                     style={'textAlign': 'center', 'margin': '1em'}),
             ],
@@ -497,8 +491,6 @@ class CreateElements():
                 return [dash.no_update, {'display': 'none'}, {'display': 'none'}, {'display': 'none'},{'display': 'none'}, {'display': 'none'}, dash.no_update, dash.no_update]
 
         @app.callback(
-            Output('div-dropdown-edge', 'children'),
-            Output('div-dropdown-edge', 'style'),
             Output('bt-learning-launch', 'style'),
             Output('bt-learning-node-deep', 'on'),
             Output('bt-learning-node-unsupervised', 'on'),
@@ -532,25 +524,21 @@ class CreateElements():
             if ('bt-learning-edge' in changed_id) and edge == "True":
                 df_edges = pd.DataFrame(data_edges)
 
-                return [[html.H6("Possible edge class to learn on :"),
-                        dcc.Dropdown(list(set(df_edges["class"])), id='dropdown-edge')],
-                        {'position': 'relative', 'display': 'inline-block'},
+                return [
                         {'margin-left': '20px', 'position': 'relative', 'display': 'inline-block', 'vertical-align': 'middle'},
                         False,
                         False,
                         dash.no_update]
 
             elif ('bt-learning-node-deep' in changed_id) and node_deep == "True":
-                return [[],
-                        {'display': 'none', 'position': 'relative'},
+                return [
                         {'position': 'relative'},
                         dash.no_update,
                         False,
                         False,
                         ]               
             elif ('bt-learning-node-unsupervised' in changed_id) and node_unsupervised == "True":
-                return [[],
-                        {'display': 'none', 'position': 'relative'},
+                return [
                         {'position': 'relative'},
                         False,
                         dash.no_update,
@@ -558,8 +546,7 @@ class CreateElements():
                         ]      
             
             else:
-                return [[],
-                        {'display': 'none', 'position': 'relative'},
+                return [
                         {'display': 'none', 'position': 'relative'},
                         False,
                         False,
@@ -646,16 +633,13 @@ class CreateElements():
                 if triggered == None:
                     return dash.no_update
                 else:
-                    print("here")
                     # print(('positionX' and 'positionY' in data_nodes[0]) or bt_pos)
                     if ('positionX' and 'positionY' in data_nodes[0]) or bt_pos:
                         
-                        print(bt_learn_edge)
-                        print(bt_learn_node_unsupervised)
-                        print(bt_learn_node_deep)
+
                         ML = MachineLearning(
                             data_nodes, data_edges, bt_pos, bt_learn_node_deep, bt_learn_edge, bt_learn_node_unsupervised)
-                        data_nodes = ML()
+                        data_nodes,data_edges = ML()
                         color(data_edges, data_nodes, classif=True)
                         CP(color.edge_legend, color.node_legend,
                            data_edges, data_nodes)
