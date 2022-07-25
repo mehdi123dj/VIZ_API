@@ -19,7 +19,17 @@ Here we can see that the CytoView is delimited by the red rectangle excepted the
 Also the ControlPanel is delimited by the blue rectangle.
 
 # Instalation and running process
-Download the repository and store it in a directory then navigate to the corresponding directory and launch the following command :
+Download the repository and store it in a directory, you can use to clone with https
+```
+git clone https://gitlab.com/d7036/visualization.git 
+
+```
+
+to clone with ssh:
+```
+git clone git@gitlab.com:d7036/visualization.git 
+```
+then navigate to the corresponding directory and launch the following command :
 
 ## Docker
 With gpu
