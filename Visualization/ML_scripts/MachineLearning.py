@@ -123,8 +123,12 @@ class MachineLearning():
     def get_embedding(self,data_path,model_name):
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         Data=self.dataset[0].to(device)
+        
         model = torch.load(model_name)
-        Embeddings = model.forward(Data.x,Data.edge_index) # Pb with the forward of deepInfo because return several objects! 
+        if 'DeepInfoMax' in model_name:
+            Embeddings = model.forward(Data.x,Data.edge_index)[0] # Pb with the forward of deepInfo because return several objects! 
+        else:
+            Embeddings = model.forward(Data.x,Data.edge_index)
         Embeddings = Embeddings.detach().cpu().numpy()
         X_embedded = TSNE(n_components=2, learning_rate='auto',
                         init='random').fit_transform(Embeddings)

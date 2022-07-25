@@ -92,7 +92,7 @@ class run_node_classif_unsupervised():
         parser.add_argument(
             "-ne",
             "--number-epochs",
-            default=20,
+            default=200,
             type=int,
         )
     
