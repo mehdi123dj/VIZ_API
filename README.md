@@ -69,8 +69,12 @@ Then in CreateElements.py file uncomment wheelSensitivity
     │   ├── ML_scripts
     │   │   ├── MachineLearning.py  # Create a class that is launching the creation of the dataset, train the model and give the results on test set for the graph to be shown properly
     │   │   ├── my_dataset.py       # Creation of a pytorch geometric dataset from the data saved in dcc.Store objects
-    │   │   ├── train.py            # 
-    │   │   ├── model.py            #
+    │   │   ├── Train_edge_prediction_supervised.py             
+    │   │   ├── model_edge_prediction_supervised.py            
+    │   │   ├── Train_node_classification_deep.py             
+    │   │   ├── model_node_classification_deep.py          
+    │   │   ├── Train_node_classification_unsupervised.py             
+    │   │   ├── model_node_classification_unsupervised.py          
     │   ├── Config
     │   │   ├── ConfigExplicit.txt          # Config with explicit ref to weblinks
     │   │   ├── Config.yml
