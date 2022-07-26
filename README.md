@@ -37,6 +37,7 @@ First install docker https://docs.docker.com/get-docker/ by following the step f
  sudo systemctl start docker
 ```
 Once docker daemon has been launched depending on your configuration you will have to copy/paste the following command.
+
 With gpu
 ```
   docker build -t visualization-cuda -f dockerfileCuda .
