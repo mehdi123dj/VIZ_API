@@ -80,7 +80,7 @@ class MyDataset(InMemoryDataset):
                     edge_index=edge_index,
                     y=y,
                     )
-
+        # Create mask for node classification, for edges prediction train val test are set randomly by the train function itself
         train_mask, val_mask, test_mask = torch.tensor(
             [False]*n), torch.tensor([False]*n), torch.tensor([False]*n)
 

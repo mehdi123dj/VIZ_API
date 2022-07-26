@@ -62,8 +62,8 @@ class MachineLearning():
         # Could be used to find back 
         mapping_id_node = {v:u for u,v in mapping_id_node.items()}
         
-        df_nodes = pd.DataFrame(self.data_nodes)
-        df_edges = pd.DataFrame(self.data_edges)
+        df_nodes = copy.deepcopy(pd.DataFrame(self.data_nodes))
+        df_edges = copy.deepcopy(pd.DataFrame(self.data_edges))
         
         if self.learn_node_classif_deep :
             learn = run_node_classif_deep(self.dataset)
@@ -123,20 +123,28 @@ class MachineLearning():
             source=[]
             target=[]
 
-            
+        # print(data_test_edges[0][i])
             for i in range(len(data_test_edges[0])):
                 source.append(mapping_id_node[data_test_edges[0][i]])
                 target.append(mapping_id_node[data_test_edges[1][i]])
             source=pd.Series(source)
             target=pd.Series(target)
             
-            df_edges['source']=pd.concat([df_edges['source'], source], ignore_index=True)
-            df_edges['target']=pd.concat([df_edges['target'], target], ignore_index=True)
-            df_edges['class']=pd.concat([df_edges['class'], pd.Series(['predicted' for elem in data_test_edges[0]])], ignore_index=True)
-            # data_test_predicted_edges = [mapping_class[elem] for elem in data_test_nodes]
-            print(len(data_test_edges[0]))
-            print(data_test_edges)
+            # df_edges.source=pd.concat([df_edges['source'], source], ignore_index=True)
+            # df_edges.target=pd.concat([df_edges['target'], target], ignore_index=True)
+            # df_edges["class"]=pd.concat([df_edges['class'], pd.Series(['predicted' for elem in data_test_edges[0]])], ignore_index=True)
             
+            df=pd.DataFrame({'source':source,
+                            'target':target,
+                            'class':['predicted' for elem in data_test_edges[0]]})
+            df_edges=pd.concat([df_edges,df],ignore_index=True)
+            # print(pd.concat([df_edges['source'], source], ignore_index=True))
+            # print(pd.concat([df_edges['target'], target], ignore_index=True))
+            # print(pd.concat([df_edges['class'], pd.Series(['predicted' for elem in data_test_edges[0]])], ignore_index=True))
+            # data_test_predicted_edges = [mapping_class[elem] for elem in data_test_nodes]
+            # print(len(data_test_edges[0]))
+            # print(data_test_edges)
+            print(df_edges)
             if self.position==True:
                 
                 X_embedded=self.get_embedding(os.path.join(data_dir,'data.pt'),os.path.join(model_dir,os.listdir(model_dir)[0]))

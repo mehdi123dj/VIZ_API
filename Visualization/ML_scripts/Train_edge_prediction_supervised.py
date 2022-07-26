@@ -168,5 +168,7 @@ class run_edge_prediction_supervised():
         SAVEPATH = os.path.join(model_dir,args.model_name)
         print('Done training')
         torch.save(best_model, SAVEPATH)
+        
+        # Because .x and .edge_index are the same for train/test/val the inference take place on all the nodes
         z = model.encode(D[2].x, D[2].edge_index)
-        return model.decode_all(z).detach().cpu()
+        return model.decode_all(z).detach().cpu().numpy()
