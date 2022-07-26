@@ -18,7 +18,9 @@ Here we can see that the CytoView is delimited by the red rectangle excepted the
 
 Also the ControlPanel is delimited by the blue rectangle.
 
-# Instalation and running process
+# Instalation 
+
+## Cloning git
 Download the repository and store it in a directory, you can use to clone with https
 ```
 git clone https://gitlab.com/d7036/visualization.git 
@@ -29,14 +31,14 @@ to clone with ssh:
 ```
 git clone git@gitlab.com:d7036/visualization.git 
 ```
-then navigate to the corresponding directory and launch the following command :
+
 
 ## Docker
 First install docker https://docs.docker.com/get-docker/ by following the step from the official site. Then launch the docker desktop app. Under linux you can also type :
 ```
  sudo systemctl start docker
 ```
-Once docker daemon has been launched depending on your configuration you will have to copy/paste the following command.
+Once docker daemon has been launched depending on your configuration then navigate to the corresponding directory and launch the following command :
 
 With gpu
 ```
@@ -56,7 +58,16 @@ To switch from a local use of the app using only flask and dash we could use a g
 We could manually changed one file to be able to control wheel sensitivity the process is described there (https://github.com/plotly/dash-cytoscape/compare/wheel-sensitivity-feature)
 Then in CreateElements.py file uncomment wheelSensitivity
 
-## File Tree Structure
+# Used package and dependencies
+To create the app I used the following packages (see evironment yml files):
+* dash : To build a full-stack web app with interactive data visualization. (https://github.com/plotly/dash)
+* dash-bootstrap-components : library of Bootstrap components for Plotly Dash (https://github.com/facultyai/dash-bootstrap-components)
+* dash_cytoscape : graph visualization component for creating easily customizable, high-performance, interactive, and web-based networks (https://github.com/plotly/dash-cytoscape)
+* dash-daq : framework that provides pure Python abstraction around HTML, CSS, and JavaScript (https://github.com/plotly/dash-daq)
+* pyg : Pytorch geometric library use for machine learning tasks on graphs (https://github.com/pyg-team/pytorch_geometric). Need the torchvision and torchaudio packages.
+* gunicorn : Python WSGI (Web Server Gateway Interface) HTTP Server for UNIX (https://github.com/benoitc/gunicorn). I only used it when the line is decommented in the docker file for production server purposes.
+
+# File Tree Structure
 
     ├── Visualization                    
     │   ├── ColorMap.py             # Part repsonsible to create adequate color mapping for nodes and edges legend
@@ -107,7 +118,7 @@ Then in CreateElements.py file uncomment wheelSensitivity
 ```
 
 
-## Input files format
+# Input files format
 They are as follow :
 
 * **CSV and XLS files** (example with cora file)
@@ -220,11 +231,6 @@ They are as follow :
   * **positionX** is the position of the node along x axis
   * **positionY** is the position of the node along y axis
   * **feature** is a numeric vectorized representation of the attribute of the node pre computed by the user (this will be used to train the model, if the option is choosed, and make some prediction on node classification)
-    
-
-
-### Color Map file
-Here you can change the colormap for nodes and edges. The default color when there is too much classes is grey with #999999
 
 # Some known issues
 * Because I use the dcc.store component and because this component store in browser memory the file that are saved it is impossible to store big files (>150 MB) furthemore it is quasi impossible to use the app on a mobile
