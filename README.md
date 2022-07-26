@@ -121,7 +121,7 @@ To create the app I used the following packages (see evironment yml files):
 # Input files format
 They are as follow :
 
-* **CSV and XLS files** (example with cora file)
+* **CSV and XLS files** 
 
     * File for edges should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
     ```
