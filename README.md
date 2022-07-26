@@ -96,8 +96,12 @@ Then in CreateElements.py file uncomment wheelSensitivity
       CreateElements.py---FileConvert.py;
       CreateElements.py---MachineLearning.py;
       MachineLearning.py---my_dataset.py;
-      MachineLearning.py---model.py;
-      MachineLearning.py---train.py;
+      MachineLearning.py---Train_node_classification_unsupervised.py;
+      MachineLearning.py---model_node_classification_unsupervised.py;
+      MachineLearning.py---Train_node_classification_deep.py;
+      MachineLearning.py---model_node_classification_deep.py;
+      MachineLearning.py---Train_edge_prediction_supervised.py; 
+      MachineLearning.py---model_edge_prediction_supervised.py;
       CytoView.py---Stylesheet.py;
       CytoView.py---NodeLayout.py;
 ```
