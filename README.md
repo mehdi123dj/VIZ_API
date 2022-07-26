@@ -32,6 +32,11 @@ git clone git@gitlab.com:d7036/visualization.git
 then navigate to the corresponding directory and launch the following command :
 
 ## Docker
+First install docker https://docs.docker.com/get-docker/ by following the step from the official site. Then launch the docker desktop app. Under linux you can also type :
+```
+ sudo systemctl start docker
+```
+Once docker daemon has been launched depending on your configuration you will have to copy/paste the following command.
 With gpu
 ```
   docker build -t visualization-cuda -f dockerfileCuda .
