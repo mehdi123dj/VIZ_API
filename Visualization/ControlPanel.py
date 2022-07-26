@@ -93,6 +93,7 @@ class ControlPanel():
                 Do not have any return arguments but apply changes to the instance of the CytoView class
 
             """
+        self.data_edges=data_edges
         self.node_legend_map = {}
         # Allows to put all the different nodes type of wrong into one wrong button for each class and create the corresponding map
         for i in range(len(node_legend)):
@@ -286,9 +287,8 @@ class ControlPanel():
                    "label": MATCH}, "style"),
             Input({"index": MATCH, "class": "edge_legend",
                   "label": MATCH}, "n_clicks"),
-            State('stored-data-edges', 'data'),
         )
-        def edge_selection(n, data_edge):
+        def edge_selection(n):
             r"""
                 Function that is changing the aspect of the MATCH edge button in the controlPanel when clicked on depending on whether it
                 is selected or not. Furthemore this function is changing the mask_edge instance variable to remove or add edges of 
@@ -305,8 +305,9 @@ class ControlPanel():
                         The only change is for opacity value wich is set to 0.2 if the edge are not selected (if the n value is odd)
 
                 """
+                
             triggered = dash.callback_context.triggered
-
+            data_edge=self.data_edges
             if n is None:
                 return {'height': '5vh', 'margin': "2%", 'display': 'flex', 'align-items': 'center'}
 
@@ -337,9 +338,8 @@ class ControlPanel():
                    "label": MATCH}, "style"),
             Input({"index": MATCH, "class": "node_legend",
                   "label": MATCH}, "n_clicks"),
-            State('stored-data-edges', 'data'),
         )
-        def node_selction(n, data_edge):
+        def node_selction(n):
             r"""
                 Function that is changing the aspect of the MATCH node button in the controlPanel when clicked on depending on whether it
                 is selected or not. Furthemore this function is changing the mask_node instance variable to remove or add nodes of 
@@ -356,6 +356,7 @@ class ControlPanel():
                         The only change is for opacity value wich is set to 0.2 if the edge are not selected (if the n value is odd)
 
                 """
+            data_edge=self.data_edges
             triggered = dash.callback_context.triggered
 
             if n is None:

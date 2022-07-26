@@ -78,7 +78,7 @@ class CreateElements():
                                 dbc.ModalBody(dcc.Markdown('''
                                     They are as follow :
                                     
-                                    * **CSV and XLS files** (example with cora file)
+                                    * **CSV and XLS files** 
                                     
                                         * File for edges should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
                                         ```
@@ -640,6 +640,7 @@ class CreateElements():
                         ML = MachineLearning(
                             data_nodes, data_edges, bt_pos, bt_learn_node_deep, bt_learn_edge, bt_learn_node_unsupervised)
                         data_nodes,data_edges = ML()
+                        # print(data_edges)
                         color(data_edges, data_nodes, classif=True)
                         CP(color.edge_legend, color.node_legend,
                            data_edges, data_nodes)

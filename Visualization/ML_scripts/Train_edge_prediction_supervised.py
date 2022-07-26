@@ -129,7 +129,7 @@ class run_edge_prediction_supervised():
 
         num_classes = max(data.y)+1
         print("Number of feature: ",in_channels)
-        # print("Number of classes: ",num_classes)
+
         neg_sampling_ratio=5
         
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -143,9 +143,6 @@ class run_edge_prediction_supervised():
         ])
         
         D = transform(data) # RandomLinkSplit for train,val,test for edges
-        print(D[0])
-        print(D[1])
-        print(D[2])
         model = Net(in_channels, args.hidden_channels, args.out_channels).to(device)
         optimizer = torch.optim.Adam(params=model.parameters(), lr = args.learning_rate)
     

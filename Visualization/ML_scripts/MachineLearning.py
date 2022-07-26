@@ -123,28 +123,23 @@ class MachineLearning():
             source=[]
             target=[]
 
-        # print(data_test_edges[0][i])
+
             for i in range(len(data_test_edges[0])):
-                source.append(mapping_id_node[data_test_edges[0][i]])
-                target.append(mapping_id_node[data_test_edges[1][i]])
+                source.append(int(mapping_id_node[data_test_edges[0][i]]))
+                target.append(int(mapping_id_node[data_test_edges[1][i]]))
             source=pd.Series(source)
             target=pd.Series(target)
-            
-            # df_edges.source=pd.concat([df_edges['source'], source], ignore_index=True)
-            # df_edges.target=pd.concat([df_edges['target'], target], ignore_index=True)
-            # df_edges["class"]=pd.concat([df_edges['class'], pd.Series(['predicted' for elem in data_test_edges[0]])], ignore_index=True)
-            
+            print(False in source.isin( df_nodes['id']))
+            print(False in target.isin( df_nodes['id']))
+
             df=pd.DataFrame({'source':source,
                             'target':target,
                             'class':['predicted' for elem in data_test_edges[0]]})
             df_edges=pd.concat([df_edges,df],ignore_index=True)
-            # print(pd.concat([df_edges['source'], source], ignore_index=True))
-            # print(pd.concat([df_edges['target'], target], ignore_index=True))
-            # print(pd.concat([df_edges['class'], pd.Series(['predicted' for elem in data_test_edges[0]])], ignore_index=True))
-            # data_test_predicted_edges = [mapping_class[elem] for elem in data_test_nodes]
-            # print(len(data_test_edges[0]))
-            # print(data_test_edges)
-            print(df_edges)
+            for elem in df_edges.keys():
+                if elem not in ['source','target','class']:
+                    df_edges[elem] = df_edges[elem].map(str)
+                    
             if self.position==True:
                 
                 X_embedded=self.get_embedding(os.path.join(data_dir,'data.pt'),os.path.join(model_dir,os.listdir(model_dir)[0]))
@@ -162,7 +157,7 @@ class MachineLearning():
         
         model = torch.load(model_name)
         if 'DeepInfoMax' in model_name:
-            Embeddings = model.forward(Data.x,Data.edge_index)[0] # Pb with the forward of deepInfo because return several objects! 
+            Embeddings = model.forward(Data.x,Data.edge_index)[0]
         elif 'edge_pred' in model_name:
             Embeddings = model.encode(Data.x,Data.edge_index)
         else:
