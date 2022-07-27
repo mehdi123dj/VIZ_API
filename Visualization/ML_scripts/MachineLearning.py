@@ -98,13 +98,15 @@ class MachineLearning():
             data_test_nodes = [mapping_class[elem] for elem in data_test_nodes]
             
             data_test_true_nodes = df_nodes[self.dataset[0].test_mask.tolist()]
-            true_class = list(data_test_true_nodes['class'])
-            for i in range(len(data_test_true_nodes)):
-    
-                if true_class[i]!=data_test_nodes[i]:
-                    df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'wrong_'+true_class[i]+"_sep_"+data_test_nodes[i]
-                else:
-                    df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'true_'+data_test_nodes[i]
+            if 'class' in df_nodes:
+                
+                true_class = list(data_test_true_nodes['class'])
+                for i in range(len(data_test_true_nodes)):
+        
+                    if true_class[i]!=data_test_nodes[i]:
+                        df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'wrong_'+true_class[i]+"_sep_"+data_test_nodes[i]
+                    else:
+                        df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'true_'+data_test_nodes[i]
                     
             if self.position==True:
                 

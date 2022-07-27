@@ -170,5 +170,5 @@ class run_node_classif_unsupervised():
         print('Done training')
         torch.save(copy.deepcopy(model), SAVEPATH)
         print(f'Final Test: {best_test_acc:.4f}')
-        return test_class.detach().cpu()
+        return test_class
     

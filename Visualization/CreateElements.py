@@ -393,7 +393,8 @@ class CreateElements():
                 for elem in L[0]:
                     div = out(elem[0])
                     if 'id' in elem[0][0]:  # check if it is the dataframe concerning the nodes
-                        computable = "feature" in elem[0][0] and "class" in elem[0][0]
+                        computable = "feature" in elem[0][0] #and "class" in elem[0][0]
+                        supervised = "class" in elem[0][0]
                         data_nodes = elem[0]
                     else:
                         data_edges = elem[0]
@@ -402,7 +403,8 @@ class CreateElements():
             else:
                 div = out(L[0])
                 if 'id' in L[0][0]:  # check if it is the dataframe concerning the nodes
-                    computable = "feature" in L[0][0] and "class" in L[0][0]
+                    computable = "feature" in L[0][0] #and "class" in L[0][0]
+                    supervised = "class" in elem[0][0]
                     data_nodes = L[0]
                 else:
                     data_edges = L[0]
@@ -496,12 +498,13 @@ class CreateElements():
             Output('bt-learning-node-unsupervised', 'on'),
             Output('bt-learning-edge', 'on'),
             
+            Input('upload-data', 'contents'),
             Input('bt-learning-node-deep', 'on'),
             Input('bt-learning-node-unsupervised', 'on'),
             Input('bt-learning-edge', 'on'),
             State('stored-data-edges', 'data'),
         )
-        def is_visible_launchLearningButton(on_node_deep, on_node_unsupervised, on_edge, data_edges):
+        def is_visible_launchLearningButton(contents, on_node_deep, on_node_unsupervised, on_edge, data_edges):
             r"""
                 Function that make visible/unvisible the launch learning button
 
@@ -521,8 +524,15 @@ class CreateElements():
             node_deep = "{}".format(on_node_deep)
             node_unsupervised = "{}".format(on_node_unsupervised)
             edge = "{}".format(on_edge)
-            if ('bt-learning-edge' in changed_id) and edge == "True":
-                df_edges = pd.DataFrame(data_edges)
+            if 'upload-data' in changed_id:
+                print("here")
+                return [       
+                        {'display': 'none', 'position': 'relative'},
+                        False,
+                        False,
+                        False,
+                        ]    
+            elif ('bt-learning-edge' in changed_id) and edge == "True":
 
                 return [
                         {'margin-left': '20px', 'position': 'relative', 'display': 'inline-block', 'vertical-align': 'middle'},
@@ -633,9 +643,7 @@ class CreateElements():
                 if triggered == None:
                     return dash.no_update
                 else:
-                    # print(('positionX' and 'positionY' in data_nodes[0]) or bt_pos)
                     if ('positionX' and 'positionY' in data_nodes[0]) or bt_pos:
-                        
 
                         ML = MachineLearning(
                             data_nodes, data_edges, bt_pos, bt_learn_node_deep, bt_learn_edge, bt_learn_node_unsupervised)
