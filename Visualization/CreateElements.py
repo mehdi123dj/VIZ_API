@@ -393,8 +393,8 @@ class CreateElements():
                 for elem in L[0]:
                     div = out(elem[0])
                     if 'id' in elem[0][0]:  # check if it is the dataframe concerning the nodes
-                        computable = "feature" in elem[0][0] #and "class" in elem[0][0]
-                        supervised = "class" in elem[0][0]
+                        computable = "feature" in elem[0][0] and "class" in elem[0][0]
+                        # supervised = "class" in elem[0][0]
                         data_nodes = elem[0]
                     else:
                         data_edges = elem[0]
@@ -403,8 +403,8 @@ class CreateElements():
             else:
                 div = out(L[0])
                 if 'id' in L[0][0]:  # check if it is the dataframe concerning the nodes
-                    computable = "feature" in L[0][0] #and "class" in L[0][0]
-                    supervised = "class" in elem[0][0]
+                    computable = "feature" in L[0][0] and "class" in L[0][0]
+                    # supervised = "class" in elem[0][0]
                     data_nodes = L[0]
                 else:
                     data_edges = L[0]
