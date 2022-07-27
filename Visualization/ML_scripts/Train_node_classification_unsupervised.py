@@ -145,8 +145,8 @@ class run_node_classif_unsupervised():
         optimizer = torch.optim.Adam(model.parameters(), lr = args.learning_rate)
     
     
-        best_test_acc=0
-        # test_list = []
+
+
         print('Start training model of type : ', args.type)
         for epoch in range(1, args.number_epochs+1):
             
@@ -154,21 +154,12 @@ class run_node_classif_unsupervised():
 
             test_acc,test_class = test(model,data,device)
             
-             # = test(model,data,device)
-            # if test_acc > best_test_acc:
-            #     best_model = copy.deepcopy(model)
-            #     best_val_acc = val_acc
-                # best_test_acc = test_acc
-                # test_list = [list(elem).index(1) for elem in test_class]
-            #     print("[New best Model]")
             print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}')
-            # print(f'Val accuracy: {val_acc:.4f}')
             print(f'Test accuracy: {test_acc:.4f}')
             print(' ')
     
         SAVEPATH = os.path.join(model_dir,args.model_name)
         print('Done training')
         torch.save(copy.deepcopy(model), SAVEPATH)
-        print(f'Final Test: {best_test_acc:.4f}')
         return test_class
     

@@ -40,5 +40,5 @@ if __name__ == '__main__':
     warnings.filterwarnings(
         action="ignore", message="unclosed", category=ResourceWarning)
 
-    # app.run(debug=True,use_reloader=False)
-    app.run(host="0.0.0.0", port=8050)
+    app.run(debug=True,use_reloader=False)
+    # app.run(host="0.0.0.0", port=8050)

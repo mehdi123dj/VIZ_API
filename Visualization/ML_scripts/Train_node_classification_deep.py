@@ -173,5 +173,5 @@ class run_node_classif_deep():
         print('Done training')
         torch.save(best_model, SAVEPATH)
         print(f'Final Test: {best_test_acc:.4f}')
-        return test_list.detach().cpu()
+        return test_list
     

@@ -525,7 +525,6 @@ class CreateElements():
             node_unsupervised = "{}".format(on_node_unsupervised)
             edge = "{}".format(on_edge)
             if 'upload-data' in changed_id:
-                print("here")
                 return [       
                         {'display': 'none', 'position': 'relative'},
                         False,
@@ -667,27 +666,27 @@ class CreateElements():
 
             else:
                 # x = "{}".format(bt_learn_node_deep)
-                if bt_learn_node_deep and bt_learn_node_unsupervised:
-                    if data_nodes == {}:
-                        return html.Div([
-                            html.H6("Not any data uploaded")
-                        ])
-                    elif 'positionX' and 'positionY' in data_nodes[0]:
-                        color(data_edges, data_nodes)
-                        CP(color.edge_legend, color.node_legend,
-                           data_edges, data_nodes)
-                        cyto(data_nodes, data_edges, CP, color.stylesheet)
-                        return html.Div(children=[
-                            CP.create_CP(),
-                            self.graph
-                        ])
-                    else:
-                        return html.Div([
-                            html.H6(
-                                "No positional values try to use the features if you have some")
-                        ])
+                # if bt_learn_node_deep and bt_learn_node_unsupervised:
+                if data_nodes == {}:
+                    return html.Div([
+                        html.H6("Not any data uploaded")
+                    ])
+                elif 'positionX' and 'positionY' in data_nodes[0]:
+                    color(data_edges, data_nodes)
+                    CP(color.edge_legend, color.node_legend,
+                       data_edges, data_nodes)
+                    cyto(data_nodes, data_edges, CP, color.stylesheet)
+                    return html.Div(children=[
+                        CP.create_CP(),
+                        self.graph
+                    ])
                 else:
-                    return dash.no_update
+                    return html.Div([
+                        html.H6(
+                            "No positional values try to use the features if you have some")
+                        ])
+                # else:
+                #     return dash.no_update
 
         cyto.get_callbacks(app)
         CP.get_callbacks(app)
