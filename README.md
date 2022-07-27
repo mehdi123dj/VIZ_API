@@ -135,7 +135,7 @@ They are as follow :
     0,8,family,Knowing since : 3 years
     ```
 
-    * File for nodes should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls.You are force to furnish values for the **id** you can also provide values for **positionX**,**positionY**,**feature**, **class** and **data**. <A solution could be to add nothing, just let it empty (as shown below).>
+    * File for nodes should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls.You are force to furnish values for the **id** you can also provide values for **positionX**,**positionY**,**feature**, **class** but you will have to furnish value for all rows!  **data** column is not mandatory and you can provide sparse information. <A solution could be to add nothing, just let it empty (as shown below).>
     ```
     id,positionX,positionY,class,data,feature
     0,59.17180618694536,22.11030522902449,teenager,"Name : ludivine, age : 65","[69.33928670214559, 75.45925097633007, 70.99528587804748]"
@@ -148,42 +148,46 @@ They are as follow :
     ```
 
 * **GML Files**
-  File should have the same form as shown below and registered as gml. You are force to furnish values for the **source** and **target** for the edges and **id**,**positionX**,**positionY** for the nodes, you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add **'NaN'**
+  File should have the same form as shown below and registered as gml. You are force to furnish values for the **source** and **target** for the edges and **id** for the nodes. You can provide **positionX**,**positionY**,**features** but you will have to furnish for all rows! For **class** and **data** sparse information could be given, you will have to add **'NaN'** when no information is given (as shown below).
     ```
-      graph [
-    multigraph 1
-    node [
-      id 0
-      label "0"
-      positionX -91.13624117479557
-      positionY -66.76717678700189
-      class "child"
-      data "Name : fabrice, age : 22"
-    ]
-    node [
-      id 1
-      label "1"
-      positionX -46.73841145000086
-      positionY 98.31243547492073
-      class "nan"
-      data "Name : fabrice, age : 55"
-    ]
-    node [
-      id 2
-      label "2"
-      positionX 35.17666039345673
-      positionY 10.373519892509364
-      class "child"
-      data "Name : matthieu, age : 22"
-    ]
-    node [
-      id 3
-      label "3"
-      positionX 8.934336460157127
-      positionY -90.02082919747694
-      class "child"
-      data "nan"
-    ]
+graph [
+  multigraph 1
+  node [
+    id 0
+    label "0"
+    positionX 59.17180618694536
+    positionY 22.11030522902449
+    class "teenager"
+    data "Name : ludivine, age : 65"
+    feature "[69.33928670214559, 75.45925097633007, 70.99528587804748]"
+  ]
+  node [
+    id 1
+    label "1"
+    positionX -96.05151980887148
+    positionY -70.4455325019663
+    class "nan"
+    data "Name : fabrice, age : 78"
+    feature "[96.69387532958712, 69.9360406529872, 74.12491979334999]"
+  ]
+  node [
+    id 2
+    label "2"
+    positionX 33.53531243249327
+    positionY 5.4884938927682185
+    class "adult"
+    data "Name : fabrice, age : 34"
+    feature "[11.618561313551945, 14.80660556644035, 30.668334158786944]"
+  ]
+  node [
+    id 3
+    label "3"
+    positionX -28.93342830907102
+    positionY 5.372990605701716
+    class "adult"
+    data "nan"
+    feature "[25.44111693575362, 2.1404425396293245, 19.5873407260785]"
+  ]
     ...
 
     edge [
