@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import os
-from typing import Callable, List, Optional
+
+from typing import Callable, Optional
 import torch
-from torch_geometric.data import Data, InMemoryDataset, download_url, extract_zip
+from torch_geometric.data import Data, InMemoryDataset
 import pandas as pd
 import random
 import json
 
-import numpy as np
+
 
 
 class MyDataset(InMemoryDataset):
@@ -55,68 +55,78 @@ class MyDataset(InMemoryDataset):
         # dividing the set into 3 parts : train,val,test
 
         index = set(index)
-        # train = set(random.sample(list(index), round(n*0.8)))
-        # val = set(random.sample(list(index - train), round(n*0.1)))
-        # test = index - train - val
-        
+
         node_features = torch.tensor(df_features)
         edge_index = torch.transpose(torch.tensor(
             list(zip(df_edges["source"], df_edges["target"]))).long(), 1, 0)
 
         
-
-
-        df_classes = df_nodes["class"]
-        mapping_class = {}
-        cnt = 0
-        for elem in df_classes.unique():
-            mapping_class[elem] = cnt
-            cnt += 1
-        y = torch.tensor(df_classes.map(mapping_class))
-        data = Data(x=node_features.float(),
-                    edge_index=edge_index,
-                    y=y,
-                    )
-        with open(self.processed_paths[1], 'w') as f:
-            json.dump(mapping_class, f)
-
+        # For datasets with class associated
+        if "class" in df_nodes:
             
+            df_classes = df_nodes["class"]
+            mapping_class = {}
+            cnt = 0
+            for elem in df_classes.unique():
+                mapping_class[elem] = cnt
+                cnt += 1
+            y = torch.tensor(df_classes.map(mapping_class))
+            data = Data(x=node_features.float(),
+                        edge_index=edge_index,
+                        y=y,
+                        )
+            
+            # Create mask for node classification, for edges prediction train val test are set randomly by the train function itself
+            train_mask, val_mask, test_mask = torch.tensor(
+                [False]*n), torch.tensor([False]*n), torch.tensor([False]*n)
 
-        # train_mask = torch.tensor(df_nodes.index.isin(list(train)))
-        # val_mask = torch.tensor(df_nodes.index.isin(list(val)))
-        # test_mask = torch.tensor(df_nodes.index.isin(list(test)))
-        # data = Data(x=node_features.float(),
-        #             edge_index=edge_index,
-        #             )
+            for c in range(len(mapping_class)):
+                idx = (data.y == c).nonzero(as_tuple=False).view(-1)
+                idx = idx[torch.randperm(idx.size(0))[:round(
+                    len(df_nodes.groupby('class').groups[list(mapping_class.keys())[c]])*0.8)]]
+                train_mask[idx] = True
 
+            remaining = (~train_mask).nonzero(as_tuple=False).view(-1)
+            remaining = remaining[torch.randperm(remaining.size(0))]
 
+            num_val = round(n*0.1)
 
+            val_mask[remaining[:num_val]] = True
 
-        
+            test_mask[remaining[num_val:]] = True
 
+            data.train_mask = train_mask
+            data.val_mask = val_mask
+            data.test_mask = test_mask
+            
+            with open(self.processed_paths[1], 'w') as f:
+                json.dump(mapping_class, f)
 
-        # Create mask for node classification, for edges prediction train val test are set randomly by the train function itself
-        train_mask, val_mask, test_mask = torch.tensor(
-            [False]*n), torch.tensor([False]*n), torch.tensor([False]*n)
-
-        for c in range(len(mapping_class)):
-            idx = (data.y == c).nonzero(as_tuple=False).view(-1)
-            idx = idx[torch.randperm(idx.size(0))[:round(
-                len(df_nodes.groupby('class').groups[list(mapping_class.keys())[c]])*0.8)]]
+        # For datasets with no class associated
+        else:
+           
+            data = Data(x=node_features.float(),
+                        edge_index=edge_index,
+                        )
+            
+            train_mask, val_mask, test_mask = torch.tensor(
+                [False]*n), torch.tensor([False]*n), torch.tensor([False]*n)
+            idx = random.sample(range(n),round(0.8*n))
+            
             train_mask[idx] = True
+            
+            remaining = (~train_mask).nonzero(as_tuple=False).view(-1)
+            remaining = remaining[torch.randperm(remaining.size(0))]
+            
+            num_val = round(n*0.1)
+            
+            val_mask[remaining[:num_val]] = True
+            test_mask[remaining[num_val:]] = True
+            
+            data.train_mask = train_mask
+            data.val_mask = val_mask
+            data.test_mask = test_mask
 
-        remaining = (~train_mask).nonzero(as_tuple=False).view(-1)
-        remaining = remaining[torch.randperm(remaining.size(0))]
-
-        num_val = round(n*0.1)
-
-        val_mask[remaining[:num_val]] = True
-
-        test_mask[remaining[num_val:]] = True
-
-        data.train_mask = train_mask
-        data.val_mask = val_mask
-        data.test_mask = test_mask
 
         data = data if self.pre_transform is None else self.pre_transform(data)
         torch.save(self.collate([data]), self.processed_paths[0])

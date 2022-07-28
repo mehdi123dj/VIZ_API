@@ -9,8 +9,7 @@ import dash
 import copy
 import pandas as pd
 from dash import dcc, html
-from dash.dependencies import Input, Output, State, MATCH
-# import dash_cytoscape as cyto# enable svg export
+from dash.dependencies import Input, Output, MATCH
 import dash_cytoscape as cyto
 cyto.load_extra_layouts()
 
@@ -140,8 +139,7 @@ class ControlPanel():
             html.Div(style={'width': '34%', 'height': '2em',
                      'display': 'inline-block', 'background-color': elem[0]})
         ]) for elem in edge_legend]
-        # print(self.E)
-        # print(edge_legend)
+
 
         self.N = [html.Div(id={'class': 'node_legend', 'index': node_legend.index(elem), 'label': elem[1]},
                            children=[
@@ -297,8 +295,6 @@ class ControlPanel():
                 Args:
                     n (int): Number of times the matched case was pressed
                         
-                    data_edge (list): A list of the following format, for each edge:
-                        {'source': int, 'target': int, 'data': str, 'class': str}
 
                 Returns:
                     dictionnary : Will be returned to the style component of the box corresponding to the Matched index in input
@@ -348,8 +344,6 @@ class ControlPanel():
                 Args:
                     n (int): Number of times the matched case was pressed
                         
-                    data_edge (list): A list of the following format, for each edge:
-                        {'source': int, 'target': int, 'data': str, 'class': str}
 
                 Returns:
                     dictionnary : Will be returned to the style component of the box corresponding to the Matched index in input

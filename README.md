@@ -1,9 +1,6 @@
 # Visualization
-* Home page before loading of data
-![Semantic description of image](/ScreenShot/Page_accueil.jpg )
-
-* Home page after loading of data
-![Semantic description of image](/ScreenShot/Page_accueil_files_loaded.jpg )
+* Home page after loading of data without any class defined in dataset (no supervised learning button possible)
+![Semantic description of image](/ScreenShot/Page_accueil_files_loaded_with_features_and_no_class.jpg )
 
 * Home page after loading of data and activation of learn graph node classification option
 ![Semantic description of image](/ScreenShot/Page_accueil_files_loaded_learn_node_classification_activated.jpg )
@@ -121,7 +118,7 @@ To create the app I used the following packages (see evironment yml files):
 # Input files format
 They are as follow :
 
-* **CSV and XLS files** 
+* **CSV and XLS files**, you will have to upload edges and nodes file simultaneously in the drop zone, otherwise will not work.
 
     * File for edges should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
     ```
@@ -150,75 +147,75 @@ They are as follow :
 * **GML Files**
   File should have the same form as shown below and registered as gml. You are force to furnish values for the **source** and **target** for the edges and **id** for the nodes. You can provide **positionX**,**positionY**,**features** but you will have to furnish for all rows! For **class** and **data** sparse information could be given, you will have to add **'NaN'** when no information is given (as shown below).
     ```
-graph [
-  multigraph 1
-  node [
-    id 0
-    label "0"
-    positionX 59.17180618694536
-    positionY 22.11030522902449
-    class "teenager"
-    data "Name : ludivine, age : 65"
-    feature "[69.33928670214559, 75.45925097633007, 70.99528587804748]"
-  ]
-  node [
-    id 1
-    label "1"
-    positionX -96.05151980887148
-    positionY -70.4455325019663
-    class "nan"
-    data "Name : fabrice, age : 78"
-    feature "[96.69387532958712, 69.9360406529872, 74.12491979334999]"
-  ]
-  node [
-    id 2
-    label "2"
-    positionX 33.53531243249327
-    positionY 5.4884938927682185
-    class "adult"
-    data "Name : fabrice, age : 34"
-    feature "[11.618561313551945, 14.80660556644035, 30.668334158786944]"
-  ]
-  node [
-    id 3
-    label "3"
-    positionX -28.93342830907102
-    positionY 5.372990605701716
-    class "adult"
-    data "nan"
-    feature "[25.44111693575362, 2.1404425396293245, 19.5873407260785]"
-  ]
-    ...
+  graph [
+    multigraph 1
+      node [
+        id 0
+        label "0"
+        positionX 59.17180618694536
+        positionY 22.11030522902449
+        class "teenager"
+        data "Name : ludivine, age : 65"
+        feature "[69.33928670214559, 75.45925097633007, 70.99528587804748]"
+      ]
+      node [
+        id 1
+        label "1"
+        positionX -96.05151980887148
+        positionY -70.4455325019663
+        class "nan"
+        data "Name : fabrice, age : 78"
+        feature "[96.69387532958712, 69.9360406529872, 74.12491979334999]"
+      ]
+      node [
+        id 2
+        label "2"
+        positionX 33.53531243249327
+        positionY 5.4884938927682185
+        class "adult"
+        data "Name : fabrice, age : 34"
+        feature "[11.618561313551945, 14.80660556644035, 30.668334158786944]"
+      ]
+      node [
+        id 3
+        label "3"
+        positionX -28.93342830907102
+        positionY 5.372990605701716
+        class "adult"
+        data "nan"
+        feature "[25.44111693575362, 2.1404425396293245, 19.5873407260785]"
+      ]
+      ...
 
-    edge [
-      source 0
-      target 2
-      key 0
-      class "professional"
-      data "Knowing since : 23 years"
-    ]
-    edge [
-      source 0
-      target 2
-      key 1
-      class "professional"
-      data "Knowing since : 23 years"
-    ]
-    edge [
-      source 0
-      target 11
-      key 0
-      class "nan"
-      data "Knowing since : 9 years"
-    ]
-    edge [
-      source 0
-      target 11
-      key 1
-      class "friend"
-      data "Knowing since : 9 years"
-    ]
-    ...
+      edge [
+        source 0
+        target 2
+        key 0
+        class "professional"
+        data "Knowing since : 23 years"
+      ]
+      edge [
+        source 0
+        target 2
+        key 1
+        class "professional"
+        data "Knowing since : 23 years"
+      ]
+      edge [
+        source 0
+        target 11
+        key 0
+        class "nan"
+        data "Knowing since : 9 years"
+      ]
+      edge [
+        source 0
+        target 11
+        key 1
+        class "friend"
+        data "Knowing since : 9 years"
+      ]
+      ...
     ]
     ```
 ## Usage of each keyword

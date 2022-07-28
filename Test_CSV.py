@@ -7,11 +7,13 @@ Created on Tue Apr 26 10:40:48 2022
 
 import pandas as pd
 import networkx as nx
-import numpy as np
 import random
 
 class create_CSV():
-    
+    r"""
+        A class designed to create generate csv and gml fake examples to test on the SaaS app
+        
+    """
     def __init__(self,nb_nodes,nb_edges):
         self.nb_nodes=nb_nodes
         self.nb_edges=nb_edges

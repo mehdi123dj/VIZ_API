@@ -76,7 +76,7 @@ class ColorMap():
 
             """
 
-        # Color Map for nodes
+        # Color Map for nodes the numbers on the left correspond to the number of class, on the right the associated colors
         n_color = {1: ['#339975'],
                    2: ['#e96060', '#85b307'],
                    # 2:['#99336d', '#339975'],
@@ -124,78 +124,79 @@ class ColorMap():
             self.stylesheet = self.stylesheet+stylesheet
 
         else:
-
+            stylesheet = []
+            legend = []
             df_node = pd.DataFrame.from_dict(data_nodes)
 
             self.edge_stylesheet_legend(data_edges)
+            
+            if 'class' in df_node:
+                n_class = list(set(df_node['class']))
+                n_real_class = [
+                    elem for elem in n_class if "wrong" not in elem and "true" not in elem]
+                n_predicted_class = [
+                    elem for elem in n_class if "wrong" in elem or "true" in elem]
+                n_real_class.sort()
 
-            n_class = list(set(df_node['class']))
-            n_real_class = [
-                elem for elem in n_class if "wrong" not in elem and "true" not in elem]
-            n_predicted_class = [
-                elem for elem in n_class if "wrong" in elem or "true" in elem]
-            n_real_class.sort()
-            stylesheet = []
-            legend = []
-            m = max(n_color)
-            N = len(n_real_class)
-            if N > m:
-                c = m
-            else:
-                c = N
-
-            for i in range(N):
-                if i < m and n_class[i] != 'nan':
-                    stylesheet.append({
-                        'selector': '.'+str(n_real_class[i]),
-                        "style": {
-                            "color": n_color[c][i],
-                            'background-color': n_color[c][i],
-                        }
-                    })
-                    legend.append([n_color[c][i], str(n_real_class[i])])
+                m = max(n_color)
+                N = len(n_real_class)
+                if N > m:
+                    c = m
                 else:
-                    legend.append(['#999999', str(n_real_class[i])])
-
-            for j in range(len(n_predicted_class)):
-                if "wrong" in n_predicted_class[j] and n_predicted_class[j] != 'nan':
-
-                    real_class, wrong_class = n_predicted_class[j].split("wrong_")[
-                        1].split('_sep_')
-
-                    index_real = n_real_class.index(real_class)
-                    index_wrong = n_real_class.index(wrong_class)
-                    stylesheet.append({
-                        'selector': '.'+str(n_predicted_class[j]),
-                        "style": {
-                            'border-color': n_color[c][index_wrong],
-                            'border-width': 'data(borderWidth)',
-                            'background-color': n_color[c][index_real],
-                        }
-                    })
-                    legend.append(
-                        [n_color[c][index_real], str(n_predicted_class[j])])
-                elif "true" in n_predicted_class[j] and n_predicted_class[j] != 'nan':
-                    index = n_real_class.index(
-                        n_predicted_class[j].split("true_")[1])
-                    stylesheet.append({
-                        'selector': '.'+str(n_predicted_class[j]),
-                        "style": {
-                            'border-color': "#00FF00",
-                            'border-width': 'data(borderWidth)',
-                            'background-color': n_color[c][index],
-                        }
-                    })
-                    legend.append(
-                        [n_color[c][index], str(n_predicted_class[j])])
-                else:
-                    legend.append(['#999999', str(n_predicted_class[j])])
+                    c = N
+    
+                for i in range(N):
+                    if i < m and n_class[i] != 'nan':
+                        stylesheet.append({
+                            'selector': '.'+str(n_real_class[i]),
+                            "style": {
+                                "color": n_color[c][i],
+                                'background-color': n_color[c][i],
+                            }
+                        })
+                        legend.append([n_color[c][i], str(n_real_class[i])])
+                    else:
+                        legend.append(['#999999', str(n_real_class[i])])
+    
+                for j in range(len(n_predicted_class)):
+                    if "wrong" in n_predicted_class[j] and n_predicted_class[j] != 'nan':
+    
+                        real_class, wrong_class = n_predicted_class[j].split("wrong_")[
+                            1].split('_sep_')
+    
+                        index_real = n_real_class.index(real_class)
+                        index_wrong = n_real_class.index(wrong_class)
+                        stylesheet.append({
+                            'selector': '.'+str(n_predicted_class[j]),
+                            "style": {
+                                'border-color': n_color[c][index_wrong],
+                                'border-width': 'data(borderWidth)',
+                                'background-color': n_color[c][index_real],
+                            }
+                        })
+                        legend.append(
+                            [n_color[c][index_real], str(n_predicted_class[j])])
+                    elif "true" in n_predicted_class[j] and n_predicted_class[j] != 'nan':
+                        index = n_real_class.index(
+                            n_predicted_class[j].split("true_")[1])
+                        stylesheet.append({
+                            'selector': '.'+str(n_predicted_class[j]),
+                            "style": {
+                                'border-color': "#00FF00",
+                                'border-width': 'data(borderWidth)',
+                                'background-color': n_color[c][index],
+                            }
+                        })
+                        legend.append(
+                            [n_color[c][index], str(n_predicted_class[j])])
+                    else:
+                        legend.append(['#999999', str(n_predicted_class[j])])
 
             self.node_legend = legend
             self.stylesheet = self.stylesheet+stylesheet
 
     def edge_stylesheet_legend(self, data_edges):
-        # Color Map for edges
+        # Color Map for edges, the numbers on the left correspond to the number of class, on the right the associated colors
         e_color = {1: ['#000000'],
                    2: ['#9d9e6f', '#3c005d'],
                    3: ['#9d9e6f', '#b84e55', '#3c005d'],

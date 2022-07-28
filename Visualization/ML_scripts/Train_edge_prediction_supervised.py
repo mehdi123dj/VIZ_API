@@ -7,7 +7,7 @@ Created on Mon Jul 25 12:04:28 2022
 
 
 from ML_scripts.model_edge_prediction_supervised import test, train, Net
-import os.path as osp
+
 
 import torch
 import warnings
@@ -127,7 +127,6 @@ class run_edge_prediction_supervised():
         data = self.dataset[0]
         in_channels = len(data.x[0])
 
-        num_classes = max(data.y)+1
         print("Number of feature: ",in_channels)
 
         neg_sampling_ratio=5
@@ -142,10 +141,10 @@ class run_edge_prediction_supervised():
                               neg_sampling_ratio=neg_sampling_ratio),
         ])
         
-        D = transform(data) # RandomLinkSplit for train,val,test for edges
+        D = transform(data) # RandomLinkSplit return train,val,test for edges in three separate datasets
         model = Net(in_channels, args.hidden_channels, args.out_channels).to(device)
         optimizer = torch.optim.Adam(params=model.parameters(), lr = args.learning_rate)
-    
+
     
     
         best_val_auc = final_test_auc = 0
@@ -166,6 +165,6 @@ class run_edge_prediction_supervised():
         print('Done training')
         torch.save(best_model, SAVEPATH)
         
-        # Because .x and .edge_index are the same for train/test/val the inference take place on all the nodes
+        # Inference on test set
         z = model.encode(D[2].x, D[2].edge_index)
         return model.decode_all(z).detach().cpu().numpy()

@@ -11,7 +11,6 @@ from dash import html
 import copy
 from Stylesheet import Stylesheet
 import dash_cytoscape as cyto
-import json
 cyto.load_extra_layouts()
 
 
