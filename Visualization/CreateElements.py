@@ -21,8 +21,6 @@ import base64
 import datetime
 import io
 import dash_cytoscape as cyto
-import math
-import numpy as np
 from dash import dash_table
 cyto.load_extra_layouts()
 
@@ -64,116 +62,119 @@ class CreateElements():
 
         # Container for all that would be displayed in the first page
         self.home = html.Div([dcc.Upload(
-            # className='Links',
             id='upload-data',
             disable_click=True,
             children=html.Div([
                 'Drag and Drop file(s) of edges and nodes ',
-                # html.A('Select Files'),
                 
                 dbc.Badge(u'\U0001f6c8', color="light",id="info-badge",style={'z-index': '10000'}),
                 dbc.Modal(
                             [
                                 dbc.ModalHeader(dbc.ModalTitle("INPUT FILES FORMAT")),
                                 dbc.ModalBody(dcc.Markdown('''
-                                    They are as follow :
-                                    
-                                    * **CSV and XLS files** 
-                                    
-                                        * File for edges should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
-                                        ```
-                                        source,target,class,data
-                                        34,4,professional,Knowing since : 3 years
-                                        1,21,friend,Knowing since : 97 years
-                                        20,12,friend,Knowing since : 9 years
-                                        3,0,friend,Knowing since : 51 years
-                                        6,38,family,Knowing since : 3 years
-                                        45,4,professional,Knowing since : 7 years
-                                        0,8,family,Knowing since : 3 years
-                                        ```
-                                    
-                                        * File for nodes should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls.You are force to furnish values for the **id** you can also provide values for **positionX**,**positionY**,**feature**, **class** and **data**. <A solution could be to add nothing, just let it empty (as shown below).>
-                                        ```
-                                        id,positionX,positionY,class,data,feature
-                                        0,59.17180618694536,22.11030522902449,teenager,"Name : ludivine, age : 65","[69.33928670214559, 75.45925097633007, 70.99528587804748]"
-                                        1,-96.05151980887148,-70.4455325019663,teenager,"Name : fabrice, age : 78","[96.69387532958712, 69.9360406529872, 74.12491979334999]"
-                                        2,33.53531243249327,5.4884938927682185,adult,"Name : fabrice, age : 34","[11.618561313551945, 14.80660556644035, 30.668334158786944]"
-                                        3,-28.93342830907102,5.372990605701716,adult,"Name : matthieu, age : 34","[25.44111693575362, 2.1404425396293245, 19.5873407260785]"
-                                        4,-14.80054648587111,-55.81053799438567,teenager,"Name : matthieu, age : 55","[82.0134713406511, 75.87393548272328, 91.15490976049222]"
-                                        5,87.89876740468642,29.610566777499315,adult,"Name : henri, age : 65","[21.614522662913647, 15.749883206784437, 30.730064306816665]"
-                                        6,-54.64595487735493,-17.741161229561484,child,"Name : pascale, age : 20","[46.63956809476848, 48.89752997060593, 49.8082400003897]"
-                                        ```
-                                    
-                                    * **GML Files**
-                                      File should have the same form as shown below and registered as gml. You are force to furnish values for the **source** and **target** for the edges and **id**,**positionX**,**positionY** for the nodes, you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add **'NaN'**
-                                        ```
-                                          graph [
-                                        multigraph 1
-                                        node [
-                                          id 0
-                                          label "0"
-                                          positionX -91.13624117479557
-                                          positionY -66.76717678700189
-                                          class "child"
-                                          data "Name : fabrice, age : 22"
-                                        ]
-                                        node [
-                                          id 1
-                                          label "1"
-                                          positionX -46.73841145000086
-                                          positionY 98.31243547492073
-                                          class "nan"
-                                          data "Name : fabrice, age : 55"
-                                        ]
-                                        node [
-                                          id 2
-                                          label "2"
-                                          positionX 35.17666039345673
-                                          positionY 10.373519892509364
-                                          class "child"
-                                          data "Name : matthieu, age : 22"
-                                        ]
-                                        node [
-                                          id 3
-                                          label "3"
-                                          positionX 8.934336460157127
-                                          positionY -90.02082919747694
-                                          class "child"
-                                          data "nan"
-                                        ]
-                                        ...
-                                    
-                                        edge [
-                                          source 0
-                                          target 2
-                                          key 0
-                                          class "professional"
-                                          data "Knowing since : 23 years"
-                                        ]
-                                        edge [
-                                          source 0
-                                          target 2
-                                          key 1
-                                          class "professional"
-                                          data "Knowing since : 23 years"
-                                        ]
-                                        edge [
-                                          source 0
-                                          target 11
-                                          key 0
-                                          class "nan"
-                                          data "Knowing since : 9 years"
-                                        ]
-                                        edge [
-                                          source 0
-                                          target 11
-                                          key 1
-                                          class "friend"
-                                          data "Knowing since : 9 years"
-                                        ]
-                                        ...
-                                        ]
-                                        ```
+                                                They are as follow :
+                                                
+                                                * **CSV and XLS files**, you will have to upload edges and nodes file simultaneously in the drop zone, otherwise will not work.
+                                                
+                                                    * File for edges should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls. You are force to furnish values for the **source** and **target** you can also provide values for **class** and **data** but it is not mandatory and sparse information could be given. A solution could be to add nothing, just let it empty (as shown below).
+                                                    ```
+                                                    source,target,class,data
+                                                    34,4,professional,Knowing since : 3 years
+                                                    1,21,friend,Knowing since : 97 years
+                                                    20,12,friend,Knowing since : 9 years
+                                                    3,0,friend,Knowing since : 51 years
+                                                    6,38,family,Knowing since : 3 years
+                                                    45,4,professional,Knowing since : 7 years
+                                                    0,8,family,Knowing since : 3 years
+                                                    ```
+                                                
+                                                    * File for nodes should have the same format of header as shown below (you could omit non compulsory columns) and registered as csv/xls.You are force to furnish values for the **id** you can also provide values for **positionX**,**positionY**,**feature**, **class** but you will have to furnish value for all rows!  **data** column is not mandatory and you can provide sparse information. <A solution could be to add nothing, just let it empty (as shown below).>
+                                                    ```
+                                                    id,positionX,positionY,class,data,feature
+                                                    0,59.17180618694536,22.11030522902449,teenager,"Name : ludivine, age : 65","[69.33928670214559, 75.45925097633007, 70.99528587804748]"
+                                                    1,-96.05151980887148,-70.4455325019663,teenager,"Name : fabrice, age : 78","[96.69387532958712, 69.9360406529872, 74.12491979334999]"
+                                                    2,33.53531243249327,5.4884938927682185,adult,"Name : fabrice, age : 34","[11.618561313551945, 14.80660556644035, 30.668334158786944]"
+                                                    3,-28.93342830907102,5.372990605701716,adult,"Name : matthieu, age : 34","[25.44111693575362, 2.1404425396293245, 19.5873407260785]"
+                                                    4,-14.80054648587111,-55.81053799438567,teenager,"Name : matthieu, age : 55","[82.0134713406511, 75.87393548272328, 91.15490976049222]"
+                                                    5,87.89876740468642,29.610566777499315,adult,"Name : henri, age : 65","[21.614522662913647, 15.749883206784437, 30.730064306816665]"
+                                                    6,-54.64595487735493,-17.741161229561484,child,"Name : pascale, age : 20","[46.63956809476848, 48.89752997060593, 49.8082400003897]"
+                                                    ```
+                                                
+                                                * **GML Files**
+                                                  File should have the same form as shown below and registered as gml. You are force to furnish values for the **source** and **target** for the edges and **id** for the nodes. You can provide **positionX**,**positionY**,**features** but you will have to furnish for all rows! For **class** and **data** sparse information could be given, you will have to add **'NaN'** when no information is given (as shown below).
+                                                   
+                                                    ```
+                                                      graph [
+                                                        multigraph 1
+                                                          node [
+                                                            id 0
+                                                            label "0"
+                                                            positionX 59.17180618694536
+                                                            positionY 22.11030522902449
+                                                            class "teenager"
+                                                            data "Name : ludivine, age : 65"
+                                                            feature "[69.33928670214559, 75.45925097633007, 70.99528587804748]"
+                                                          ]
+                                                          node [
+                                                            id 1
+                                                            label "1"
+                                                            positionX -96.05151980887148
+                                                            positionY -70.4455325019663
+                                                            class "nan"
+                                                            data "Name : fabrice, age : 78"
+                                                            feature "[96.69387532958712, 69.9360406529872, 74.12491979334999]"
+                                                          ]
+                                                          node [
+                                                            id 2
+                                                            label "2"
+                                                            positionX 33.53531243249327
+                                                            positionY 5.4884938927682185
+                                                            class "adult"
+                                                            data "Name : fabrice, age : 34"
+                                                            feature "[11.618561313551945, 14.80660556644035, 30.668334158786944]"
+                                                          ]
+                                                          node [
+                                                            id 3
+                                                            label "3"
+                                                            positionX -28.93342830907102
+                                                            positionY 5.372990605701716
+                                                            class "adult"
+                                                            data "nan"
+                                                            feature "[25.44111693575362, 2.1404425396293245, 19.5873407260785]"
+                                                          ]
+                                                          ...
+                                                    
+                                                          edge [
+                                                            source 0
+                                                            target 2
+                                                            key 0
+                                                            class "professional"
+                                                            data "Knowing since : 23 years"
+                                                          ]
+                                                          edge [
+                                                            source 0
+                                                            target 2
+                                                            key 1
+                                                            class "professional"
+                                                            data "Knowing since : 23 years"
+                                                          ]
+                                                          edge [
+                                                            source 0
+                                                            target 11
+                                                            key 0
+                                                            class "nan"
+                                                            data "Knowing since : 9 years"
+                                                          ]
+                                                          edge [
+                                                            source 0
+                                                            target 11
+                                                            key 1
+                                                            class "friend"
+                                                            data "Knowing since : 9 years"
+                                                          ]
+                                                          ...
+                                                        ]
+                                                        
                                                             ''')),
                             ],
                             id="modal",
@@ -393,8 +394,8 @@ class CreateElements():
                 for elem in L[0]:
                     div = out(elem[0])
                     if 'id' in elem[0][0]:  # check if it is the dataframe concerning the nodes
-                        computable = "feature" in elem[0][0] and "class" in elem[0][0]
-                        # supervised = "class" in elem[0][0]
+                        computable = "feature" in elem[0][0] #and "class" in elem[0][0]
+                        supervised = "class" in elem[0][0]
                         data_nodes = elem[0]
                     else:
                         data_edges = elem[0]
@@ -403,14 +404,14 @@ class CreateElements():
             else:
                 div = out(L[0])
                 if 'id' in L[0][0]:  # check if it is the dataframe concerning the nodes
-                    computable = "feature" in L[0][0] and "class" in L[0][0]
-                    # supervised = "class" in elem[0][0]
+                    computable = "feature" in L[0][0] #and "class" in L[0][0]
+                    supervised = "class" in L[0][0]
                     data_nodes = L[0]
                 else:
                     data_edges = L[0]
                 M.append(div)
 
-        return computable, M, data_nodes, data_edges
+        return computable,supervised, M, data_nodes, data_edges
 
     def generate_display_tab(self, tab):
         r"""
@@ -453,6 +454,7 @@ class CreateElements():
 
         @app.callback(Output('output-datatable', 'children'),
                       Output('position', 'style'),
+                      Output('position', 'on'),
                       Output('learning-node-deep', 'style'),
                       Output('learning-node-unsupervised', 'style'),
                       Output('learning-edge', 'style'),
@@ -483,14 +485,16 @@ class CreateElements():
 
             """
             if list_of_contents is not None:
-                computable, children, data_nodes, data_edges = self.parse_contents(
+                computable, supervised, children, data_nodes, data_edges = self.parse_contents(
                     list_of_contents, list_of_names, list_of_dates)
-                if computable:
-                    return [children, {'display': 'inline-block'}, {'display': 'inline-block'},{'display': 'inline-block'}, {'display': 'inline-block'}, {'display': 'inline-block'}, data_nodes, data_edges]
+                if computable & supervised:
+                    return [children, {'display': 'inline-block'},False, {'display': 'inline-block'},{'display': 'inline-block'}, {'display': 'inline-block'}, {'display': 'inline-block'}, data_nodes, data_edges]
+                elif computable :
+                    return [children, {'display': 'none'},True, {'display': 'none'},{'display': 'inline-block'}, {'display': 'none'}, {'display': 'inline-block'}, data_nodes, data_edges]
                 else:
-                    return [children, {'display': 'none'}, {'display': 'none'}, {'display': 'none'},{'display': 'none'}, {'display': 'inline-block'}, data_nodes, data_edges]
+                    return [children, {'display': 'none'},False, {'display': 'none'}, {'display': 'none'},{'display': 'none'}, {'display': 'inline-block'}, data_nodes, data_edges]
             else:
-                return [dash.no_update, {'display': 'none'}, {'display': 'none'}, {'display': 'none'},{'display': 'none'}, {'display': 'none'}, dash.no_update, dash.no_update]
+                return [dash.no_update, {'display': 'none'},False, {'display': 'none'}, {'display': 'none'},{'display': 'none'}, {'display': 'none'}, dash.no_update, dash.no_update]
 
         @app.callback(
             Output('bt-learning-launch', 'style'),
@@ -509,7 +513,11 @@ class CreateElements():
                 Function that make visible/unvisible the launch learning button
 
                 Args:
-                    on_node (string): String of boolean object
+                    contents (string): when data is reuploaded trigger the function to reset all the buttons on False
+                    
+                    on_node_deep (string): String of boolean object
+
+                    on_node_unsupervised (string): String of boolean object
 
                     on_edge (string): String of boolean object
 
@@ -647,7 +655,6 @@ class CreateElements():
                         ML = MachineLearning(
                             data_nodes, data_edges, bt_pos, bt_learn_node_deep, bt_learn_edge, bt_learn_node_unsupervised)
                         data_nodes,data_edges = ML()
-                        # print(data_edges)
                         color(data_edges, data_nodes, classif=True)
                         CP(color.edge_legend, color.node_legend,
                            data_edges, data_nodes)
@@ -665,8 +672,6 @@ class CreateElements():
                         ])
 
             else:
-                # x = "{}".format(bt_learn_node_deep)
-                # if bt_learn_node_deep and bt_learn_node_unsupervised:
                 if data_nodes == {}:
                     return html.Div([
                         html.H6("Not any data uploaded")
@@ -685,8 +690,6 @@ class CreateElements():
                         html.H6(
                             "No positional values try to use the features if you have some")
                         ])
-                # else:
-                #     return dash.no_update
-
+                
         cyto.get_callbacks(app)
         CP.get_callbacks(app)

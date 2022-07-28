@@ -124,7 +124,6 @@ class run_node_classif_deep():
         args = parser.parse_args()
         
         data = self.dataset[0]
-
         data.y = one_hot(data.y)
         in_channels = len(data.x[0])
 

@@ -13,7 +13,7 @@ import warnings
 import copy 
 import os 
 import argparse
-from torch.nn.functional import one_hot
+
 
 warnings.filterwarnings('always') 
 
@@ -92,7 +92,7 @@ class run_node_classif_unsupervised():
         parser.add_argument(
             "-ne",
             "--number-epochs",
-            default=200,
+            default=600,
             type=int,
         )
     
@@ -125,13 +125,13 @@ class run_node_classif_unsupervised():
         args = parser.parse_args()
         
         data = self.dataset[0]
-        # print(data.y)
-        # data.y = one_hot(data.y)
         in_channels = len(data.x[0])
-
-        num_classes = max(data.y)+1
         print("Number of feature: ",in_channels)
-        print("Number of classes: ",num_classes)
+        have_class=False
+        if 'y' in data:
+            num_classes = max(data.y)+1
+            have_class=True
+            print("Number of classes: ",num_classes)
         
         
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -143,23 +143,21 @@ class run_node_classif_unsupervised():
                                     ).to(device)
         
         optimizer = torch.optim.Adam(model.parameters(), lr = args.learning_rate)
-    
-    
-
 
         print('Start training model of type : ', args.type)
         for epoch in range(1, args.number_epochs+1):
             
             loss = train(model,data,optimizer,device)
-
-            test_acc,test_class = test(model,data,device)
-            
             print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}')
-            print(f'Test accuracy: {test_acc:.4f}')
-            print(' ')
+
     
         SAVEPATH = os.path.join(model_dir,args.model_name)
         print('Done training')
         torch.save(copy.deepcopy(model), SAVEPATH)
-        return test_class
+        if have_class:
+            test_acc,test_class = test(model,data,device)
+            print(f'Test accuracy: {test_acc:.4f}')
+            print(' ')
+            return test_class
+        return
     

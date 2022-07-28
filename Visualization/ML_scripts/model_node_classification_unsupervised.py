@@ -130,11 +130,11 @@ def test(model,data,device):
     data = data.to(device)
     model.eval()
     z, _, _ = model(data.x, data.edge_index)
+
     acc_test,pred = model.test(z[data.train_mask], data.y[data.train_mask],
                      z[data.test_mask], data.y[data.test_mask], max_iter=150)
-    # pred=np.eye(np.max(pred)+1)[pred]
     return acc_test,pred
-    
+
 
 
 def corruption(x, edge_index):

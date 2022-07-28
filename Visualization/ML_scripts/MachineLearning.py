@@ -13,7 +13,6 @@ from ML_scripts.Train_node_classification_deep import run_node_classif_deep
 from ML_scripts.Train_node_classification_unsupervised import run_node_classif_unsupervised
 from ML_scripts.Train_edge_prediction_supervised import run_edge_prediction_supervised
 from sklearn.manifold import TSNE
-import numpy as np
 import shutil
 import os
 import torch
@@ -51,13 +50,11 @@ class MachineLearning():
 
         self.dataset=MyDataset(self.data_nodes,self.data_edges,data_dir)
         
-        with open(os.path.join(data_dir,'processed/mapping_class.json'),'r') as f:
-            mapping_class = json.load(f)
+
         with open(os.path.join(data_dir,'processed/mapping_id_node.json'),'r') as f:
             mapping_id_node = json.load(f)
         
-        
-        mapping_class = {v:u for u,v in mapping_class.items()} 
+
         
         # Could be used to find back 
         mapping_id_node = {v:u for u,v in mapping_id_node.items()}
@@ -69,6 +66,11 @@ class MachineLearning():
             learn = run_node_classif_deep(self.dataset)
             
             data_test_nodes = learn()
+            
+            with open(os.path.join(data_dir,'processed/mapping_class.json'),'r') as f:
+                mapping_class = json.load(f)
+            mapping_class = {v:u for u,v in mapping_class.items()} 
+            
             data_test_nodes = [mapping_class[elem] for elem in data_test_nodes]
             
             data_test_true_nodes = df_nodes[self.dataset[0].test_mask.tolist()]
@@ -95,10 +97,16 @@ class MachineLearning():
             learn = run_node_classif_unsupervised(self.dataset)
             
             data_test_nodes = learn()
-            data_test_nodes = [mapping_class[elem] for elem in data_test_nodes]
-            
-            data_test_true_nodes = df_nodes[self.dataset[0].test_mask.tolist()]
+
             if 'class' in df_nodes:
+                
+                with open(os.path.join(data_dir,'processed/mapping_class.json'),'r') as f:
+                    mapping_class = json.load(f)
+                mapping_class = {v:u for u,v in mapping_class.items()} 
+                
+                data_test_nodes = [mapping_class[elem] for elem in data_test_nodes]
+                
+                data_test_true_nodes = df_nodes[self.dataset[0].test_mask.tolist()]
                 
                 true_class = list(data_test_true_nodes['class'])
                 for i in range(len(data_test_true_nodes)):
@@ -107,12 +115,18 @@ class MachineLearning():
                         df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'wrong_'+true_class[i]+"_sep_"+data_test_nodes[i]
                     else:
                         df_nodes.loc[data_test_true_nodes.index[i],'class'] = 'true_'+data_test_nodes[i]
+                if self.position==True:
                     
-            if self.position==True:
-                
+                    X_embedded=self.get_embedding(os.path.join(data_dir,'data.pt'),os.path.join(model_dir,os.listdir(model_dir)[0]))
+                    df_nodes.loc[:,'positionX']=X_embedded[0]
+                    df_nodes.loc[:,'positionY']=X_embedded[1]
+                        
+            else :
                 X_embedded=self.get_embedding(os.path.join(data_dir,'data.pt'),os.path.join(model_dir,os.listdir(model_dir)[0]))
                 df_nodes.loc[:,'positionX']=X_embedded[0]
                 df_nodes.loc[:,'positionY']=X_embedded[1]
+                    
+
                 
             shutil.rmtree(os.path.join(data_dir))
             shutil.rmtree(model_dir)
@@ -131,8 +145,6 @@ class MachineLearning():
                 target.append(int(mapping_id_node[data_test_edges[1][i]]))
             source=pd.Series(source)
             target=pd.Series(target)
-            print(False in source.isin( df_nodes['id']))
-            print(False in target.isin( df_nodes['id']))
 
             df=pd.DataFrame({'source':source,
                             'target':target,

@@ -15,8 +15,6 @@ from CreateElements import CreateElements
 server = flask.Flask(__name__)
 
 
-
-
 app = dash.Dash(__name__,
                 meta_tags=[{"name": "viewport",
                             "content": "width=device-width, initial-scale=1"}],
@@ -40,5 +38,7 @@ if __name__ == '__main__':
     warnings.filterwarnings(
         action="ignore", message="unclosed", category=ResourceWarning)
 
+    # To use not in production to have debug mode on directly on the app
     # app.run(debug=True,use_reloader=False)
+    
     app.run(host="0.0.0.0", port=8050)
