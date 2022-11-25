@@ -1,11 +1,7 @@
 
 import copy
 import pandas as pd
-from ML_scripts.my_dataset import MyDataset
 from ML_scripts.hetero_dataset import CreateHeteroInfopro
-from ML_scripts.Train_node_classification_deep import run_node_classif_deep
-from ML_scripts.Train_node_classification_unsupervised import run_node_classif_unsupervised
-from ML_scripts.Train_edge_prediction_supervised import run_edge_prediction_supervised
 from ML_scripts.Train_edge_prediction_supervised_hetero import run_edge_prediction_hetero
 
 from sklearn.manifold import TSNE
