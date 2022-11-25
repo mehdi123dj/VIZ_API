@@ -24,8 +24,9 @@ class Net(torch.nn.Module):
 
     def decode_all(self, z):
         
-        prob_adj = z @ z.t()
-        return (prob_adj > 0.99).nonzero(as_tuple=False).t()
+        prob_adj = (z @ z.t()).sigmoid()
+        return (prob_adj > .75).nonzero(as_tuple=False).t()
+
 
 def train(model,train_data,optimizer,neg_ratio):
     model.train()

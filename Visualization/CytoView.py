@@ -1,16 +1,12 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Apr 26 14:20:43 2022
-
-@author: remit
-"""
 import NodeLayout
 import dash
 from dash.dependencies import Input, Output, State, ALL
-from dash import html
+from dash import html,Dash, dcc
 import copy
 from Stylesheet import Stylesheet
 import dash_cytoscape as cyto
+from textwrap import dedent
+import markdown 
 cyto.load_extra_layouts()
 
 
@@ -143,9 +139,12 @@ class CytoView():
         @app.callback(Output('cytoscape', 'elements'),
                       Input('bt-reset-view', 'n_clicks'),
                       Input('div-visualization', 'style'),
+
                       Input({"index": ALL, "class": "edge_legend",
                             "label": ALL}, "style"),
-                      Input({"index": ALL, "class": "node_legend", "label": ALL}, "style"))
+                      Input({"index": ALL, "class": "node_legend", "label": ALL}, "style")
+                      )
+
         def reset_layout_view(n_clicks, path, e_style, n_style):
             r"""
                 Modify the elements of the cytoscape regarding the choices make in the control panel, recenter
@@ -246,10 +245,16 @@ class CytoView():
             else:
                 if changed_id == 'cytoscape.tapEdge':
                     output = edge["data"]
+                    M = []
+                    M.append(html.P('',style={'font-size': '1.6vmin'}))
+                    for elem in output:
+                        M.append(html.B( elem, style = {'color':'darkorchid','fontWeight':'bold'}))
+                        M.append(html.P( str(output[elem]),style={'font-size': '1.6vmin'}))
                 else:
                     output = node["data"]
-                M = []
-                for elem in output:
-                    M.append(html.P(elem+" : " + str(output[elem]),
-                                    style={'font-size': '1.6vmin'}))
+                    M = []
+                    for elem in output:
+                        M.append(html.B( elem, style = {'color':'darkorchid','fontWeight':'bold'}))
+                        M.append(html.P( str(output[elem]),style={'font-size': '1.6vmin'}))
+
                 return M

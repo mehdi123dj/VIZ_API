@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr 25 13:11:39 2022
-
-@author: remit
-"""
-
 import dash
 from dash.dependencies import Input, Output, State
 from dash import dcc
@@ -22,6 +15,7 @@ import datetime
 import io
 import dash_cytoscape as cyto
 from dash import dash_table
+
 cyto.load_extra_layouts()
 
 
@@ -44,7 +38,7 @@ class CreateElements():
         self.color = ColorMap()
 
         # Container for the url gestion
-        self.location = dcc.Location(id="url")
+        self.location = dcc.Location(id="url") 
 
         # Container for nav bar
         self.dashboard = dbc.NavbarSimple(
@@ -56,9 +50,12 @@ class CreateElements():
                             href="/visualization", active="exact")
             ],
             brand="Knowareness",
-            color="dark",
+            color="black",
             dark=True,
+            sticky = 'top',
         )
+
+    #self.footer = html.Footer(id = 'Footer',title  = "some Footer")
 
         # Container for all that would be displayed in the first page
         self.home = html.Div([dcc.Upload(
@@ -66,8 +63,8 @@ class CreateElements():
             disable_click=True,
             children=html.Div([
                 'Drag and Drop file(s) of edges and nodes ',
-                
-                dbc.Badge(u'\U0001f6c8', color="light",id="info-badge",style={'z-index': '10000'}),
+            
+                dbc.Badge('Click for Info',href="#",color="darkorchid",id="info-badge",pill=True,className="me-1 text-decoration-none"),
                 dbc.Modal(
                             [
                                 dbc.ModalHeader(dbc.ModalTitle("INPUT FILES FORMAT")),
@@ -186,12 +183,14 @@ class CreateElements():
             ]),
             style={
                 'width': '100%',
-                'height': '5vmin',
-                'lineHeight': '5vmin',
-                'borderWidth': '1px',
+                'height': '10vmin',
+                'lineHeight': '10vmin',
+                'borderWidth': '2px',
                 'borderStyle': 'dashed',
-                'borderRadius': '10px',
+                'borderRadius': '20px',
                 'textAlign': 'center',
+                'fontSize': '25px',
+                'transform': 'translate(0%, 5%)',
             },
             # Allow multiple files to be uploaded
             multiple=True
@@ -207,9 +206,9 @@ class CreateElements():
                     children=[
                         html.Div(
                             children=[
-                                html.H6("Calculate position :", style={
+                                html.H6("Use for layout :", style={
                                     'display': 'inline-block', 'vertical-align': 'middle'}),
-                                daq.BooleanSwitch(id='bt-position', on=False, style={
+                                daq.BooleanSwitch(id='bt-position', on=False, color='orchid', style={
                                                   'display': 'inline-block', 'position': 'relative', 'margin-left': '2px', 'margin-right': '20px'}),
                             ],
                             id='position',
@@ -217,9 +216,9 @@ class CreateElements():
 
                         html.Div(
                             children=[
-                                html.H6("Directed graph :", style={
+                                html.H6("Directed :", style={
                                     'display': 'inline-block', 'vertical-align': 'middle'}),
-                                daq.BooleanSwitch(id='bt-oriented', on=False, style={
+                                daq.BooleanSwitch(id='bt-oriented', on=False,color='orchid', style={
                                                   'display': 'inline-block', 'position': 'relative', 'margin-left': '2px', 'margin-right': '20px'}),
                             ],
                             id='oriented',
@@ -227,9 +226,9 @@ class CreateElements():
 
                         html.Div(
                             children=[
-                                html.H6("Learn Graph node classification supervised :", style={
+                                html.H6("Supervised Node Classification:", style={
                                         'display': 'inline-block', 'vertical-align': 'middle', 'margin-left': '20px'}),
-                                daq.BooleanSwitch(id='bt-learning-node-deep', on=False, style={
+                                daq.BooleanSwitch(id='bt-learning-node-deep', on=False,color='orchid', style={
                                                   'display': 'inline-block', 'position': 'relative', 'margin-left': '2px'})
                             ],
                             id='learning-node-deep',
@@ -237,9 +236,9 @@ class CreateElements():
                         
                         html.Div(
                             children=[
-                                html.H6("Learn Graph node classification unsupervised:", style={
+                                html.H6("Unsupervised representation learning:", style={
                                         'display': 'inline-block', 'vertical-align': 'middle', 'margin-left': '20px'}),
-                                daq.BooleanSwitch(id='bt-learning-node-unsupervised', on=False, style={
+                                daq.BooleanSwitch(id='bt-learning-node-unsupervised',color='orchid', on=False, style={
                                                   'display': 'inline-block', 'position': 'relative', 'margin-left': '2px'})
                             ],
                             id='learning-node-unsupervised',
@@ -248,22 +247,28 @@ class CreateElements():
 
                         html.Div(
                             children=[
-                                html.H6("Learn Graph edge prediction :", style={
+                                html.H6("Link prediction :", style={
                                         'display': 'inline-block', 'vertical-align': 'middle', 'margin-left': '20px'}),
-                                daq.BooleanSwitch(id='bt-learning-edge', on=False, style={
+                                daq.BooleanSwitch(id='bt-learning-edge', on=False,color='orchid', style={
                                                   'display': 'inline-block', 'position': 'relative', 'margin-left': '2px'})
                             ],
                             id='learning-edge',
                             style={'display': 'none'})
                     ], style={'textAlign': 'center', 'margin': '1em'}),
 
+                #html.Div(
+                #    children=[
+                #        html.Button(
+                #            'Launch Learning', id='bt-learning-launch')
+                #    ],
+                #    style={'textAlign': 'center', 'margin': '1em'}),
                 html.Div(
-                    children=[
-
-                        html.Button(
-                            'Launch Learning', id='bt-learning-launch', style={'display': 'none','position': 'relative'})
+                    [
+                        dbc.Badge('Launch Learning',id='bt-learning-launch',href="#",color = 'darkorchid',pill=True,className="me-1 text-decoration-none"),
                     ],
-                    style={'textAlign': 'center', 'margin': '1em'}),
+                    style={'textAlign': 'center', 'margin': '1em','fontSize': '25px',},
+
+                )
             ],
         )
         ],
@@ -284,29 +289,36 @@ class CreateElements():
                             minZoom=0.01,
                             maxZoom=10,
                             # To be activated need to modify the code inside dash cytosacpe but could block the code from running while in release mode
-                            # wheelSensitivity=0.05,
+                            wheelSensitivity=0.05,
                             boxSelectionEnabled=True
                         ),  # responsive=True
                         style={
                             'z-index': '100',
                             'top': '0px',
                             'left': '0px'}),
+                    
+                    dbc.Badge('Reset View',id='bt-reset-view',href="#",color = 'darkorchid',pill=True, className="me-1 text-decoration-none",style={
+                                'position': 'absolute', 'z-index': '10000', 'right': '1em', 'top': '1em','fontSize': '15px'}),
 
-                    html.Button('Reset View', id='bt-reset-view', style={
-                                'position': 'absolute', 'z-index': '10000', 'right': '1em', 'top': '1em'}),
-                    html.Button('Reset Stylesheet', id='bt-reset-stylesheet', style={
-                                'position': 'absolute', 'z-index': '10000', 'right': '1em', 'top': '3em'}),
+                    dbc.Badge('Reset Stylesheet',id='bt-reset-stylesheet',href="#",color = 'darkorchid',pill=True, className="me-1 text-decoration-none",style={
+                                'position': 'absolute', 'z-index': '10000', 'right': '1em', 'top': '3em','fontSize': '15px'}),
+
+                    dcc.Dropdown(
+                        ['jpg','png','svg'],
+                        placeholder="Save as",
+                        id = 'dropdown-save',
+                        style={ 'position': 'absolute',"width": "30%",'z-index': '999','top': '5px','left': '2px','fontSize': '15px',
+                                }
+                        )
+
 
                 ],
                 id='cytoscape-elements',
-                style={'position': 'relative', 'z-index': '100'},
+                style={'position': 'relative', 'z-index': '100',},
             ),
-            style={
-                'position': 'fixed',
-                'width': '75%',
-                'display': 'inline-block',
-                'verticalAlign': 'top',
-            })
+            style={'position': 'fixed','width': '80%','display': 'inline-block','verticalAlign': 'top',}
+            #style  ={'position': 'absolute','width': '80%','display': 'inline-block','left' : '20%''verticalAlign': 'top'}
+            )
 
         # Container for the graph visualization page
         self.visualization = html.Div(
@@ -373,6 +385,8 @@ class CreateElements():
 
             def out(data):
                 df = pd.DataFrame(data)
+                df = df.loc[:,df.columns !='feature']
+
                 return html.Div([
                     html.H6(filename),
                     #html.P(datetime.datetime.fromtimestamp(date),style={'font-size': '1.2vmin'}),
@@ -674,7 +688,7 @@ class CreateElements():
             else:
                 if data_nodes == {}:
                     return html.Div([
-                        html.H6("Not any data uploaded")
+                        html.H2("No data uploaded for display",style={'textAlign': 'center', "lineHeight" : '3',})
                     ])
                 elif 'positionX' and 'positionY' in data_nodes[0]:
                     color(data_edges, data_nodes)
@@ -688,7 +702,7 @@ class CreateElements():
                 else:
                     return html.Div([
                         html.H6(
-                            "No positional values try to use the features if you have some")
+                            "No positional values try to use the features if you have any")
                         ])
                 
         cyto.get_callbacks(app)

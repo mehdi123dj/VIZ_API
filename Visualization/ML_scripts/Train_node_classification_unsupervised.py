@@ -7,13 +7,13 @@ Created on Fri Jul 22 14:44:39 2022
 
 # from torch_geometric.loader.dataloader import DataLoader
 
-from ML_scripts.model_node_classification_unsupervised import Encoder, corruption, test, train, DeepGraphInfomax,summary
+from ML_scripts.model_node_classification_unsupervised import classifier, Encoder, corruption, train,summary
+from torch_geometric.nn import DeepGraphInfomax
 import torch 
 import warnings
 import copy 
 import os 
 import argparse
-
 
 warnings.filterwarnings('always') 
 
@@ -21,10 +21,11 @@ warnings.filterwarnings('always')
 
 model_dir = "model"
 
+
 class run_node_classif_unsupervised():
     def __init__(self,dataset):
         self.dataset=dataset
-        
+
     def __call__(self): 
     
         """
@@ -33,12 +34,6 @@ class run_node_classif_unsupervised():
     
         parser = argparse.ArgumentParser()
     
-        parser.add_argument(
-            "-nl",
-            "--number-layers",
-            default=3,
-            type=int,
-        )
     
         parser.add_argument(
             "-hc",
@@ -46,57 +41,15 @@ class run_node_classif_unsupervised():
             default=512,
             type=int,
         )
-    
-        parser.add_argument(
-            "-oc",
-            "--out-channels",
-            default=16,
-            type=int,
-        )
-    
-        parser.add_argument(
-            "-drop",
-            "--dropout",
-            default=0.0,
-            type=float,
-        )
-    
-        parser.add_argument(
-            "-jk",
-            "--jumping-knowledge",
-            default='cat',
-            type=str,
-        )
-    
-        parser.add_argument(
-            "-act",
-            "--activation",
-            default='leaky_relu',
-            type=str,
-        )
-    
-        parser.add_argument(
-            "-ns",
-            "--negative-slope",
-            default=0.0,
-            type=float,
-        )
-    
-        parser.add_argument(
-            "-nh",
-            "--number-heads",
-            default=4,
-            type=int,
-        )
-    
+
         parser.add_argument(
             "-ne",
             "--number-epochs",
-            default=600,
+            default=100,
             type=int,
         )
     
-    
+
         parser.add_argument(
             "-t",
             "--type",
@@ -119,9 +72,9 @@ class run_node_classif_unsupervised():
             default = 'model_'+args.type+'.pt',
             type=str,
         )
-    
 
-    
+
+
         args = parser.parse_args()
         
         data = self.dataset[0]
@@ -141,13 +94,12 @@ class run_node_classif_unsupervised():
                                     summary=summary, 
                                     corruption=corruption
                                     ).to(device)
-        
+        data = data.to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr = args.learning_rate)
 
-        print('Start training model of type : ', args.type)
+        print('Start training model of type : ', args.type,args.learning_rate)
         for epoch in range(1, args.number_epochs+1):
-            
-            loss = train(model,data,optimizer,device)
+            loss = train(model,data,optimizer)
             print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}')
 
     
@@ -155,7 +107,11 @@ class run_node_classif_unsupervised():
         print('Done training')
         torch.save(copy.deepcopy(model), SAVEPATH)
         if have_class:
-            test_acc,test_class = test(model,data,device)
+            z, _, _ = model(data.x, data.edge_index)
+            train_z,train_y,test_z,test_y = z[data.train_mask], data.y[data.train_mask],z[data.test_mask], data.y[data.test_mask]
+            Classifier = classifier(train_z,train_y,test_z,test_y)
+
+            test_acc,test_class = Classifier.compute_score(),Classifier.predict()
             print(f'Test accuracy: {test_acc:.4f}')
             print(' ')
             return test_class
